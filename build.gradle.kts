@@ -10,9 +10,11 @@ repositories {
 }
 
 dependencies {
-    testCompile("junit", "junit", "4.12")
+    var junitVersion = "5.4.0"
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
 }
