@@ -27,21 +27,15 @@ public class HiddenNeuron extends Neuron {
             switch (paradigm) {
                 case HEBIAN:
                     if (Math.abs(weights[i] + dW) <= rightBound)
-                        weights[i] += input[i] * outputTPM;
-                    //else
-                      //  weights[i] -= input[i] * outputTPM;
+                        weights[i] += dW;
                     break;
                 case ANTI_HEBBIAN:
                     if (Math.abs(weights[i] + dW) <= rightBound)
-                        weights[i] -= input[i] * outputTPM;
-                    else
-                        weights[i] += input[i] * outputTPM;
+                        weights[i] -= dW;
                     break;
                 case RANDOM_WALK:
                     if (Math.abs(weights[i] + dW) <= rightBound)
                         weights[i] += input[i];
-                    else
-                        weights[i] -= input[i] * outputTPM;
                     break;
             }
         }

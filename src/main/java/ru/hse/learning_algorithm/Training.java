@@ -2,6 +2,6 @@ package ru.hse.learning_algorithm;
 
 public interface Training {
 
-    void train(double[] input);
+    void train(double[] input, int output);
 
 }
