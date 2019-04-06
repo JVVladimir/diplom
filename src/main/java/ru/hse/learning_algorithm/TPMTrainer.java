@@ -1,5 +1,6 @@
 package ru.hse.learning_algorithm;
 
+import ru.hse.tree_parity_machine.NeuralNetException;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 import ru.hse.utils.Random;
 
@@ -11,6 +12,8 @@ public class TPMTrainer {
     private int numIteration = 200;
 
     public ArrayList<Integer>[] synchronize(TreeParityMachine tpm1, TreeParityMachine tpm2) {
+        if(tpm1.getLearningParadigm() != tpm2.getLearningParadigm())
+            throw new NeuralNetException("Алгоритмы обучения не совпадают!");
         int k = 0;
         ArrayList<Integer> result = new ArrayList<>();
         ArrayList<Integer> outputTPM1 = new ArrayList<>();

@@ -16,12 +16,12 @@ public class TreeParityMachine implements Training {
     private OutputLayer outputLayer;
     private LearningParadigm paradigm;
 
-    public TreeParityMachine(int n, int k, int leftBound, int rightBound) {
+    public TreeParityMachine(int n, int k, int leftBound, int rightBound, LearningParadigm learningParadigm) {
         this.n = n;
         this.k = k;
         this.leftBound = leftBound;
         this.rightBound = rightBound;
-        this.paradigm = LearningParadigm.HEBIAN;
+        this.paradigm = learningParadigm;
         hiddenLayer = new HiddenLayer(n, k, leftBound, rightBound, paradigm);
         outputLayer = new OutputLayer(k);
     }
@@ -72,6 +72,7 @@ public class TreeParityMachine implements Training {
                 ", rightBound=" + rightBound +
                 ", hiddenLayer=" + hiddenLayer +
                 ", outputLayer=" + outputLayer +
+                ", paradigm=" + paradigm +
                 '}';
     }
 }
