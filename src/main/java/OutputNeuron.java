@@ -1,8 +1,3 @@
-package ru.hse.tree_parity_machine.neuron;
-
-import ru.hse.tree_parity_machine.NeuralNetException;
-
-/***/
 public class OutputNeuron extends Neuron {
 
     public OutputNeuron(int inputs) {
@@ -20,9 +15,9 @@ public class OutputNeuron extends Neuron {
 
     }
 
-    public int getOutput(double[] input) throws NeuralNetException {
+    public int getOutput(double[] input)  {
         if (input == null || input.length != inputs)
-            throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
+            System.out.println("Входной вектор не соответствует кол-ву весовых коэффициентов");
         int res = 1;
         for (int i = 0; i < inputs; i++)
             res *= input[i];

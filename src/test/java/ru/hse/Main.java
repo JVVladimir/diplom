@@ -1,9 +1,8 @@
 package ru.hse;
 
 import org.junit.jupiter.api.Test;
-import ru.hse.learning_algorithm.TPMTrainer;
-import ru.hse.tree_parity_machine.NeuralNetException;
-import ru.hse.tree_parity_machine.TreeParityMachine;
+import TPMTrainer;
+import TreeParityMachine;
 
 public class Main {
 
