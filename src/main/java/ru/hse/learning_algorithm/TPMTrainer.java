@@ -1,6 +1,5 @@
 package ru.hse.learning_algorithm;
 
-import ru.hse.tree_parity_machine.NeuralNetException;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 import ru.hse.utils.Random;
 
@@ -11,7 +10,7 @@ public class TPMTrainer {
 
     private int numIteration = 200;
 
-    public ArrayList<Integer>[] synchronize(TreeParityMachine tpm1, TreeParityMachine tpm2) throws NeuralNetException {
+    public ArrayList<Integer>[] synchronize(TreeParityMachine tpm1, TreeParityMachine tpm2) {
         int k = 0;
         ArrayList<Integer> result = new ArrayList<>();
         ArrayList<Integer> outputTPM1 = new ArrayList<>();
@@ -21,7 +20,7 @@ public class TPMTrainer {
         while (k < numIteration) {
             int out1 = tpm1.getOutput(input);
             int out2 = tpm2.getOutput(input);
-            if(Arrays.equals(tpm1.getSecretKey(), tpm2.getSecretKey())) {
+            if (Arrays.equals(tpm1.getSecretKey(), tpm2.getSecretKey())) {
                 result.add(k);
                 break;
             }

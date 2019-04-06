@@ -32,15 +32,11 @@ public class TreeParityMachine implements Training {
 
     @Override
     public void train(double[] input, int output) {
-        try {
-            double[] hiddenOutput = hiddenLayer.getOutput(input);
-            Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
-            for (int i = 0; i < hiddenOutput.length; i++)
-                // if(output == hiddenNeurons[i].getOutput(input)) --- не стабильный вариант!!
-                hiddenNeurons[i].changeWeights(input, output);
-        } catch (NeuralNetException e) {
-            e.printStackTrace();
-        }
+        double[] hiddenOutput = hiddenLayer.getOutput(input);
+        Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
+        for (int i = 0; i < hiddenOutput.length; i++)
+            // if(output == hiddenNeurons[i].getOutput(input)) --- не стабильный вариант!!
+            hiddenNeurons[i].changeWeights(input, output);
     }
 
     public double[] getSecretKey() {

@@ -14,11 +14,11 @@ public class LineGraph extends Application {
     private static ArrayList<Double> outputA;
     private static ArrayList<Double> outputB;
 
-    private final static String PATH_TO_CSS = "ru/hse/graphic/style.css";
+    private final static String PATH_TO_CSS = "style.css";
 
-    public void plot(ArrayList<Double> line1, ArrayList<Double> line2) throws Exception {
+    public void plot(ArrayList<Double> line1, ArrayList<Double> line2) {
         if (line1 == null || line2 == null)
-            throw new Exception("Не заданы серии данных для графика!");
+            throw new RuntimeException("Не заданы серии данных для графика!");
         outputA = line1;
         outputB = line2;
         launch();

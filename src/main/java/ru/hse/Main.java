@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         TreeParityMachine tpm1 = new TreeParityMachine(8, 4, -2, 2);
         TreeParityMachine tpm2 = new TreeParityMachine(8, 4, -2, 2);
         TPMTrainer trainer = new TPMTrainer();

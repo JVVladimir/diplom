@@ -22,7 +22,7 @@ public class HiddenLayer extends NetLayer {
         }
     }
 
-    public double[] getOutput(double[] input) throws NeuralNetException {
+    public double[] getOutput(double[] input) {
         if (input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
         double[] res = new double[outputs];

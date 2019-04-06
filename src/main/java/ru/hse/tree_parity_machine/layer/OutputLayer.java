@@ -10,14 +10,12 @@ public class OutputLayer extends NetLayer {
         inputs = k;
         outputs = 1;
         neurons = new Neuron[1];
-        for(int i = 0; i < 1; i++) {
-            neurons[i] = new OutputNeuron(k);
-            neurons[i].init();
-        }
+        neurons[0] = new OutputNeuron(k);
+        neurons[0].init();
     }
 
-    public int getOutput(double[] input) throws NeuralNetException {
-        if(input.length != inputs)
+    public int getOutput(double[] input) {
+        if (input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует числу нейронов на скрытом слое");
         return neurons[0].getOutput(input);
     }

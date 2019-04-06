@@ -41,7 +41,7 @@ public class HiddenNeuron extends Neuron {
         }
     }
 
-    public int getOutput(double[] input) throws NeuralNetException {
+    public int getOutput(double[] input) {
         if (input == null || input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
         double sum = 0;

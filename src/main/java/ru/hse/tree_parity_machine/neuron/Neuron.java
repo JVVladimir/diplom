@@ -18,7 +18,7 @@ public abstract class Neuron {
 
     public abstract void changeWeights(double[] input, int outputTPM);
 
-    public abstract int getOutput(double[] input) throws NeuralNetException;
+    public abstract int getOutput(double[] input);
 
     public double[] getWeights() {
         return weights;
@@ -35,8 +35,12 @@ public abstract class Neuron {
     @Override
     public String toString() {
         return "Neuron{" +
-                "inputs=" + inputs +
+                "output=" + output +
+                ", inputs=" + inputs +
                 ", weights=" + Arrays.toString(weights) +
+                ", leftBound=" + leftBound +
+                ", rightBound=" + rightBound +
+                ", paradigm=" + paradigm +
                 '}';
     }
 }
