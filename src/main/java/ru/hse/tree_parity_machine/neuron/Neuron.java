@@ -9,18 +9,18 @@ public abstract class Neuron {
 
     protected int output;
     protected int inputs;
-    protected double[] weights;
+    protected int[] weights;
     protected int leftBound;
     protected int rightBound;
     protected LearningParadigm paradigm;
 
     public abstract void init();
 
-    public abstract void changeWeights(double[] input, int outputTPM);
+    public abstract void changeWeights(int[] input, int outputTPM);
 
-    public abstract int getOutput(double[] input);
+    public abstract int getOutput(int[] input);
 
-    public double[] getWeights() {
+    public int[] getWeights() {
         return weights;
     }
 

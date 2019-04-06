@@ -26,24 +26,24 @@ public class TreeParityMachine implements Training {
         outputLayer = new OutputLayer(k);
     }
 
-    public int getOutput(double[] input) throws NeuralNetException {
+    public int getOutput(int[] input) {
         return outputLayer.getOutput(hiddenLayer.getOutput(input));
     }
 
     @Override
-    public void train(double[] input, int output) {
-        double[] hiddenOutput = hiddenLayer.getOutput(input);
+    public void train(int[] input, int output) {
+        int[] hiddenOutput = hiddenLayer.getOutput(input);
         Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
         for (int i = 0; i < hiddenOutput.length; i++)
             // if(output == hiddenNeurons[i].getOutput(input)) --- не стабильный вариант!!
             hiddenNeurons[i].changeWeights(input, output);
     }
 
-    public double[] getSecretKey() {
-        double[] key = new double[n * k];
+    public int[] getSecretKey() {
+        int[] key = new int[n * k];
         Neuron[] neurons = hiddenLayer.getNeurons();
         for (int i = 0; i < k; i++) {
-            double[] mas = neurons[i].getWeights();
+            int[] mas = neurons[i].getWeights();
             for (int j = 0; j < n; j++)
                 key[i * n + j] = mas[j];
         }

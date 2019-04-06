@@ -9,7 +9,7 @@ public class OutputNeuron extends Neuron {
 
     public OutputNeuron(int inputs) {
         this.inputs = inputs;
-        weights = new double[inputs];
+        weights = new int[inputs];
     }
 
     public void init() {
@@ -18,11 +18,11 @@ public class OutputNeuron extends Neuron {
     }
 
     @Override
-    public void changeWeights(double[] input, int outputTPM) {
+    public void changeWeights(int[] input, int outputTPM) {
 
     }
 
-    public int getOutput(double[] input) {
+    public int getOutput(int[] input) {
         if (input == null || input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
         int res = 1;

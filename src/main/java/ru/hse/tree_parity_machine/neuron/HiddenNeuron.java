@@ -9,21 +9,20 @@ public class HiddenNeuron extends Neuron {
     public HiddenNeuron(int inputs, int leftBound, int rightBound, LearningParadigm paradigm) {
         this.inputs = inputs;
         this.paradigm = paradigm;
-        weights = new double[inputs];
+        weights = new int[inputs];
         this.leftBound = leftBound;
         this.rightBound = rightBound;
-        Random.setBounds(leftBound, rightBound);
     }
 
     public void init() {
         for (int i = 0; i < inputs; i++)
-            weights[i] = Random.getInt();
+            weights[i] = Random.getInt(leftBound, rightBound);
     }
 
     @Override
-    public void changeWeights(double[] input, int outputTPM) {
+    public void changeWeights(int[] input, int outputTPM) {
         for (int i = 0; i < input.length; i++) {
-            double dW = input[i] * outputTPM;
+            int dW = input[i] * outputTPM;
             switch (paradigm) {
                 case HEBIAN:
                     if (Math.abs(weights[i] + dW) <= rightBound)
@@ -41,10 +40,10 @@ public class HiddenNeuron extends Neuron {
         }
     }
 
-    public int getOutput(double[] input) {
+    public int getOutput(int[] input) {
         if (input == null || input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
-        double sum = 0;
+        int sum = 0;
         for (int i = 0; i < inputs; i++)
             sum += weights[i] * input[i];
         output = sum > 0 ? 1 : -1;

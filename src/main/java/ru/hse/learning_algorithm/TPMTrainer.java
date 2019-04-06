@@ -16,7 +16,7 @@ public class TPMTrainer {
         ArrayList<Integer> outputTPM1 = new ArrayList<>();
         ArrayList<Integer> outputTPM2 = new ArrayList<>();
         int[] params = tpm1.getTPMParams();
-        double[] input = Random.getIntsCastedToDouble(params[0]);
+        int[] input = Random.getInts(params[0], -1, 1);
         while (k < numIteration) {
             int out1 = tpm1.getOutput(input);
             int out2 = tpm2.getOutput(input);
@@ -31,7 +31,7 @@ public class TPMTrainer {
                 tpm1.train(input, out2);
                 tpm2.train(input, out1);
             }
-            input = Random.getIntsCastedToDouble(params[0]);
+            input = Random.getInts(params[0], -1, 1);
             k++;
         }
         return new ArrayList[]{outputTPM1, outputTPM2, result};
