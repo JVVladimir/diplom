@@ -35,7 +35,8 @@ public class HiddenLayer extends NetLayer {
     @Override
     public String toString() {
         return "HiddenLayer{" +
-                "outputs=" + outputs +
+                "res=" + Arrays.toString(res) +
+                ", outputs=" + outputs +
                 ", inputs=" + inputs +
                 ", neurons=" + Arrays.toString(neurons) +
                 ", paradigm=" + paradigm +
