@@ -1,7 +1,5 @@
 package ru.hse.tree_parity_machine.neuron;
 
-import ru.hse.learning_algorithm.LearningParadigm;
-import ru.hse.tree_parity_machine.NeuralNetException;
 
 import java.util.Arrays;
 
@@ -12,24 +10,15 @@ public abstract class Neuron {
     protected double[] weights;
     protected int leftBound;
     protected int rightBound;
-    protected LearningParadigm paradigm;
 
     public abstract void init();
 
     public abstract void changeWeights(double[] input, int outputTPM);
 
-    public abstract int getOutput(double[] input) throws NeuralNetException;
+    public abstract int getOutput(double[] input);
 
     public double[] getWeights() {
         return weights;
-    }
-
-    public LearningParadigm getParadigm() {
-        return paradigm;
-    }
-
-    public void setParadigm(LearningParadigm paradigm) {
-        this.paradigm = paradigm;
     }
 
     @Override

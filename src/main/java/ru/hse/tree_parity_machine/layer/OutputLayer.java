@@ -1,6 +1,5 @@
 package ru.hse.tree_parity_machine.layer;
 
-import ru.hse.tree_parity_machine.NeuralNetException;
 import ru.hse.tree_parity_machine.neuron.Neuron;
 import ru.hse.tree_parity_machine.neuron.OutputNeuron;
 
@@ -16,9 +15,9 @@ public class OutputLayer extends NetLayer {
         }
     }
 
-    public int getOutput(double[] input) throws NeuralNetException {
+    public int getOutput(double[] input) {
         if(input.length != inputs)
-            throw new NeuralNetException("Входной вектор не соответствует числу нейронов на скрытом слое");
+            System.out.println("Входной вектор не соответствует числу нейронов на скрытом слое");
         return neurons[0].getOutput(input);
     }
 }

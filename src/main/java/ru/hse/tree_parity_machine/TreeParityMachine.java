@@ -1,12 +1,10 @@
 package ru.hse.tree_parity_machine;
 
-import ru.hse.learning_algorithm.LearningParadigm;
-import ru.hse.learning_algorithm.Training;
 import ru.hse.tree_parity_machine.layer.HiddenLayer;
 import ru.hse.tree_parity_machine.layer.OutputLayer;
 import ru.hse.tree_parity_machine.neuron.Neuron;
 
-public class TreeParityMachine implements Training {
+public class TreeParityMachine {
 
     private int n;
     private int k;
@@ -14,33 +12,25 @@ public class TreeParityMachine implements Training {
     private int rightBound;
     private HiddenLayer hiddenLayer;
     private OutputLayer outputLayer;
-    private LearningParadigm paradigm;
 
     public TreeParityMachine(int n, int k, int leftBound, int rightBound) {
         this.n = n;
         this.k = k;
         this.leftBound = leftBound;
         this.rightBound = rightBound;
-        this.paradigm = LearningParadigm.HEBIAN;
-        hiddenLayer = new HiddenLayer(n, k, leftBound, rightBound, paradigm);
+        hiddenLayer = new HiddenLayer(n, k, leftBound, rightBound);
         outputLayer = new OutputLayer(k);
     }
 
-    public int getOutput(double[] input) throws NeuralNetException {
+    public int getOutput(double[] input) {
         return outputLayer.getOutput(hiddenLayer.getOutput(input));
     }
 
-    @Override
     public void train(double[] input, int output) {
-        try {
-            double[] hiddenOutput = hiddenLayer.getOutput(input);
-            Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
-            for (int i = 0; i < hiddenOutput.length; i++)
-                // if(output == hiddenNeurons[i].getOutput(input)) --- не стабильный вариант!!
-                hiddenNeurons[i].changeWeights(input, output);
-        } catch (NeuralNetException e) {
-            e.printStackTrace();
-        }
+        double[] hiddenOutput = hiddenLayer.getOutput(input);
+        Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
+        for (int i = 0; i < hiddenOutput.length; i++)
+            hiddenNeurons[i].changeWeights(input, output);
     }
 
     public double[] getSecretKey() {
@@ -52,14 +42,6 @@ public class TreeParityMachine implements Training {
                 key[i * n + j] = mas[j];
         }
         return key;
-    }
-
-    public LearningParadigm getLearningParadigm() {
-        return paradigm;
-    }
-
-    public void setLearningParadigm(LearningParadigm paradigm) {
-        this.paradigm = paradigm;
     }
 
     public int[] getTPMParams() {
