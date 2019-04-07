@@ -35,7 +35,6 @@ public class TreeParityMachine implements Training {
         int[] hiddenOutput = hiddenLayer.getOutput(input);
         Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
         for (int i = 0; i < hiddenOutput.length; i++)
-            // if(output == hiddenNeurons[i].getOutput(input)) --- не стабильный вариант!!
             hiddenNeurons[i].changeWeights(input, output);
     }
 

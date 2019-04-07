@@ -23,11 +23,11 @@ public class LearningAlgorithmTest {
     static int numAntiHebbianFails;
     static int numRandomWalkFails;
 
-    static int epochs = 80;
+    static int epochs = 50;
 
     @AfterAll
     public static void setup() {
-        // epochs = 20;
+
     }
 
     @Test
@@ -87,9 +87,9 @@ public class LearningAlgorithmTest {
         System.out.printf("Кол-во падений для Хебба:%27d\n", numHebbianFails);
         System.out.printf("Кол-во падений для Анти-Хебба:%22d\n", numAntiHebbianFails);
         System.out.printf("Кол-во падений для Random walk:%21d\n", numRandomWalkFails);
-        System.out.printf("Процент падений для Хебба от общего кол-ва:%14.4f \n", (float) numHebbianFails / 1000 * 100);
-        System.out.printf("Процент падений для Анти-Хебба от общего кол-ва:%9.4f \n", (float) numAntiHebbianFails / 1000 * 100);
-        System.out.printf("Процент падений для Random walk от общего кол-ва:%8.4f \n", (float) numRandomWalkFails / 1000 * 100);
+        System.out.printf("Процент падений для Хебба от общего кол-ва:%14.1f \n", ((float) numHebbianFails) / 1000 * 100);
+        System.out.printf("Процент падений для Анти-Хебба от общего кол-ва:%9.1f \n", ((float) numAntiHebbianFails) / 1000 * 100);
+        System.out.printf("Процент падений для Random walk от общего кол-ва:%8.1f \n", ((float) numRandomWalkFails) / 1000 * 100);
     }
 
 }
