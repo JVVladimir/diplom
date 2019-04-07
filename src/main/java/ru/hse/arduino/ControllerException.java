@@ -2,7 +2,7 @@ package ru.hse.arduino;
 
 public class ControllerException extends RuntimeException {
 
-    ControllerException(String message) {
+    public ControllerException(String message) {
         super(message);
     }
 

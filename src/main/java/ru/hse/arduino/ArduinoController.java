@@ -5,6 +5,8 @@ import com.fazecast.jSerialComm.SerialPortEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class ArduinoController implements Controller {
 
     private static final Logger log = LoggerFactory.getLogger(ArduinoController.class);
@@ -33,7 +35,7 @@ public class ArduinoController implements Controller {
 
     @Override
     public int getListeningEvents() {
-        return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
+        return SerialPort.LISTENING_EVENT_DATA_RECEIVED | SerialPort.LISTENING_EVENT_DATA_WRITTEN;
     }
 
     @Override
@@ -75,5 +77,13 @@ public class ArduinoController implements Controller {
 
     public void setData(byte[] data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "ArduinoController{" +
+                "serialPort=" + serialPort +
+                ", data=" + Arrays.toString(data) +
+                '}';
     }
 }
