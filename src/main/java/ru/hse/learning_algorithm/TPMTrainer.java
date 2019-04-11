@@ -12,7 +12,7 @@ public class TPMTrainer {
     private int epochs = 200;
 
     public ArrayList<Integer>[] synchronize(TreeParityMachine tpm1, TreeParityMachine tpm2) {
-        if(tpm1.getLearningParadigm() != tpm2.getLearningParadigm())
+        if (tpm1.getLearningParadigm() != tpm2.getLearningParadigm())
             throw new NeuralNetException("Алгоритмы обучения не совпадают!");
         int k = 0;
         ArrayList<Integer> result = new ArrayList<>();
@@ -37,9 +37,16 @@ public class TPMTrainer {
             input = Random.getInts(params[0], -1, 1);
             k++;
         }
-        if(k > epochs)
+        if (k > epochs)
             throw new NeuralNetException("ДМЧ не синхронизировались!");
         return new ArrayList[]{outputTPM1, outputTPM2, result};
+    }
+
+    public int synchronize(TreeParityMachine tpm1, int[] input, int out2) {
+        int out1 = tpm1.getOutput(input);
+        if (out1 == out2)
+            tpm1.train(input, out2);
+        return tpm1.getOutput(input);
     }
 
     public int getEpochs() {

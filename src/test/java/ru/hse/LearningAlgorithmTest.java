@@ -23,7 +23,9 @@ public class LearningAlgorithmTest {
     static int numAntiHebbianFails;
     static int numRandomWalkFails;
 
-    static int epochs = 50;
+    static int epochs = 1500;
+    int L = 8, n = 16, k = 16;
+
 
     @AfterAll
     public static void setup() {
@@ -34,8 +36,8 @@ public class LearningAlgorithmTest {
     @RepeatedTest(1000)
     public void testHebbian() throws NeuralNetException {
         try {
-            TreeParityMachine tpm1 = new TreeParityMachine(8, 4, -2, 2, LearningParadigm.HEBIAN);
-            TreeParityMachine tpm2 = new TreeParityMachine(8, 4, -2, 2, LearningParadigm.HEBIAN);
+            TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.HEBIAN);
+            TreeParityMachine tpm2 = new TreeParityMachine(n, k, -L, L, LearningParadigm.HEBIAN);
             TPMTrainer trainer = new TPMTrainer();
             trainer.setEpochs(epochs);
             ArrayList[] list = trainer.synchronize(tpm1, tpm2);
@@ -50,8 +52,8 @@ public class LearningAlgorithmTest {
     @RepeatedTest(1000)
     public void testAntiHebbian() throws NeuralNetException {
         try {
-            TreeParityMachine tpm1 = new TreeParityMachine(8, 4, -2, 2, LearningParadigm.ANTI_HEBBIAN);
-            TreeParityMachine tpm2 = new TreeParityMachine(8, 4, -2, 2, LearningParadigm.ANTI_HEBBIAN);
+            TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.ANTI_HEBBIAN);
+            TreeParityMachine tpm2 = new TreeParityMachine(n, k, -L, L, LearningParadigm.ANTI_HEBBIAN);
             TPMTrainer trainer = new TPMTrainer();
             trainer.setEpochs(epochs);
             ArrayList[] list = trainer.synchronize(tpm1, tpm2);
@@ -66,8 +68,8 @@ public class LearningAlgorithmTest {
     @RepeatedTest(1000)
     public void testRandomWalk() throws NeuralNetException {
         try {
-            TreeParityMachine tpm1 = new TreeParityMachine(8, 4, -2, 2, LearningParadigm.RANDOM_WALK);
-            TreeParityMachine tpm2 = new TreeParityMachine(8, 4, -2, 2, LearningParadigm.RANDOM_WALK);
+            TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.RANDOM_WALK);
+            TreeParityMachine tpm2 = new TreeParityMachine(n, k, -L, L, LearningParadigm.RANDOM_WALK);
             TPMTrainer trainer = new TPMTrainer();
             trainer.setEpochs(epochs);
             ArrayList[] list = trainer.synchronize(tpm1, tpm2);
