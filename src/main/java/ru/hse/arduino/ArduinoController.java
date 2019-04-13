@@ -4,16 +4,17 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
+import ru.hse.business.Handler;
+import ru.hse.business.SynchronizationManager;
 
 public class ArduinoController implements Controller {
 
     private static final Logger log = LoggerFactory.getLogger(ArduinoController.class);
+    private Handler handler;
     private SerialPort serialPort;
-    private byte[] data;
 
-    public ArduinoController(String comPortName, int baundRate, int dataBits, int stopBits, int parity) {
+    public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate, int dataBits, int stopBits, int parity) {
+        this.handler = manager;
         SerialPort comPort = SerialPort.getCommPort(comPortName);
         log.info("Создан SerialPort с именем {}!", comPort);
         this.serialPort = comPort;
@@ -45,8 +46,7 @@ public class ArduinoController implements Controller {
         else if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
             byte[] newData = event.getReceivedData();
             log.info("Received data of size: {}", newData.length);
-            // TODO: вызов функции другого слоя для передачи данных
-            data = newData;
+            handler.handleRequest(newData);
         }
     }
 
@@ -71,19 +71,11 @@ public class ArduinoController implements Controller {
         return serialPort;
     }
 
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
     @Override
     public String toString() {
         return "ArduinoController{" +
-                "serialPort=" + serialPort +
-                ", data=" + Arrays.toString(data) +
+                "handler=" + handler +
+                ", serialPort=" + serialPort +
                 '}';
     }
 }

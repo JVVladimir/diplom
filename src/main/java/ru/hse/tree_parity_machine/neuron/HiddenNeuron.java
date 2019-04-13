@@ -24,7 +24,7 @@ public class HiddenNeuron extends Neuron {
         for (int i = 0; i < input.length; i++) {
             int dW = input[i] * outputTPM;
             switch (paradigm) {
-                case HEBIAN:
+                case HEBBIAN:
                     weights[i] += dW;
                     break;
                 case ANTI_HEBBIAN:

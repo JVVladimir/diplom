@@ -2,7 +2,7 @@ package ru.hse.learning_algorithm;
 
 public enum LearningParadigm {
 
-    HEBIAN,
+    HEBBIAN,
     ANTI_HEBBIAN,
     RANDOM_WALK
 }

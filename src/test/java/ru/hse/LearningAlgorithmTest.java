@@ -36,8 +36,8 @@ public class LearningAlgorithmTest {
     @RepeatedTest(1000)
     public void testHebbian() throws NeuralNetException {
         try {
-            TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.HEBIAN);
-            TreeParityMachine tpm2 = new TreeParityMachine(n, k, -L, L, LearningParadigm.HEBIAN);
+            TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.HEBBIAN);
+            TreeParityMachine tpm2 = new TreeParityMachine(n, k, -L, L, LearningParadigm.HEBBIAN);
             TPMTrainer trainer = new TPMTrainer();
             trainer.setEpochs(epochs);
             ArrayList[] list = trainer.synchronize(tpm1, tpm2);
