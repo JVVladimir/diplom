@@ -17,6 +17,7 @@ public class SynchronizationManager implements Handler {
     private TPMTrainer trainer;
     private Controller controller;
 
+    private boolean isSync = false;
     private int epochs = 0;
     private int maxEpochs = 1500;
     private byte[] input;
@@ -55,6 +56,7 @@ public class SynchronizationManager implements Handler {
                 }
                 handleResponse(new byte[]{INIT_X});
                 epochs = 0;
+                isSync = false;
                 break;
             case INIT_X:
                 log.info("Code send: {}, data received: {}", current_command, data);
@@ -69,6 +71,7 @@ public class SynchronizationManager implements Handler {
                 ints = new int[input.length];
                 for (int i = 0; i < ints.length; i++)
                     ints[i] = input[i];
+
                 out2 = trainer.synchronize(tpm, ints, out);
                 log.info("Out2: {}", out2);
                 result = new byte[input.length + 2];
@@ -106,6 +109,7 @@ public class SynchronizationManager implements Handler {
                 System.arraycopy(input, 0, result, 1, input.length);
                 result[result.length - 1] = (byte) out2;
                 handleResponse(result);
+                log.info("Current train epoch: {}", epochs);
                 epochs++;
                 break;
             case SYNC_DONE:
@@ -115,9 +119,10 @@ public class SynchronizationManager implements Handler {
                     handleResponse(new byte[]{SYNC_DONE});
                     break;
                 }
+                isSync = true;
                 break;
             case ENCRYPT:
-
+                log.info("Data received: {}", data);
                 break;
         }
     }
@@ -128,4 +133,9 @@ public class SynchronizationManager implements Handler {
         current_command = data[0];
         log.info("Command was sended: {}, data: {}", current_command, data);
     }
+
+    public boolean isSync() {
+        return isSync;
+    }
+
 }

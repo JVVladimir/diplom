@@ -29,8 +29,10 @@ public class ArduinoController implements Controller {
     public void openPort() {
         if (serialPort == null)
             throw new ControllerException("Попытка открыть несуществующий com порт");
-        serialPort.addDataListener(this);
         serialPort.openPort();
+        if (!serialPort.isOpen())
+            throw new ControllerException("Невозможно открыть com порт");
+        serialPort.addDataListener(this);
         log.info("SerialPort: {} успешно открыт!", serialPort);
     }
 
