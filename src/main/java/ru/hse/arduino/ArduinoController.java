@@ -60,8 +60,8 @@ public class ArduinoController implements Controller {
             log.info("All bytes were successfully transmitted!");
         else if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
             byte[] newData = event.getReceivedData();
-            log.info("Received data of size: {}", newData.length);
-            // handler.handleRequest(newData);
+            log.info("Received data of size: {}, data: {}", newData.length, newData);
+            handler.handleRequest(newData);
             data = newData;
         }
     }

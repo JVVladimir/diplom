@@ -33,19 +33,21 @@ public class SynchronizationManager implements Handler {
     public static final byte ENCRYPT = 5;
     public static final byte DECRYPT = ENCRYPT;
 
+    // private int[] ints;
+    private byte[] result;
+    private int out2;
+
     public SynchronizationManager(TreeParityMachine tpm) {
         this.tpm = tpm;
         this.inputs = tpm.getTPMParams()[0];
         this.trainer = new TPMTrainer();
-        this.controller = new ArduinoController(this, "COM3", 9600, 8, 1, 0);
+        this.controller = new ArduinoController(this, "COM3", 250000, 8, 1, 0);
         controller.openPort();
     }
 
     @Override
     public void handleRequest(byte[] data) {
         int[] ints;
-        byte[] result;
-        int out2;
         switch (current_command) {
             case INIT_W:
                 log.info("Code send: {}, data received: {}", current_command, data);
@@ -71,7 +73,6 @@ public class SynchronizationManager implements Handler {
                 ints = new int[input.length];
                 for (int i = 0; i < ints.length; i++)
                     ints[i] = input[i];
-
                 out2 = trainer.synchronize(tpm, ints, out);
                 log.info("Out2: {}", out2);
                 result = new byte[input.length + 2];
@@ -84,13 +85,19 @@ public class SynchronizationManager implements Handler {
                 break;
             case TRAIN:
                 log.info("Code send: {}, data received: {}", current_command, data);
-                if (data.length == 0 || data.length != inputs + 2 || data[0] != 100) {
-                    log.error("Bad response from Controller while generating Input");
-                    handleResponse(new byte[]{TRAIN});
+                if (data.length == 0 || data.length != inputs + 3 || data[0] != 100) {
+                    log.error("Bad response from Controller while training");
+                    result = new byte[input.length + 2];
+                    result[0] = TRAIN;
+                    System.arraycopy(input, 0, result, 1, input.length);
+                    result[result.length - 1] = (byte) out2;
+                    handleResponse(result);
+                    // handleResponse(new byte[]{TRAIN});
                     break;
                 }
-                input = Arrays.copyOfRange(data, 1, data.length - 1);
-                out = data[data.length - 1];
+                input = Arrays.copyOfRange(data, 1, data.length - 2);
+                out = data[data.length - 2];
+                log.info("Memory: {}", data[data.length-1]*5);
                 // TODO: этого говна тут не будет!!!!
                 ints = new int[input.length];
                 for (int i = 0; i < ints.length; i++)
@@ -124,6 +131,8 @@ public class SynchronizationManager implements Handler {
             case ENCRYPT:
                 log.info("Data received: {}", data);
                 break;
+                default:
+                    log.info("Data received: {}", data);
         }
     }
 

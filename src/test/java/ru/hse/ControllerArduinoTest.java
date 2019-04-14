@@ -22,7 +22,7 @@ public class ControllerArduinoTest {
 
     @BeforeAll
     public static void setup() {
-        arduinoController = new ArduinoController(null, "COM11", 9600, 8, 1, 0);
+        arduinoController = new ArduinoController(null, "COM3", 57600, 8, 1, 0);
         arduinoController.openPort();
     }
 
@@ -35,11 +35,6 @@ public class ControllerArduinoTest {
     public void testSendMessage() {
         String text = "Hello";
         arduinoController.sendMessage(text.getBytes());
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
