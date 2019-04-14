@@ -22,8 +22,8 @@ public class ControllerArduinoTest {
 
     @BeforeAll
     public static void setup() {
-       /* arduinoController = new ArduinoController("COM3", 9600, 8, 1, 0);
-        arduinoController.openPort();*/
+        arduinoController = new ArduinoController(null, "COM11", 9600, 8, 1, 0);
+        arduinoController.openPort();
     }
 
     @Test
@@ -32,25 +32,24 @@ public class ControllerArduinoTest {
     }
 
     @Test
-    public void testMy() {
-        byte[] b = new byte[] {1,2,3,4,5,6};
-        System.out.println(Arrays.toString(Arrays.copyOfRange(b, 0, b.length)));
-    }
-
-    @Test
     public void testSendMessage() {
         String text = "Hello";
         arduinoController.sendMessage(text.getBytes());
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testReceiveMessage() {
-       /*Assertions.assertTimeout(Duration.ofSeconds(10), () -> {
+       Assertions.assertTimeout(Duration.ofSeconds(10), () -> {
             while (LocalTime.now().isBefore(time.plusSeconds(10)))
                 if (arduinoController.getData() != null)
                     return;
             throw new ControllerException("Данные от контроллера не получены!");
-        });*/
+        });
     }
 
     @AfterAll

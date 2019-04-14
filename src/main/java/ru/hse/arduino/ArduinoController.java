@@ -13,12 +13,25 @@ public class ArduinoController implements Controller {
     private Handler handler;
     private SerialPort serialPort;
 
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    private byte[] data;
+
     public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate, int dataBits, int stopBits, int parity) {
         this.handler = manager;
         SerialPort comPort = SerialPort.getCommPort(comPortName);
         log.info("Создан SerialPort с именем {}!", comPort);
         this.serialPort = comPort;
         serialPort.setComPortParameters(baundRate, dataBits, stopBits, parity);
+        serialPort.clearRTS();
+        serialPort.clearDTR();
+        serialPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
     }
 
     public static SerialPort[] getAllComPorts() {
@@ -48,7 +61,8 @@ public class ArduinoController implements Controller {
         else if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
             byte[] newData = event.getReceivedData();
             log.info("Received data of size: {}", newData.length);
-            handler.handleRequest(newData);
+            // handler.handleRequest(newData);
+            data = newData;
         }
     }
 
