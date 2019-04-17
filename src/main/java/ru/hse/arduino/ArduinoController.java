@@ -7,6 +7,14 @@ import org.slf4j.LoggerFactory;
 import ru.hse.business.Handler;
 import ru.hse.business.SynchronizationManager;
 
+import java.io.BufferedOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class ArduinoController implements Controller {
 
     private static final Logger log = LoggerFactory.getLogger(ArduinoController.class);
@@ -22,6 +30,7 @@ public class ArduinoController implements Controller {
     }
 
     private byte[] data;
+    private String newStrData;
 
     public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate, int dataBits, int stopBits, int parity) {
         this.handler = manager;
@@ -60,9 +69,17 @@ public class ArduinoController implements Controller {
             log.info("All bytes were successfully transmitted!");
         else if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
             byte[] newData = event.getReceivedData();
-            log.info("Received data of size: {}, data: {}", newData.length, newData);
-            handler.handleRequest(newData);
-            data = newData;
+            try {
+                newStrData =new String(newData, "ASCII");
+                log.info("JSON: {}", newStrData);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            byte[] newDataJson = fromJsonToByte(newStrData);
+            log.info("Received data of size: {}, data: {}", newDataJson.length, newDataJson);
+            handler.handleRequest(newDataJson);
+            data = newDataJson;
+
         }
     }
 
@@ -93,5 +110,26 @@ public class ArduinoController implements Controller {
                 "handler=" + handler +
                 ", serialPort=" + serialPort +
                 '}';
+    }
+
+    public byte[] fromJsonToByte(String json) {
+        List<Byte> b = new ArrayList<>();
+        StringBuilder newNumber = new StringBuilder();
+        for(int i = 0; i<json.length(); i++){
+            char c = json.charAt(i);
+            if (c== ',' || c==']'|| c=='[') {
+                if (!newNumber.toString().equals("")) {
+                    b.add((byte) Integer.parseInt(newNumber.toString()));
+                    newNumber = new StringBuilder();
+                }
+            }
+            else newNumber.append(c);
+
+        }
+        byte[] br = new byte[b.size()];
+        for (int j = 0; j<br.length; j++)
+            br[j] = b.get(j);
+        return br;
+
     }
 }

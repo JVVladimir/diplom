@@ -12,7 +12,7 @@ public class Main {
 
     Main() {
         String text = "Hello, Vova!";
-        TreeParityMachine tpm1 = new TreeParityMachine(16, 16, -8, 8, LearningParadigm.HEBBIAN);
+        TreeParityMachine tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         SynchronizationManager manager = new SynchronizationManager(tpm1);
         manager.handleResponse(new byte[]{SynchronizationManager.INIT_W});
         new Thread(() -> {
@@ -30,5 +30,7 @@ public class Main {
             manager.handleResponse(res);
         }).start();
     }
+
+
 
 }

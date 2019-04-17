@@ -15,6 +15,8 @@ dependencies {
     implementation ("org.slf4j:slf4j-api:1.7.26")
     implementation ("org.slf4j:slf4j-simple:1.7.26")
 
+    implementation("com.google.code.gson:gson:2.8.5")
+
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
 }

@@ -19,7 +19,7 @@ public class SynchronizationManager implements Handler {
 
     private boolean isSync = false;
     private int epochs = 0;
-    private int maxEpochs = 1500;
+    private int maxEpochs = 130;
     private byte[] input;
     private int inputs;
     private int out;
@@ -30,6 +30,7 @@ public class SynchronizationManager implements Handler {
     public static final byte INIT_X = 2;
     public static final byte TRAIN = 3;
     public static final byte SYNC_DONE = 4;
+    public static final byte NOP = 0;
     public static final byte ENCRYPT = 5;
     public static final byte DECRYPT = ENCRYPT;
 
@@ -47,6 +48,9 @@ public class SynchronizationManager implements Handler {
 
     @Override
     public void handleRequest(byte[] data) {
+        /*if(data.length == 2 && data[0] == 13 && data[1] == 10) {
+            return;
+        }*/
         int[] ints;
         switch (current_command) {
             case INIT_W:
@@ -109,6 +113,7 @@ public class SynchronizationManager implements Handler {
                     epochs = 0;
                     handleResponse(new byte[]{SYNC_DONE});
                     current_command = SYNC_DONE;
+                    System.out.println(String.format("*****  %s  ********", Arrays.toString(tpm.getSecretKey())));
                     break;
                 }
                 result = new byte[input.length + 2];
@@ -126,6 +131,7 @@ public class SynchronizationManager implements Handler {
                     handleResponse(new byte[]{SYNC_DONE});
                     break;
                 }
+                current_command = NOP;
                 isSync = true;
                 break;
             case ENCRYPT:
