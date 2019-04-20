@@ -1,15 +1,10 @@
 package ru.hse.graphic;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.stage.Stage;
+
 
 import java.util.ArrayList;
 
-public class LineGraph extends Application {
+public class LineGraph {}/*extends Application {
 
     private static ArrayList<Double> outputA;
     private static ArrayList<Double> outputB;
@@ -51,4 +46,4 @@ public class LineGraph extends Application {
         stage1.setScene(scene);
         stage1.show();
     }
-}
+}*/
