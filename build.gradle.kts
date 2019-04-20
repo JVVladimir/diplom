@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     var junitVersion = "5.4.0"
-    implementation("com.fazecast:jSerialComm:[2.0.0,3.0.0)")
+    // implementation("com.fazecast:jSerialComm:[2.0.0,3.0.0)")
     // https://mvnrepository.com/artifact/org.scream3r/jssc
     implementation ("org.scream3r:jssc:2.8.0")
     implementation ("org.slf4j:slf4j-api:1.7.26")

@@ -1,12 +1,12 @@
 package ru.hse.arduino;
 
-import com.fazecast.jSerialComm.SerialPortDataListener;
+import jssc.SerialPortEventListener;
 
-public interface Controller extends SerialPortDataListener {
+public interface Controller extends SerialPortEventListener {
 
     void openPort();
 
-    void sendMessage(byte[] message);
+    void sendMessage(String message);
 
     void closePort();
 

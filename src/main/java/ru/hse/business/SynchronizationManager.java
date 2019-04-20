@@ -42,12 +42,12 @@ public class SynchronizationManager implements Handler {
         this.tpm = tpm;
         this.inputs = tpm.getTPMParams()[0];
         this.trainer = new TPMTrainer();
-        this.controller = new ArduinoController(this, "COM3", 250000, 8, 1, 0);
+        this.controller = new ArduinoController(this, "/dev/ttyACM0", 250000, 8, 1, 0);
         controller.openPort();
     }
 
     @Override
-    public void handleRequest(byte[] data) {
+    public void handleRequest(String data) {
         /*if(data.length == 2 && data[0] == 13 && data[1] == 10) {
             return;
         }*/

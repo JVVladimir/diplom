@@ -1,19 +1,16 @@
 package ru.hse.arduino;
 
-import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortEvent;
+
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortException;
+import jssc.SerialPortList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hse.business.Handler;
 import ru.hse.business.SynchronizationManager;
 
-import java.io.BufferedOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class ArduinoController implements Controller {
 
@@ -21,79 +18,80 @@ public class ArduinoController implements Controller {
     private Handler handler;
     private SerialPort serialPort;
 
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
-    private byte[] data;
+    private String data;
     private String newStrData;
 
-    public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate, int dataBits, int stopBits, int parity) {
+    public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate) {
         this.handler = manager;
-        SerialPort comPort = SerialPort.getCommPort(comPortName);
+        SerialPort comPort = new SerialPort(comPortName);
         log.info("Создан SerialPort с именем {}!", comPort);
         this.serialPort = comPort;
-        serialPort.setComPortParameters(baundRate, dataBits, stopBits, parity);
-        serialPort.clearRTS();
-        serialPort.clearDTR();
-        serialPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
+        try {
+            serialPort.setParams(baundRate,
+                    SerialPort.DATABITS_8,
+                    SerialPort.STOPBITS_1,
+                    SerialPort.PARITY_NONE, false, false);
+            serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+        } catch (SerialPortException e) {
+            throw new ControllerException("Ошибка в настройке параметров контроллера!");
+        }
     }
 
-    public static SerialPort[] getAllComPorts() {
-        return SerialPort.getCommPorts();
+    public static String[] getAllComPorts() {
+        return SerialPortList.getPortNames();
     }
 
     @Override
     public void openPort() {
         if (serialPort == null)
             throw new ControllerException("Попытка открыть несуществующий com порт");
-        serialPort.openPort();
-        if (!serialPort.isOpen())
-            throw new ControllerException("Невозможно открыть com порт");
-        serialPort.addDataListener(this);
-        log.info("SerialPort: {} успешно открыт!", serialPort);
-    }
-
-    @Override
-    public int getListeningEvents() {
-        return SerialPort.LISTENING_EVENT_DATA_RECEIVED | SerialPort.LISTENING_EVENT_DATA_WRITTEN;
-    }
-
-    @Override
-    public void serialEvent(SerialPortEvent event) {
-        if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_WRITTEN)
-            log.info("All bytes were successfully transmitted!");
-        else if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED) {
-            byte[] newData = event.getReceivedData();
-            try {
-                newStrData =new String(newData, "ASCII");
-                log.info("JSON: {}", newStrData);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            byte[] newDataJson = fromJsonToByte(newStrData);
-            log.info("Received data of size: {}, data: {}", newDataJson.length, newDataJson);
-            handler.handleRequest(newDataJson);
-            data = newDataJson;
-
+        try {
+            serialPort.openPort();
+            if (!serialPort.isOpened())
+                throw new ControllerException("Невозможно открыть com порт");
+            serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
+            log.info("SerialPort: {} успешно открыт!", serialPort);
+        } catch (SerialPortException e) {
+            throw new ControllerException("Ошибка открытия порта или добавления слушателя!");
         }
     }
 
     @Override
-    public void sendMessage(byte[] message) {
-        if (!serialPort.isOpen())
+    public void serialEvent(SerialPortEvent event) {
+        if (event.getEventValue() > 0) {
+            String newData;
+            try {
+                newData = serialPort.readString();
+            } catch (SerialPortException e) {
+                throw new ControllerException("Ошибка в чтении данных!");
+            }
+            log.info("Received data of size: {}, data: {}", newData.length(), newData);
+            handler.handleRequest(newData);
+            data = newData;
+        }
+    }
+
+    @Override
+    public void sendMessage(String message) {
+        if (!serialPort.isOpened())
             throw new ControllerException("Попытка записи в закрытый com порт");
-        serialPort.writeBytes(message, message.length);
+        try {
+            serialPort.writeString(message, "ASCII");
+        } catch (SerialPortException e) {
+            throw new ControllerException("Ошибка при отправке данных!");
+        } catch (UnsupportedEncodingException ignored) {
+        }
         log.info("Сообщение отправлено: {}!", message);
     }
 
     @Override
     public void closePort() {
-        boolean flag = serialPort.closePort();
+        boolean flag;
+        try {
+            flag = serialPort.closePort();
+        } catch (SerialPortException e) {
+            throw new ControllerException("Ошибка закрытии порта!");
+        }
         if (flag)
             log.info("SerialPort: {} успешно закрыт!", serialPort);
         else
@@ -104,6 +102,14 @@ public class ArduinoController implements Controller {
         return serialPort;
     }
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     @Override
     public String toString() {
         return "ArduinoController{" +
@@ -112,7 +118,7 @@ public class ArduinoController implements Controller {
                 '}';
     }
 
-    public byte[] fromJsonToByte(String json) {
+  /*  public byte[] fromJsonToByte(String json) {
         List<Byte> b = new ArrayList<>();
         StringBuilder newNumber = new StringBuilder();
         for(int i = 0; i<json.length(); i++){
@@ -131,5 +137,5 @@ public class ArduinoController implements Controller {
             br[j] = b.get(j);
         return br;
 
-    }
+    }*/
 }
