@@ -22,7 +22,7 @@ public class SynchronizationManager implements Handler {
     private boolean isSync = false;
     private int epochs = 0;
     private int maxEpochs = 130;
-    private byte[] input;
+    private int[] input;
     private int inputs;
     private int out;
 
@@ -36,8 +36,6 @@ public class SynchronizationManager implements Handler {
     public static final byte ENCRYPT = 5;
     public static final byte DECRYPT = ENCRYPT;
 
-    // private int[] ints;
-    private byte[] result;
     private int out2;
 
     // TODO: сделать автоопределение подключённых портов
@@ -51,97 +49,76 @@ public class SynchronizationManager implements Handler {
 
     @Override
     public void handleRequest(RequestData requestData) {
-        /*if(responseData.length == 2 && responseData[0] == 13 && responseData[1] == 10) {
-            return;
-        }*/
-        int[] ints;
         switch (current_command) {
             case INIT_W:
-                log.info("ResponseData received: {}", requestData);
-                if (requestData.length == 0 || requestData[0] != 100) {
+                log.info("Data received: {}", requestData);
+                if (!requestData.isOk()) {
                     log.error("Bad response from Controller while generating weights");
                     handleResponse(new ResponseData(INIT_W));
                     break;
                 }
-                handleResponse(new byte[]{INIT_X});
+                handleResponse(new ResponseData(INIT_X));
                 epochs = 0;
                 isSync = false;
                 break;
             case INIT_X:
-                log.info("Code send: {}, responseData received: {}", current_command, requestData);
-                if (requestData.length == 0 || requestData.length != inputs + 2 || requestData[0] != 100) {
+                log.info("Data received: {}", requestData);
+                if (!requestData.vecHasLen(inputs) || !requestData.isOk()) {
                     log.error("Bad response from Controller while generating Input");
-                    handleResponse(new byte[]{INIT_X});
+                    handleResponse(new ResponseData(INIT_X));
                     break;
                 }
-                input = Arrays.copyOfRange(requestData, 1, requestData.length - 1);
-                out = requestData[requestData.length - 1];
-                // TODO: этого говна тут не будет!!!!
-                ints = new int[input.length];
-                for (int i = 0; i < ints.length; i++)
-                    ints[i] = input[i];
-                out2 = trainer.synchronize(tpm, ints, out);
+                input = requestData.getVector();
+                out = requestData.getOut();
+                out2 = trainer.synchronize(tpm, input, out);
                 log.info("Out2: {}", out2);
-                result = new byte[input.length + 2];
-                result[0] = TRAIN;
-                System.arraycopy(input, 0, result, 1, input.length);
-                result[result.length - 1] = (byte) out2;
-                handleResponse(result);
+                ResponseData responseData = new ResponseData(TRAIN, input, out2);
+                handleResponse(responseData);
                 epochs++;
                 current_command = TRAIN;
                 break;
             case TRAIN:
-                log.info("Code send: {}, responseData received: {}", current_command, requestData);
-                if (requestData.length == 0 || requestData.length != inputs + 3 || requestData[0] != 100) {
+                log.info("Data received: {}", requestData);
+                ResponseData responseData1;
+                if (!requestData.vecHasLen(inputs) || requestData.getMemory() == 0 || !requestData.isOk()) {
                     log.error("Bad response from Controller while training");
-                    result = new byte[input.length + 2];
-                    result[0] = TRAIN;
-                    System.arraycopy(input, 0, result, 1, input.length);
-                    result[result.length - 1] = (byte) out2;
-                    handleResponse(result);
-                    // handleResponse(new byte[]{TRAIN});
+                    responseData1 = new ResponseData(TRAIN, input, out2);
+                    handleResponse(responseData1);
                     break;
                 }
-                input = Arrays.copyOfRange(requestData, 1, requestData.length - 2);
-                out = requestData[requestData.length - 2];
-                log.info("Memory: {}", requestData[requestData.length - 1] * 5);
-                // TODO: этого говна тут не будет!!!!
-                ints = new int[input.length];
-                for (int i = 0; i < ints.length; i++)
-                    ints[i] = input[i];
-                out2 = trainer.synchronize(tpm, ints, out);
+                input = requestData.getVector();
+                out = requestData.getOut();
+                log.info("Memory: {}", requestData.getOut());
+                out2 = trainer.synchronize(tpm, input, out);
                 log.info("Out2: {}", out2);
                 // TODO: возможно, сделать умную проверку, чтобы не считать до макс. числа итераций
                 if (epochs == maxEpochs) {
                     epochs = 0;
-                    handleResponse(new byte[]{SYNC_DONE});
+                    handleResponse(new ResponseData(SYNC_DONE));
                     current_command = SYNC_DONE;
                     System.out.println(String.format("*****  %s  ********", Arrays.toString(tpm.getSecretKey())));
                     break;
                 }
-                result = new byte[input.length + 2];
-                result[0] = TRAIN;
-                System.arraycopy(input, 0, result, 1, input.length);
-                result[result.length - 1] = (byte) out2;
-                handleResponse(result);
+                responseData1 = new ResponseData(TRAIN, input, out2);
+                handleResponse(responseData1);
                 log.info("Current train epoch: {}", epochs);
                 epochs++;
                 break;
             case SYNC_DONE:
-                log.info("Code send: {}, responseData received: {}", current_command, requestData);
-                if (requestData.length == 0 || requestData[0] != 100) {
+                log.info("Data received: {}", requestData);
+                if (!requestData.isOk()) {
                     log.error("Bad response from Controller while accepting successful generating key");
-                    handleResponse(new byte[]{SYNC_DONE});
+                    handleResponse(new ResponseData(SYNC_DONE));
                     break;
                 }
                 current_command = NOP;
                 isSync = true;
                 break;
             case ENCRYPT:
-                log.info("ResponseData received: {}", requestData);
+                log.info("Data received: {}", requestData);
                 break;
             default:
-                log.info("ResponseData received: {}", requestData);
+                log.info("Data received: {}", requestData);
         }
     }
 

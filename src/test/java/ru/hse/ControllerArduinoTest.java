@@ -41,7 +41,7 @@ public class ControllerArduinoTest {
     public void testReceiveMessage() {
        Assertions.assertTimeout(Duration.ofSeconds(10), () -> {
             while (LocalTime.now().isBefore(time.plusSeconds(10)))
-                if (arduinoController.getResponseData() != null)
+                if (arduinoController.getRequestData() != null)
                     return;
             throw new ControllerException("Данные от контроллера не получены!");
         });

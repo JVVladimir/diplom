@@ -8,6 +8,8 @@ public class RequestData extends Data {
     private int resultCode;
     private int memory;
 
+    private static final int OK_CODE = 100;
+
     public RequestData(int resultCode, int[] vector, int out, int memory) {
         this.resultCode = resultCode;
         this.vector = vector;
@@ -33,6 +35,14 @@ public class RequestData extends Data {
 
     public void setMemory(int memory) {
         this.memory = memory;
+    }
+
+    public boolean isOk() {
+        return resultCode == OK_CODE;
+    }
+
+    public boolean vecHasLen(int len) {
+        return vector.length == len;
     }
 
     @Override

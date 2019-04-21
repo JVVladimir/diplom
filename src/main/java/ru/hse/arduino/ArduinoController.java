@@ -2,15 +2,17 @@ package ru.hse.arduino;
 
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.hse.business.entity.ResponseData;
 import ru.hse.business.Handler;
 import ru.hse.business.SynchronizationManager;
+import ru.hse.business.entity.RequestData;
+import ru.hse.business.entity.ResponseData;
 
 import java.io.UnsupportedEncodingException;
 
@@ -20,9 +22,8 @@ public class ArduinoController implements Controller {
     private Handler handler;
     private SerialPort serialPort;
 
-    private ResponseData responseData;
+    private RequestData requestData;
     private Gson gson;
-    private String newStrData;
 
     public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate) {
         this.handler = manager;
@@ -60,6 +61,12 @@ public class ArduinoController implements Controller {
         }
     }
 
+    private static final int LIMIT = 8;
+    private StringBuilder str = new StringBuilder();
+    private double count = 0, countAll = 0, countMiss = 0;
+    private RequestData newEntity = null;
+    private static final int DELAY = 30;
+
     @Override
     public void serialEvent(SerialPortEvent event) {
         if (event.getEventValue() > 0) {
@@ -69,10 +76,44 @@ public class ArduinoController implements Controller {
             } catch (SerialPortException e) {
                 throw new ControllerException("Ошибка в чтении данных!");
             }
-            log.info("Received responseData of size: {}, responseData: {}", newData.length(), newData);
-            ResponseData newEntity = gson.fromJson(newData, ResponseData.class);
-            handler.handleRequest(newEntity);
-            responseData = newEntity;
+            log.info("Received requestData of size: {}, requestData: {}", newData.length(), newData);
+            countAll++;
+            try {
+                count++;
+                // System.out.println(newData);
+                str.append(newData);
+                try {
+                    newEntity = gson.fromJson(newData, RequestData.class);
+                    log.info("RequestData recieved: {}", newEntity);
+                    str = new StringBuilder();
+                    count = 0;
+                } catch (JsonSyntaxException ignored) {
+                }
+                if (count == LIMIT) {
+                    countMiss++;
+                    str = new StringBuilder();
+                    count = 0;
+                }
+            } catch (Exception ignored) {
+            }
+            if (newEntity != null) {
+                sleep();
+                handler.handleRequest(newEntity);
+                requestData = newEntity;
+                newEntity = null;
+            }
+        }
+    }
+
+    public void printStat() {
+        System.out.println(String.format("Промахов: %.2f%%, всего итераций: %.0f, 130 итераций за: %.2f сек.",
+                ((countMiss / countAll) * 100), countAll, 130.0 / (countAll / 30)));
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(ArduinoController.DELAY);
+        } catch (InterruptedException e) {
         }
     }
 
@@ -107,12 +148,12 @@ public class ArduinoController implements Controller {
         return serialPort;
     }
 
-    public ResponseData getResponseData() {
-        return responseData;
+    public RequestData getRequestData() {
+        return requestData;
     }
 
-    public void setResponseData(ResponseData responseData) {
-        this.responseData = responseData;
+    public void setRequestData(RequestData requestData) {
+        this.requestData = requestData;
     }
 
     @Override
