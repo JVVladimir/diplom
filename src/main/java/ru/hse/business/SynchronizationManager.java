@@ -22,9 +22,9 @@ public class SynchronizationManager implements Handler {
     private boolean isSync = false;
     private int epochs = 0;
     private int maxEpochs = 130;
-    private int[] input;
+    private short[] input;
     private int inputs;
-    private int out;
+    private short out;
 
     private static byte current_command;
 
@@ -36,7 +36,7 @@ public class SynchronizationManager implements Handler {
     public static final byte ENCRYPT = 5;
     public static final byte DECRYPT = ENCRYPT;
 
-    private int out2;
+    private short out2;
 
     // TODO: сделать автоопределение подключённых портов
     public SynchronizationManager(TreeParityMachine tpm) {
@@ -44,7 +44,6 @@ public class SynchronizationManager implements Handler {
         this.inputs = tpm.getTPMParams()[0];
         this.trainer = new TPMTrainer();
         this.controller = new ArduinoController(this, "/dev/ttyACM0", 115200);
-        controller.openPort();
     }
 
     @Override

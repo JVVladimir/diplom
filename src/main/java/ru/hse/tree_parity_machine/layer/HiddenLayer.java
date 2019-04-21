@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 public class HiddenLayer extends NetLayer {
 
-    private int[] res;
+    private short[] res;
 
     public HiddenLayer(int n, int k, int leftBound, int rightBound, LearningParadigm paradigm) {
         inputs = n;
@@ -22,10 +22,10 @@ public class HiddenLayer extends NetLayer {
         }
     }
 
-    public int[] getOutput(int[] input) {
+    public short[] getOutput(short[] input) {
         if (input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
-        int[] res = new int[outputs];
+        short[] res = new short[outputs];
         for (int i = 0; i < outputs; i++)
             res[i] = neurons[i].getOutput(input);
         this.res = res;

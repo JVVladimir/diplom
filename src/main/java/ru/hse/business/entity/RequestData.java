@@ -10,7 +10,7 @@ public class RequestData extends Data {
 
     private static final int OK_CODE = 100;
 
-    public RequestData(int resultCode, int[] vector, int out, int memory) {
+    public RequestData(int resultCode, short[] vector, short out, int memory) {
         this.resultCode = resultCode;
         this.vector = vector;
         this.out = out;

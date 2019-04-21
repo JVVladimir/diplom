@@ -1,6 +1,7 @@
 package ru.hse;
 
 import ru.hse.business.SynchronizationManager;
+import ru.hse.business.entity.ResponseData;
 import ru.hse.learning_algorithm.LearningParadigm;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 
@@ -14,7 +15,7 @@ public class Main {
         String text = "Hello, Vova!";
         TreeParityMachine tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         SynchronizationManager manager = new SynchronizationManager(tpm1);
-        manager.handleResponse(new byte[]{SynchronizationManager.INIT_W});
+        manager.handleResponse(new ResponseData(SynchronizationManager.INIT_W));
         new Thread(() -> {
             while (!manager.isSync()) {
                 try {
@@ -23,11 +24,8 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            byte[] ar = text.getBytes();
-            byte[] res = new byte[ar.length + 1];
-            System.arraycopy(ar, 0, res, 1, ar.length);
-            res[0] = SynchronizationManager.ENCRYPT;
-            manager.handleResponse(res);
+            //short[] ar = text.getBytes();
+            //manager.handleResponse(new ResponseData(SynchronizationManager.ENCRYPT).setVector(ar));
         }).start();
     }
 

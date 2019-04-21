@@ -18,14 +18,14 @@ public class OutputNeuron extends Neuron {
     }
 
     @Override
-    public void changeWeights(int[] input, int outputTPM) {
+    public void changeWeights(short[] input, short outputTPM) {
 
     }
 
-    public int getOutput(int[] input) {
+    public short getOutput(short[] input) {
         if (input == null || input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
-        int res = 1;
+        short res = 1;
         for (int i = 0; i < inputs; i++)
             res *= input[i];
         output = res;

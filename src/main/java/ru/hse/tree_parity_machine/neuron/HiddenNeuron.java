@@ -20,7 +20,7 @@ public class HiddenNeuron extends Neuron {
     }
 
     @Override
-    public void changeWeights(int[] input, int outputTPM) {
+    public void changeWeights(short[] input, short outputTPM) {
         for (int i = 0; i < input.length; i++) {
             int dW = input[i] * outputTPM;
             switch (paradigm) {
@@ -41,13 +41,13 @@ public class HiddenNeuron extends Neuron {
         }
     }
 
-    public int getOutput(int[] input) {
+    public short getOutput(short[] input) {
         if (input == null || input.length != inputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
-        int sum = 0;
+        short sum = 0;
         for (int i = 0; i < inputs; i++)
             sum += weights[i] * input[i];
-        output = sum > 0 ? 1 : -1;
+        output = (short) (sum > 0 ? 1 : -1);
         return output;
     }
 

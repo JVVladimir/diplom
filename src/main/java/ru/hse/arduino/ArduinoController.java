@@ -28,9 +28,9 @@ public class ArduinoController implements Controller {
     public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate) {
         this.handler = manager;
         this.gson = new Gson();
-        SerialPort comPort = new SerialPort(comPortName);
-        log.info("Создан SerialPort с именем {}!", comPort);
-        this.serialPort = comPort;
+        this.serialPort = new SerialPort(comPortName);
+        log.info("Создан SerialPort с именем {}!", serialPort);
+        openPort();
         try {
             serialPort.setParams(baundRate,
                     SerialPort.DATABITS_8,
@@ -46,8 +46,7 @@ public class ArduinoController implements Controller {
         return SerialPortList.getPortNames();
     }
 
-    @Override
-    public void openPort() {
+    private void openPort() {
         if (serialPort == null)
             throw new ControllerException("Попытка открыть несуществующий com порт");
         try {
@@ -67,8 +66,14 @@ public class ArduinoController implements Controller {
     private RequestData newEntity = null;
     private static final int DELAY = 30;
 
+    private boolean flag = false;
+
     @Override
     public void serialEvent(SerialPortEvent event) {
+        if (!flag) {
+            flag = true;
+            return;
+        }
         if (event.getEventValue() > 0) {
             String newData;
             try {
@@ -80,7 +85,7 @@ public class ArduinoController implements Controller {
             countAll++;
             try {
                 count++;
-                // System.out.println(newData);
+                System.out.println(newData);
                 str.append(newData);
                 try {
                     newEntity = gson.fromJson(newData, RequestData.class);
@@ -130,7 +135,6 @@ public class ArduinoController implements Controller {
         log.info("Сообщение отправлено: {}!", message);
     }
 
-    @Override
     public void closePort() {
         boolean flag;
         try {

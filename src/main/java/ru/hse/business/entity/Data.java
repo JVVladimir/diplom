@@ -2,22 +2,22 @@ package ru.hse.business.entity;
 
 public abstract class Data {
 
-    int[] vector;
-    int out;
+    short[] vector;
+    short out;
 
-    public int[] getVector() {
+    public short[] getVector() {
         return vector;
     }
 
-    public void setVector(int[] vector) {
+    public void setVector(short[] vector) {
         this.vector = vector;
     }
 
-    public int getOut() {
+    public short getOut() {
         return out;
     }
 
-    public void setOut(int out) {
+    public void setOut(short out) {
         this.out = out;
     }
 }

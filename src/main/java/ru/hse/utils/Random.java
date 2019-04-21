@@ -15,8 +15,11 @@ public class Random {
         return new java.util.Random().ints(1, leftBound, rightBound + 1).findFirst().getAsInt();
     }
 
-    public static int[] getInts(int n, int leftBound, int rightBound) {
-        return new java.util.Random().ints(n, leftBound, rightBound + 1).toArray();
+    public static short[] getInts(int n, int leftBound, int rightBound) {
+        short[] shorts = new short[n];
+        for(int i = 0; i < n; i++)
+            shorts[i] = (short) getInt(leftBound, rightBound);
+        return shorts;// new java.util.Random().ints(n, leftBound, rightBound + 1).forEach();
     }
 
     public static void setSeed(long seed) {

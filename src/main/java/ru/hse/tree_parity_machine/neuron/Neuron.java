@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public abstract class Neuron {
 
-    protected int output;
+    protected short output;
     protected int inputs;
     protected int[] weights;
     protected int leftBound;
@@ -16,9 +16,9 @@ public abstract class Neuron {
 
     public abstract void init();
 
-    public abstract void changeWeights(int[] input, int outputTPM);
+    public abstract void changeWeights(short[] input, short outputTPM);
 
-    public abstract int getOutput(int[] input);
+    public abstract short getOutput(short[] input);
 
     public int[] getWeights() {
         return weights;

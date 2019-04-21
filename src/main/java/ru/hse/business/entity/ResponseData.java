@@ -7,7 +7,7 @@ public class ResponseData extends Data {
 
     private byte command;
 
-    public ResponseData(byte command, int[] vector, int out) {
+    public ResponseData(byte command, short[] vector, short out) {
         this.command = command;
         this.vector = vector;
         this.out = out;

@@ -26,13 +26,13 @@ public class TreeParityMachine implements Training {
         outputLayer = new OutputLayer(k);
     }
 
-    public int getOutput(int[] input) {
+    public short getOutput(short[] input) {
         return outputLayer.getOutput(hiddenLayer.getOutput(input));
     }
 
     @Override
-    public void train(int[] input, int output) {
-        int[] hiddenOutput = hiddenLayer.getOutput(input);
+    public void train(short[] input, short output) {
+        short[] hiddenOutput = hiddenLayer.getOutput(input);
         Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
         for (int i = 0; i < hiddenOutput.length; i++)
             hiddenNeurons[i].changeWeights(input, output);
