@@ -1,9 +1,12 @@
 package ru.hse.business;
 
+import ru.hse.business.entity.RequestData;
+import ru.hse.business.entity.ResponseData;
+
 public interface Handler {
 
-    void handleRequest(String data);
+    void handleRequest(RequestData requestData);
 
-    void handleResponse(String command);
+    void handleResponse(ResponseData responseData);
 
 }

@@ -76,7 +76,7 @@ public class Test {
                     TestEntity entity;
                     try {
                         entity = gson.fromJson(str.toString(), TestEntity.class);
-                        log.info("Data recieved: {}", entity);
+                        log.info("ResponseData recieved: {}", entity);
                         str = new StringBuilder();
                         count = 0;
                         if (!prevEntity.equals(entity))
@@ -111,7 +111,7 @@ public class Test {
 
             try {
                 serialPort.writeString(gson.toJson(entity2), "ASCII");
-                log.info("Data sent: {}", entity2);
+                log.info("ResponseData sent: {}", entity2);
             } catch (SerialPortException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

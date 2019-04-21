@@ -1,7 +1,5 @@
 package ru.hse;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,7 +41,7 @@ public class ControllerArduinoTest {
     public void testReceiveMessage() {
        Assertions.assertTimeout(Duration.ofSeconds(10), () -> {
             while (LocalTime.now().isBefore(time.plusSeconds(10)))
-                if (arduinoController.getData() != null)
+                if (arduinoController.getResponseData() != null)
                     return;
             throw new ControllerException("Данные от контроллера не получены!");
         });

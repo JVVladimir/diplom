@@ -1,12 +1,14 @@
 package ru.hse.arduino;
 
 
+import com.google.gson.Gson;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.hse.business.entity.ResponseData;
 import ru.hse.business.Handler;
 import ru.hse.business.SynchronizationManager;
 
@@ -18,11 +20,13 @@ public class ArduinoController implements Controller {
     private Handler handler;
     private SerialPort serialPort;
 
-    private String data;
+    private ResponseData responseData;
+    private Gson gson;
     private String newStrData;
 
     public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate) {
         this.handler = manager;
+        this.gson = new Gson();
         SerialPort comPort = new SerialPort(comPortName);
         log.info("Создан SerialPort с именем {}!", comPort);
         this.serialPort = comPort;
@@ -65,18 +69,19 @@ public class ArduinoController implements Controller {
             } catch (SerialPortException e) {
                 throw new ControllerException("Ошибка в чтении данных!");
             }
-            log.info("Received data of size: {}, data: {}", newData.length(), newData);
-            handler.handleRequest(newData);
-            data = newData;
+            log.info("Received responseData of size: {}, responseData: {}", newData.length(), newData);
+            ResponseData newEntity = gson.fromJson(newData, ResponseData.class);
+            handler.handleRequest(newEntity);
+            responseData = newEntity;
         }
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(ResponseData message) {
         if (!serialPort.isOpened())
             throw new ControllerException("Попытка записи в закрытый com порт");
         try {
-            serialPort.writeString(message, "ASCII");
+            serialPort.writeString(gson.toJson(message), "ASCII");
         } catch (SerialPortException e) {
             throw new ControllerException("Ошибка при отправке данных!");
         } catch (UnsupportedEncodingException ignored) {
@@ -102,12 +107,12 @@ public class ArduinoController implements Controller {
         return serialPort;
     }
 
-    public String getData() {
-        return data;
+    public ResponseData getResponseData() {
+        return responseData;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setResponseData(ResponseData responseData) {
+        this.responseData = responseData;
     }
 
     @Override

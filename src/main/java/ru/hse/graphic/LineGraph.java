@@ -39,10 +39,10 @@ public class LineGraph {}/*extends Application {
         Scene scene = new Scene(lineChart, 800, 600);
         scene.getStylesheets().add(PATH_TO_CSS);
         for (int i = 0; i < outputA.size(); i++) {
-            series.getData().add(new XYChart.Data(i, outputA.get(i)));
-            series2.getData().add(new XYChart.Data(i, outputB.get(i)));
+            series.getResponseData().add(new XYChart.ResponseData(i, outputA.get(i)));
+            series2.getResponseData().add(new XYChart.ResponseData(i, outputB.get(i)));
         }
-        lineChart.getData().addAll(series, series2);
+        lineChart.getResponseData().addAll(series, series2);
         stage1.setScene(scene);
         stage1.show();
     }

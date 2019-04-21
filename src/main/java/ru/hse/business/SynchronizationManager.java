@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hse.arduino.ArduinoController;
 import ru.hse.arduino.Controller;
+import ru.hse.business.entity.RequestData;
+import ru.hse.business.entity.ResponseData;
 import ru.hse.learning_algorithm.TPMTrainer;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 
@@ -38,6 +40,7 @@ public class SynchronizationManager implements Handler {
     private byte[] result;
     private int out2;
 
+    // TODO: сделать автоопределение подключённых портов
     public SynchronizationManager(TreeParityMachine tpm) {
         this.tpm = tpm;
         this.inputs = tpm.getTPMParams()[0];
@@ -47,17 +50,17 @@ public class SynchronizationManager implements Handler {
     }
 
     @Override
-    public void handleRequest(String data) {
-        /*if(data.length == 2 && data[0] == 13 && data[1] == 10) {
+    public void handleRequest(RequestData requestData) {
+        /*if(responseData.length == 2 && responseData[0] == 13 && responseData[1] == 10) {
             return;
         }*/
         int[] ints;
         switch (current_command) {
             case INIT_W:
-                log.info("Code send: {}, data received: {}", current_command, data);
-                if (data.length == 0 || data[0] != 100) {
+                log.info("ResponseData received: {}", requestData);
+                if (requestData.length == 0 || requestData[0] != 100) {
                     log.error("Bad response from Controller while generating weights");
-                    handleResponse(new byte[]{INIT_W});
+                    handleResponse(new ResponseData(INIT_W));
                     break;
                 }
                 handleResponse(new byte[]{INIT_X});
@@ -65,14 +68,14 @@ public class SynchronizationManager implements Handler {
                 isSync = false;
                 break;
             case INIT_X:
-                log.info("Code send: {}, data received: {}", current_command, data);
-                if (data.length == 0 || data.length != inputs + 2 || data[0] != 100) {
+                log.info("Code send: {}, responseData received: {}", current_command, requestData);
+                if (requestData.length == 0 || requestData.length != inputs + 2 || requestData[0] != 100) {
                     log.error("Bad response from Controller while generating Input");
                     handleResponse(new byte[]{INIT_X});
                     break;
                 }
-                input = Arrays.copyOfRange(data, 1, data.length - 1);
-                out = data[data.length - 1];
+                input = Arrays.copyOfRange(requestData, 1, requestData.length - 1);
+                out = requestData[requestData.length - 1];
                 // TODO: этого говна тут не будет!!!!
                 ints = new int[input.length];
                 for (int i = 0; i < ints.length; i++)
@@ -88,8 +91,8 @@ public class SynchronizationManager implements Handler {
                 current_command = TRAIN;
                 break;
             case TRAIN:
-                log.info("Code send: {}, data received: {}", current_command, data);
-                if (data.length == 0 || data.length != inputs + 3 || data[0] != 100) {
+                log.info("Code send: {}, responseData received: {}", current_command, requestData);
+                if (requestData.length == 0 || requestData.length != inputs + 3 || requestData[0] != 100) {
                     log.error("Bad response from Controller while training");
                     result = new byte[input.length + 2];
                     result[0] = TRAIN;
@@ -99,9 +102,9 @@ public class SynchronizationManager implements Handler {
                     // handleResponse(new byte[]{TRAIN});
                     break;
                 }
-                input = Arrays.copyOfRange(data, 1, data.length - 2);
-                out = data[data.length - 2];
-                log.info("Memory: {}", data[data.length-1]*5);
+                input = Arrays.copyOfRange(requestData, 1, requestData.length - 2);
+                out = requestData[requestData.length - 2];
+                log.info("Memory: {}", requestData[requestData.length - 1] * 5);
                 // TODO: этого говна тут не будет!!!!
                 ints = new int[input.length];
                 for (int i = 0; i < ints.length; i++)
@@ -125,8 +128,8 @@ public class SynchronizationManager implements Handler {
                 epochs++;
                 break;
             case SYNC_DONE:
-                log.info("Code send: {}, data received: {}", current_command, data);
-                if (data.length == 0 || data[0] != 100) {
+                log.info("Code send: {}, responseData received: {}", current_command, requestData);
+                if (requestData.length == 0 || requestData[0] != 100) {
                     log.error("Bad response from Controller while accepting successful generating key");
                     handleResponse(new byte[]{SYNC_DONE});
                     break;
@@ -135,18 +138,18 @@ public class SynchronizationManager implements Handler {
                 isSync = true;
                 break;
             case ENCRYPT:
-                log.info("Data received: {}", data);
+                log.info("ResponseData received: {}", requestData);
                 break;
-                default:
-                    log.info("Data received: {}", data);
+            default:
+                log.info("ResponseData received: {}", requestData);
         }
     }
 
     @Override
-    public void handleResponse(String data) {
-        controller.sendMessage(data);
-        current_command = data[0];
-        log.info("Command was sended: {}, data: {}", current_command, data);
+    public void handleResponse(ResponseData responseData) {
+        controller.sendMessage(responseData);
+        current_command = responseData.getCommand();
+        log.info("Command was sended: {}, responseData: {}", current_command, responseData);
     }
 
     public boolean isSync() {
