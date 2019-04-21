@@ -42,7 +42,7 @@ public class SynchronizationManager implements Handler {
         this.tpm = tpm;
         this.inputs = tpm.getTPMParams()[0];
         this.trainer = new TPMTrainer();
-        this.controller = new ArduinoController(this, "/dev/ttyACM0", 250000, 8, 1, 0);
+        this.controller = new ArduinoController(this, "/dev/ttyACM0", 115200);
         controller.openPort();
     }
 
@@ -143,7 +143,7 @@ public class SynchronizationManager implements Handler {
     }
 
     @Override
-    public void handleResponse(byte[] data) {
+    public void handleResponse(String data) {
         controller.sendMessage(data);
         current_command = data[0];
         log.info("Command was sended: {}, data: {}", current_command, data);

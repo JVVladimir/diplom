@@ -2,8 +2,8 @@ package ru.hse.business;
 
 public interface Handler {
 
-    void handleRequest(byte[] data);
+    void handleRequest(String data);
 
-    void handleResponse(byte[] command);
+    void handleResponse(String command);
 
 }
