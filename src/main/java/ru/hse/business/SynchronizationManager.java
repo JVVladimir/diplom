@@ -26,7 +26,7 @@ public class SynchronizationManager implements Handler {
     private int inputs;
     private short out;
 
-    private static byte current_command;
+    public static byte current_command;
 
     public static final byte INIT_W = 1;
     public static final byte INIT_X = 2;
@@ -131,5 +131,15 @@ public class SynchronizationManager implements Handler {
     public boolean isSync() {
         return isSync;
     }
+
+
+
+    // ВСЁ РАБОТАЕТ ТЕПЕРЬ
+    // ЕСЛИ ТЫ МЕНЯ УТРОМ РАЗБУДИШЬ - ПОБЬЮ
+    // Я ПОЗДНО ЛЯГУ
+    // И НЕ НАДО ГОВОРИТЬ, ЧТО Я ТУПАЯ, КОСЯК БЫЛ ТВОЙ!!!
+
+
+
 
 }

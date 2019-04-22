@@ -15,6 +15,7 @@ import ru.hse.business.entity.RequestData;
 import ru.hse.business.entity.ResponseData;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 
 public class ArduinoController implements Controller {
 
@@ -85,14 +86,15 @@ public class ArduinoController implements Controller {
             countAll++;
             try {
                 count++;
-                System.out.println(newData);
                 str.append(newData);
                 try {
-                    newEntity = gson.fromJson(newData, RequestData.class);
+                    newEntity = gson.fromJson(str.toString(), RequestData.class);
                     log.info("RequestData recieved: {}", newEntity);
                     str = new StringBuilder();
                     count = 0;
                 } catch (JsonSyntaxException ignored) {
+                    return;
+
                 }
                 if (count == LIMIT) {
                     countMiss++;
@@ -106,7 +108,8 @@ public class ArduinoController implements Controller {
                 handler.handleRequest(newEntity);
                 requestData = newEntity;
                 newEntity = null;
-            }
+            } else handler.handleResponse(new ResponseData(SynchronizationManager.current_command));
+
         }
     }
 
