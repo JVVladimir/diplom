@@ -43,7 +43,7 @@ public class SynchronizationManager implements Handler {
         this.tpm = tpm;
         this.inputs = tpm.getTPMParams()[0];
         this.trainer = new TPMTrainer();
-        this.controller = new ArduinoController(this, "/dev/ttyACM0", 115200);
+        this.controller = new ArduinoController(this, "COM4", 115200);
     }
 
     @Override
@@ -87,9 +87,9 @@ public class SynchronizationManager implements Handler {
                 }
                 input = requestData.getVector();
                 out = requestData.getOut();
-                log.info("Memory: {}", requestData.getOut());
+                log.info("Memory: {}", requestData.getMemory());
                 out2 = trainer.synchronize(tpm, input, out);
-                log.info("Out1: {}, Out2: {}", out, out2);
+                log.info("Input: {}, Out1: {}, Out2: {}", input, out, out2);
                 // TODO: возможно, сделать умную проверку, чтобы не считать до макс. числа итераций
                 if (epochs == maxEpochs) {
                     epochs = 0;
