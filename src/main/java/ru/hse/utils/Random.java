@@ -11,8 +11,8 @@ public class Random {
     private Random() {
     }
 
-    public static int getInt(int leftBound, int rightBound) {
-        return new java.util.Random().ints(1, leftBound, rightBound + 1).findFirst().getAsInt();
+    public static short getInt(int leftBound, int rightBound) {
+        return (short) new java.util.Random().ints(1, leftBound, rightBound + 1).findFirst().getAsInt();
     }
 
     public static short[] getInts(int n, int leftBound, int rightBound) {

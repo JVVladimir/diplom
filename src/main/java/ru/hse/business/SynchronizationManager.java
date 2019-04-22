@@ -21,7 +21,7 @@ public class SynchronizationManager implements Handler {
 
     private boolean isSync = false;
     private int epochs = 0;
-    private int maxEpochs = 130;
+    private int maxEpochs = 100;
     private short[] input;
     private int inputs;
     private short out;
@@ -87,7 +87,7 @@ public class SynchronizationManager implements Handler {
                 }
                 input = requestData.getVector();
                 out = requestData.getOut();
-                log.info("Memory: {}", requestData.getOut());
+                log.info("Memory: {}", requestData.getMemory());
                 out2 = trainer.synchronize(tpm, input, out);
                 log.info("Out1: {}, Out2: {}", out, out2);
                 // TODO: возможно, сделать умную проверку, чтобы не считать до макс. числа итераций
@@ -95,7 +95,6 @@ public class SynchronizationManager implements Handler {
                     epochs = 0;
                     handleResponse(new ResponseData(SYNC_DONE));
                     current_command = SYNC_DONE;
-                    System.out.println(Arrays.toString(tpm.getSecretKey())+ "   " + tpm.getSecretKey().length);
                     break;
                 }
                 responseData1 = new ResponseData(TRAIN, input, out2);

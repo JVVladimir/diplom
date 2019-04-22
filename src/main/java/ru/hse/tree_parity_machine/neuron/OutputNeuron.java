@@ -9,7 +9,7 @@ public class OutputNeuron extends Neuron {
 
     public OutputNeuron(int inputs) {
         this.inputs = inputs;
-        weights = new int[inputs];
+        weights = new short[inputs];
     }
 
     public void init() {

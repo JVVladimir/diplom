@@ -9,7 +9,7 @@ public abstract class Neuron {
 
     protected short output;
     protected int inputs;
-    protected int[] weights;
+    protected short[] weights;
     protected int leftBound;
     protected int rightBound;
     protected LearningParadigm paradigm;
@@ -20,7 +20,7 @@ public abstract class Neuron {
 
     public abstract short getOutput(short[] input);
 
-    public int[] getWeights() {
+    public short[] getWeights() {
         return weights;
     }
 

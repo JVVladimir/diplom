@@ -9,7 +9,7 @@ public class HiddenNeuron extends Neuron {
     public HiddenNeuron(int inputs, int leftBound, int rightBound, LearningParadigm paradigm) {
         this.inputs = inputs;
         this.paradigm = paradigm;
-        weights = new int[inputs];
+        weights = new short[inputs];
         this.leftBound = leftBound;
         this.rightBound = rightBound;
     }
@@ -35,9 +35,9 @@ public class HiddenNeuron extends Neuron {
                     break;
             }
             if (weights[i] > rightBound)
-                weights[i] = rightBound;
+                weights[i] = (short) rightBound;
             else if (weights[i] < leftBound)
-                weights[i] = leftBound;
+                weights[i] = (short) leftBound;
         }
     }
 
