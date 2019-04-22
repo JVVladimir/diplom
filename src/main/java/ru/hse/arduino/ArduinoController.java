@@ -15,7 +15,6 @@ import ru.hse.business.entity.RequestData;
 import ru.hse.business.entity.ResponseData;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 
 public class ArduinoController implements Controller {
 
@@ -93,13 +92,12 @@ public class ArduinoController implements Controller {
                     str = new StringBuilder();
                     count = 0;
                 } catch (JsonSyntaxException ignored) {
+                    if (count == LIMIT) {
+                        countMiss++;
+                        str = new StringBuilder();
+                        count = 0;
+                    }
                     return;
-
-                }
-                if (count == LIMIT) {
-                    countMiss++;
-                    str = new StringBuilder();
-                    count = 0;
                 }
             } catch (Exception ignored) {
             }
@@ -109,13 +107,7 @@ public class ArduinoController implements Controller {
                 requestData = newEntity;
                 newEntity = null;
             } else handler.handleResponse(new ResponseData(SynchronizationManager.current_command));
-
         }
-    }
-
-    public void printStat() {
-        System.out.println(String.format("Промахов: %.2f%%, всего итераций: %.0f, 130 итераций за: %.2f сек.",
-                ((countMiss / countAll) * 100), countAll, 130.0 / (countAll / 30)));
     }
 
     private void sleep() {
@@ -170,25 +162,4 @@ public class ArduinoController implements Controller {
                 ", serialPort=" + serialPort +
                 '}';
     }
-
-  /*  public byte[] fromJsonToByte(String json) {
-        List<Byte> b = new ArrayList<>();
-        StringBuilder newNumber = new StringBuilder();
-        for(int i = 0; i<json.length(); i++){
-            char c = json.charAt(i);
-            if (c== ',' || c==']'|| c=='[') {
-                if (!newNumber.toString().equals("")) {
-                    b.add((byte) Integer.parseInt(newNumber.toString()));
-                    newNumber = new StringBuilder();
-                }
-            }
-            else newNumber.append(c);
-
-        }
-        byte[] br = new byte[b.size()];
-        for (int j = 0; j<br.length; j++)
-            br[j] = b.get(j);
-        return br;
-
-    }*/
 }

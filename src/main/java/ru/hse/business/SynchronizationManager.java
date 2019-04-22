@@ -89,13 +89,13 @@ public class SynchronizationManager implements Handler {
                 out = requestData.getOut();
                 log.info("Memory: {}", requestData.getOut());
                 out2 = trainer.synchronize(tpm, input, out);
-                log.info("Out2: {}", out2);
+                log.info("Out1: {}, Out2: {}", out, out2);
                 // TODO: возможно, сделать умную проверку, чтобы не считать до макс. числа итераций
                 if (epochs == maxEpochs) {
                     epochs = 0;
                     handleResponse(new ResponseData(SYNC_DONE));
                     current_command = SYNC_DONE;
-                    System.out.println(String.format("*****  %s  ********", Arrays.toString(tpm.getSecretKey())));
+                    System.out.println(Arrays.toString(tpm.getSecretKey())+ "   " + tpm.getSecretKey().length);
                     break;
                 }
                 responseData1 = new ResponseData(TRAIN, input, out2);
@@ -111,6 +111,8 @@ public class SynchronizationManager implements Handler {
                     break;
                 }
                 current_command = NOP;
+                System.out.println(Arrays.toString(requestData.getVector()) + "   " + requestData.getVector().length);
+                System.out.println(Arrays.toString(tpm.getSecretKey())+ "   " + tpm.getSecretKey().length);
                 isSync = true;
                 break;
             case ENCRYPT:
@@ -128,18 +130,14 @@ public class SynchronizationManager implements Handler {
         log.info("Command was sended: {}, responseData: {}", current_command, responseData);
     }
 
+    public void printStat() {
+        /*((ArduinoController)controller).
+        System.out.println(String.format("Промахов: %.2f%%, всего итераций: %.0f, 130 итераций за: %.2f сек.",
+                ((countMiss / countAll) * 100), countAll, 130.0 / (countAll / 30)));*/
+    }
+
     public boolean isSync() {
         return isSync;
     }
-
-
-
-    // ВСЁ РАБОТАЕТ ТЕПЕРЬ
-    // ЕСЛИ ТЫ МЕНЯ УТРОМ РАЗБУДИШЬ - ПОБЬЮ
-    // Я ПОЗДНО ЛЯГУ
-    // И НЕ НАДО ГОВОРИТЬ, ЧТО Я ТУПАЯ, КОСЯК БЫЛ ТВОЙ!!!
-
-
-
 
 }
