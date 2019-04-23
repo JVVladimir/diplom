@@ -6,6 +6,14 @@ import java.util.Objects;
 public class ResponseData extends Data {
 
     private byte command;
+    private char[] message;
+    private short length;
+
+    public ResponseData(byte command, char[] message, short length) {
+        this.command = command;
+        this.message = message;
+        this.length = length;
+    }
 
     public ResponseData(byte command, short[] vector, short out) {
         this.command = command;
@@ -23,6 +31,22 @@ public class ResponseData extends Data {
 
     public void setCommand(byte command) {
         this.command = command;
+    }
+
+    public char[] getMessage() {
+        return message;
+    }
+
+    public void setMessage(char[] message) {
+        this.message = message;
+    }
+
+    public short getLength() {
+        return length;
+    }
+
+    public void setLength(short length) {
+        this.length = length;
     }
 
     @Override
@@ -46,6 +70,8 @@ public class ResponseData extends Data {
     public String toString() {
         return "ResponseData{" +
                 "command=" + command +
+                ", message=" + Arrays.toString(message) +
+                ", length=" + length +
                 ", vector=" + Arrays.toString(vector) +
                 ", out=" + out +
                 '}';

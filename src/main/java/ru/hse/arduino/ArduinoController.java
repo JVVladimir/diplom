@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 public class ArduinoController implements Controller {
 
     private static final Logger log = LoggerFactory.getLogger(ArduinoController.class);
-    private Handler handler;
+    private SynchronizationManager handler;
     private SerialPort serialPort;
 
     private RequestData requestData;
@@ -106,7 +106,7 @@ public class ArduinoController implements Controller {
                 handler.handleRequest(newEntity);
                 requestData = newEntity;
                 newEntity = null;
-            } else handler.handleResponse(new ResponseData(SynchronizationManager.current_command));
+            } else handler.handleResponse(new ResponseData(handler.getCurrentCommand()));
         }
     }
 

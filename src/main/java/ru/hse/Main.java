@@ -12,11 +12,11 @@ public class Main {
     }
 
     Main() {
-        String text = "Hello, Vova!";
+        String message = "Hello, Vova!";
         TreeParityMachine tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         SynchronizationManager manager = new SynchronizationManager(tpm1);
         manager.handleResponse(new ResponseData(SynchronizationManager.INIT_W));
-       /* new Thread(() -> {
+        new Thread(() -> {
             while (!manager.isSync()) {
                 try {
                     Thread.currentThread().sleep(500);
@@ -24,11 +24,9 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            //short[] ar = text.getBytes();
-            //manager.handleResponse(new ResponseData(SynchronizationManager.ENCRYPT).setVector(ar));
-        }).start();*/
+            manager.handleResponse(new ResponseData(SynchronizationManager.ENCRYPT,
+                    message.toCharArray(), (short)message.getBytes().length));
+            manager.setCurrentCommand(SynchronizationManager.ENCRYPT);
+        }).start();
     }
-
-
-
 }

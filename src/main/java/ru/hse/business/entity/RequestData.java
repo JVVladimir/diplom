@@ -7,14 +7,31 @@ public class RequestData extends Data {
 
     private int resultCode;
     private int memory;
+    private short[] weight;
+    private char[] message;
+    private short length;
 
     private static final int OK_CODE = 100;
+
+    public RequestData(int resultCode, char[] plainMessage, short length) {
+        this.resultCode = resultCode;
+        this.message = plainMessage;
+        this.length = length;
+    }
 
     public RequestData(int resultCode, short[] vector, short out, int memory) {
         this.resultCode = resultCode;
         this.vector = vector;
         this.out = out;
         this.memory = memory;
+    }
+
+    public short[] getWeight() {
+        return weight;
+    }
+
+    public void setWeight(short[] weight) {
+        this.weight = weight;
     }
 
     public RequestData(int resultCode) {
@@ -35,6 +52,22 @@ public class RequestData extends Data {
 
     public void setMemory(int memory) {
         this.memory = memory;
+    }
+
+    public char[] getMessage() {
+        return message;
+    }
+
+    public void setMessage(char[] message) {
+        this.message = message;
+    }
+
+    public short getLength() {
+        return length;
+    }
+
+    public void setLength(short length) {
+        this.length = length;
     }
 
     public boolean isOk() {
@@ -64,6 +97,9 @@ public class RequestData extends Data {
         return "RequestData{" +
                 "resultCode=" + resultCode +
                 ", memory=" + memory +
+                ", weight=" + Arrays.toString(weight) +
+                ", message=" + Arrays.toString(message) +
+                ", length=" + length +
                 ", vector=" + Arrays.toString(vector) +
                 ", out=" + out +
                 '}';
