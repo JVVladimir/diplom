@@ -16,7 +16,7 @@ public class Main {
         TreeParityMachine tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         SynchronizationManager manager = new SynchronizationManager(tpm1);
         manager.handleResponse(new ResponseData(SynchronizationManager.INIT_W));
-        new Thread(() -> {
+       /* new Thread(() -> {
             while (!manager.isSync()) {
                 try {
                     Thread.currentThread().sleep(500);
@@ -26,7 +26,7 @@ public class Main {
             }
             //short[] ar = text.getBytes();
             //manager.handleResponse(new ResponseData(SynchronizationManager.ENCRYPT).setVector(ar));
-        }).start();
+        }).start();*/
     }
 
 

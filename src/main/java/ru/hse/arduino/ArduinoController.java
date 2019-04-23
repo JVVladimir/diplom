@@ -60,7 +60,7 @@ public class ArduinoController implements Controller {
         }
     }
 
-    private static final int LIMIT = 8;
+    private static final int LIMIT = 12;
     private StringBuilder str = new StringBuilder();
     private double count = 0, countAll = 0, countMiss = 0;
     private RequestData newEntity = null;
