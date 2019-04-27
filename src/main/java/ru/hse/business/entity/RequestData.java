@@ -8,15 +8,13 @@ public class RequestData extends Data {
     private int resultCode;
     private int memory;
     private short[] weight;
-    private char[] message;
-    private short length;
+    private short[] message;
 
     private static final int OK_CODE = 100;
 
-    public RequestData(int resultCode, char[] plainMessage, short length) {
+    public RequestData(int resultCode, short[] plainMessage) {
         this.resultCode = resultCode;
         this.message = plainMessage;
-        this.length = length;
     }
 
     public RequestData(int resultCode, short[] vector, short out, int memory) {
@@ -54,20 +52,12 @@ public class RequestData extends Data {
         this.memory = memory;
     }
 
-    public char[] getMessage() {
+    public short[] getMessage() {
         return message;
     }
 
-    public void setMessage(char[] message) {
+    public void setMessage(short[] message) {
         this.message = message;
-    }
-
-    public short getLength() {
-        return length;
-    }
-
-    public void setLength(short length) {
-        this.length = length;
     }
 
     public boolean isOk() {
@@ -99,7 +89,6 @@ public class RequestData extends Data {
                 ", memory=" + memory +
                 ", weight=" + Arrays.toString(weight) +
                 ", message=" + Arrays.toString(message) +
-                ", length=" + length +
                 ", vector=" + Arrays.toString(vector) +
                 ", out=" + out +
                 '}';

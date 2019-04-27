@@ -123,7 +123,12 @@ public class SynchronizationManager implements Handler {
                 break;
             case ENCRYPT:
                 log.info("Data received: {}", requestData);
-                handleResponse(new ResponseData(DECRYPT, requestData.getMessage(), (short)requestData.getMessage().length));
+                short[] mes = requestData.getMessage();
+                char[] m = new char[mes.length];
+                for (int i = 0; i < mes.length; i++) {
+                    m[i] = (char) mes[i];
+                }
+                handleResponse(new ResponseData(DECRYPT, m, (short)requestData.getMessage().length));
                 currentCommand = DECRYPT;
                 break;
             case DECRYPT:
