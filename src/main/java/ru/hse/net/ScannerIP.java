@@ -3,6 +3,7 @@ package ru.hse.net;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +54,7 @@ public class ScannerIP {
                 InetAddress address = InetAddress.getByAddress(ip);
                 if (address.isReachable(TIMEOUT))
                     return address.toString().substring(1);
-            } catch (Exception ignored) {
+            } catch (IOException ignored) {
             }
             return null;
         }
