@@ -7,4 +7,8 @@ public interface Controller extends SerialPortEventListener {
 
     void sendMessage(ResponseData message);
 
+    void openPort();
+
+    void closePort();
+
 }

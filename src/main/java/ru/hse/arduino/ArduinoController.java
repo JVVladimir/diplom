@@ -9,12 +9,9 @@ import jssc.SerialPortException;
 import jssc.SerialPortList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.hse.business.Handler;
 import ru.hse.business.SynchronizationManager;
 import ru.hse.business.entity.RequestData;
 import ru.hse.business.entity.ResponseData;
-
-import java.io.UnsupportedEncodingException;
 
 public class ArduinoController implements Controller {
 
@@ -42,13 +39,15 @@ public class ArduinoController implements Controller {
         }
     }
 
-    public static String[] getAllComPorts() {
+    public static String[] getConnectedComPorts() {
         return SerialPortList.getPortNames();
     }
 
-    private void openPort() {
+    @Override
+    public void openPort() {
         if (serialPort == null)
             throw new ControllerException("Попытка открыть несуществующий com порт");
+        if (serialPort.isOpened()) return;
         try {
             serialPort.openPort();
             if (!serialPort.isOpened())
@@ -62,8 +61,8 @@ public class ArduinoController implements Controller {
 
     private static final int LIMIT = 12;
     private StringBuilder str = new StringBuilder();
-    private double count = 0, countAll = 0, countMiss = 0;
-    private RequestData newEntity = null;
+    private double count;
+    private RequestData newEntity;
     private static final int DELAY = 30;
 
     private boolean flag = false;
@@ -82,7 +81,6 @@ public class ArduinoController implements Controller {
                 throw new ControllerException("Ошибка в чтении данных!");
             }
             log.info("Received requestData of size: {}, requestData: {}", newData.length(), newData);
-            countAll++;
             try {
                 count++;
                 str.append(newData);
@@ -93,7 +91,6 @@ public class ArduinoController implements Controller {
                     count = 0;
                 } catch (JsonSyntaxException ignored) {
                     if (count == LIMIT) {
-                        countMiss++;
                         str = new StringBuilder();
                         count = 0;
                     }
@@ -106,7 +103,7 @@ public class ArduinoController implements Controller {
                 handler.handleRequest(newEntity);
                 requestData = newEntity;
                 newEntity = null;
-            } else handler.handleResponse(new ResponseData(handler.getCurrentCommand()));
+            } else handler.handleResponse(new ResponseData(handler.getCurCommand()));
         }
     }
 
@@ -122,14 +119,14 @@ public class ArduinoController implements Controller {
         if (!serialPort.isOpened())
             throw new ControllerException("Попытка записи в закрытый com порт");
         try {
-            serialPort.writeString(gson.toJson(message), "ASCII");
+            serialPort.writeString(gson.toJson(message));
         } catch (SerialPortException e) {
             throw new ControllerException("Ошибка при отправке данных!");
-        } catch (UnsupportedEncodingException ignored) {
         }
         log.info("Сообщение отправлено: {}!", message);
     }
 
+    @Override
     public void closePort() {
         boolean flag;
         try {
@@ -141,18 +138,6 @@ public class ArduinoController implements Controller {
             log.info("SerialPort: {} успешно закрыт!", serialPort);
         else
             log.info("SerialPort: {} не был открыт", serialPort);
-    }
-
-    public SerialPort getSerialPort() {
-        return serialPort;
-    }
-
-    public RequestData getRequestData() {
-        return requestData;
-    }
-
-    public void setRequestData(RequestData requestData) {
-        this.requestData = requestData;
     }
 
     @Override

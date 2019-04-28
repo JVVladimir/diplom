@@ -15,7 +15,7 @@ public class Main {
         String message = "Hello, Vova!";
         TreeParityMachine tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         SynchronizationManager manager = new SynchronizationManager(tpm1);
-        manager.handleResponse(new ResponseData(SynchronizationManager.INIT_W));
+        manager.generateKey();
         new Thread(() -> {
             while (!manager.isSync()) {
                 try {
@@ -24,9 +24,9 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            manager.handleResponse(new ResponseData(SynchronizationManager.ENCRYPT,
+            /*manager.handleResponse(new ResponseData(SynchronizationManager.ENCRYPT,
                     message.toCharArray(), (short)message.getBytes().length));
-            manager.setCurrentCommand(SynchronizationManager.ENCRYPT);
+            manager.setCurCommand(SynchronizationManager.ENCRYPT);*/
         }).start();
     }
 }

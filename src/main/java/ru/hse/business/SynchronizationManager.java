@@ -9,8 +9,6 @@ import ru.hse.business.entity.ResponseData;
 import ru.hse.learning_algorithm.TPMTrainer;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 
-import java.util.Arrays;
-
 public class SynchronizationManager implements Handler {
 
     private static final Logger log = LoggerFactory.getLogger(SynchronizationManager.class);
@@ -19,25 +17,24 @@ public class SynchronizationManager implements Handler {
     private TPMTrainer trainer;
     private Controller controller;
 
-    private boolean isSync = false;
-    private int epochs = 0;
+    private boolean isSync;
+    private int epochs;
     private int maxEpochs = 150;
     private short[] input;
     private int inputs;
     private short out;
 
-    private byte currentCommand;
+    private byte curCommand;
 
-    public static final byte INIT_W = 1;
-    public static final byte INIT_X = 2;
-    public static final byte TRAIN = 3;
-    public static final byte SYNC_DONE = 4;
-    public static final byte NOP = 0;
-    public static final byte ENCRYPT = 5;
-    public static final byte DECRYPT = 6;
+    private static final byte NOP = 0;
+    private static final byte INIT_W = 1;
+    private static final byte INIT_X = 2;
+    private static final byte TRAIN = 3;
+    private static final byte SYNC_DONE = 4;
 
     private short out2;
-    private short flagSync = 0;
+    private short countSync;
+    private static final short FLAG_SYNC_LIMIT = 40;
 
     // TODO: сделать автоопределение подключённых портов (Надо будет на GUI вызвать функцию определения всех портов и из списка их выбирать)
     public SynchronizationManager(TreeParityMachine tpm) {
@@ -49,117 +46,86 @@ public class SynchronizationManager implements Handler {
 
     @Override
     public void handleRequest(RequestData requestData) {
-        switch (currentCommand) {
+        switch (curCommand) {
             case INIT_W:
-                log.info("Data received: {}", requestData);
-                if (!requestData.isOk()) {
-                    log.error("Bad response from Controller while generating weights");
-                    handleResponse(new ResponseData(INIT_W));
-                    break;
-                }
+                if (!validateRequestData(requestData)) break;
                 handleResponse(new ResponseData(INIT_X));
                 epochs = 0;
                 isSync = false;
                 break;
             case INIT_X:
-                log.info("Data received: {}", requestData);
-                if (!requestData.vecHasLen(inputs) || !requestData.isOk()) {
-                    log.error("Bad response from Controller while generating Input");
-                    handleResponse(new ResponseData(INIT_X));
-                    break;
-                }
+                if (!validateRequestData(requestData)) break;
                 input = requestData.getVector();
                 out = requestData.getOut();
-                log.info("Out: {}, Weight: {}", out, requestData.getWeight());
                 out2 = trainer.synchronize(tpm, input, out);
-                log.info("Out2: {}, Weight2: {}", out2, requestData.getWeight());
-                ResponseData responseData = new ResponseData(TRAIN, input, out2);
-                handleResponse(responseData);
+                handleResponse(new ResponseData(TRAIN, input, out2));
                 epochs++;
-                currentCommand = TRAIN;
+                curCommand = TRAIN;
                 break;
             case TRAIN:
-                log.info("Data received: {}", requestData);
-                ResponseData responseData1;
-                if (!requestData.vecHasLen(inputs) || requestData.getMemory() == 0 || !requestData.isOk()) {
-                    log.error("Bad response from Controller while training");
-                    responseData1 = new ResponseData(TRAIN, input, out2);
-                    handleResponse(responseData1);
-                    break;
-                }
+                if (!validateRequestData(requestData)) break;
                 input = requestData.getVector();
                 out = requestData.getOut();
-                log.info("Out: {}, Weight: {}", out, requestData.getWeight());
-                log.info("Out2: {}, Weight2: {}", tpm.getOutput(input), tpm.getSecretKey());
-                if(out == tpm.getOutput(input))
-                    flagSync++;
-                else
-                    flagSync = 0;
-                if (flagSync == 40 || epochs == maxEpochs) {
+                countSync = out == tpm.getOutput(input) ? ++countSync : 0;
+                if (countSync == FLAG_SYNC_LIMIT || epochs == maxEpochs) {
                     epochs = 0;
-                    flagSync = 0;
+                    countSync = 0;
                     handleResponse(new ResponseData(SYNC_DONE));
-                    currentCommand = SYNC_DONE;
+                    curCommand = SYNC_DONE;
                     break;
                 }
-                log.info("Memory: {}", requestData.getMemory());
                 out2 = trainer.synchronize(tpm, input, out);
-                responseData1 = new ResponseData(TRAIN, input, out2);
-                handleResponse(responseData1);
+                handleResponse(new ResponseData(TRAIN, input, out2));
                 log.info("Current train epoch: {}", epochs);
                 epochs++;
                 break;
             case SYNC_DONE:
-                log.info("Data received: {}", requestData);
-                if (!requestData.isOk()) {
-                    log.error("Bad response from Controller while accepting successful generating key");
-                    handleResponse(new ResponseData(SYNC_DONE));
-                    break;
-                }
-                currentCommand = NOP;
-                System.out.println(Arrays.toString(requestData.getWeight()) + "   " + requestData.getWeight().length);
-                System.out.println(Arrays.toString(tpm.getSecretKey())+ "   " + tpm.getSecretKey().length);
+                if (!validateRequestData(requestData)) break;
+                curCommand = NOP;
+                log.info("Arduino weight: {}", requestData.getWeight());
+                log.info("Computer weight: {}", tpm.getSecretKey());
                 isSync = true;
                 break;
-            case ENCRYPT:
-                log.info("Data received: {}", requestData);
-                short[] mes = requestData.getMessage();
-                char[] m = new char[mes.length];
-                for (int i = 0; i < mes.length; i++) {
-                    m[i] = (char) mes[i];
-                }
-                handleResponse(new ResponseData(DECRYPT, m, (short)requestData.getMessage().length));
-                currentCommand = DECRYPT;
-                break;
-            case DECRYPT:
-                log.info("Data received: {}", requestData);
-                currentCommand = NOP;
-                break;
         }
+    }
+
+    private boolean validateRequestData(RequestData requestData) {
+        log.info("Data received: {}", requestData);
+        if (!requestData.isOk()) {
+            log.error("Bad response from Controller no Ok code");
+            resendCommand();
+            return false;
+        }
+        if (!requestData.vecHasLen(inputs)) {
+            log.error("Bad response from Controller no len");
+            resendCommand();
+        }
+        return true;
+    }
+
+    private void resendCommand() {
+        if (curCommand == TRAIN)
+            handleResponse(new ResponseData(curCommand, input, out2));
+        else
+            handleResponse(new ResponseData(curCommand));
     }
 
     @Override
     public void handleResponse(ResponseData responseData) {
         controller.sendMessage(responseData);
-        currentCommand = responseData.getCommand();
-        log.info("Command was sended: {}, responseData: {}", currentCommand, responseData);
+        curCommand = responseData.getCommand();
+        log.info("Command was sent: {}, responseData: {}", curCommand, responseData);
     }
 
-    public void printStat() {
-        /*((ArduinoController)controller).
-        System.out.println(String.format("Промахов: %.2f%%, всего итераций: %.0f, 130 итераций за: %.2f сек.",
-                ((countMiss / countAll) * 100), countAll, 130.0 / (countAll / 30)));*/
+    public void generateKey() {
+        handleResponse(new ResponseData(INIT_W));
     }
 
     public boolean isSync() {
         return isSync;
     }
 
-    public byte getCurrentCommand() {
-        return currentCommand;
-    }
-
-    public void setCurrentCommand(byte currentCommand) {
-        this.currentCommand = currentCommand;
+    public byte getCurCommand() {
+        return curCommand;
     }
 }
