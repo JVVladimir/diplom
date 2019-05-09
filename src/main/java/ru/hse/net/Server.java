@@ -19,33 +19,29 @@ public class Server {
 
     public Server(ConnectionListener manager, int port) {
         this.connectionListener = manager;
-        try {
-            serverSocket = new ServerSocket(port);
-            new Thread(() -> {
-                try {
-                    Socket socket = serverSocket.accept();
-                    connection = new Connection(connectionListener, socket);
-                } catch (IOException e) {
-                    log.error("Ошибка создания нового соединения!");
-                    throw new RuntimeException(e);
-                }
-            }).start();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close();
-        }
+        new Thread(() -> {
+            try {
+                serverSocket = new ServerSocket(port);
+                Socket socket = serverSocket.accept();
+                connection = new Connection(connectionListener, socket);
+            } catch (IOException e) {
+                log.error("Ошибка создания нового соединения!");
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     public void destroy() {
-        if(serverSocket != null && !serverSocket.isClosed())
+        if (serverSocket != null && !serverSocket.isClosed())
             close();
     }
 
     private void close() {
         try {
             serverSocket.close();
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Connection getConnection() {

@@ -38,8 +38,7 @@ public class Connection {
     private void init(ConnectionListener listener, Socket socket) {
         this.listener = listener;
         try {
-            this.reader = new ObjectInputStream(socket.getInputStream());
-            this.writer = new ObjectOutputStream(socket.getOutputStream());
+            writer = new ObjectOutputStream(socket.getOutputStream());
             listen();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -50,8 +49,10 @@ public class Connection {
         thread = new Thread(() -> {
             try {
                 listener.onConnectionReady(this);
-                while (!Thread.interrupted())
+                while (!Thread.interrupted()) {
+                    reader = new ObjectInputStream(socket.getInputStream());
                     listener.onReceivedMessage(this, reader.readObject());
+                }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             } finally {

@@ -1,24 +1,26 @@
 package ru.hse.net;
 
-public class Test implements ConnectionListener{
+public class Test implements ConnectionListener {
 
     public static void main(String[] args) {
         new Test();
     }
 
-
+// 192.168.1.64
     Test() {
-        Connection connection = new Connection(this, );
+        System.out.println("Hello");
+        Connection connection = new Connection(this, "192.168.1.64",15600);
+        connection.sendMessage("Vova krasava!");
     }
 
     @Override
     public void onReceivedMessage(Connection connection, Object requestData) {
-
+        System.out.println(requestData);
     }
 
     @Override
     public void onConnectionReady(Connection connection) {
-
+        System.out.println("I am ready");
     }
 
     @Override
