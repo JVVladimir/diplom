@@ -1,14 +1,36 @@
 package ru.hse.arduino;
-
+/*
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+*/
+import jssc.SerialPortEvent;
+import jssc.SerialPortException;
 
 import java.util.Arrays;
 
 public class ArduinoController implements Controller {
+    @Override
+    public void openPort() throws SerialPortException {
 
+    }
+
+    @Override
+    public void sendMessage(byte[] message) {
+
+    }
+
+    @Override
+    public void closePort() throws SerialPortException {
+
+    }
+
+    @Override
+    public void serialEvent(SerialPortEvent serialPortEvent) {
+
+    }
+/*
     private static final Logger log = LoggerFactory.getLogger(ArduinoController.class);
     private SerialPort serialPort;
     private byte[] data;
@@ -85,5 +107,5 @@ public class ArduinoController implements Controller {
                 "serialPort=" + serialPort +
                 ", data=" + Arrays.toString(data) +
                 '}';
-    }
+    }*/
 }

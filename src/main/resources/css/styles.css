@@ -1,0 +1,43 @@
+/**
+ * Eli F.
+ * Style sheet for the login page of my java instant messanger
+ * Copied most of this styling sheet from the oracle tutorial on JavaFX: http://docs.oracle.com/javafx/2/get_started/hello_world.htm
+ * 5/8/16
+ */
+
+
+.root {
+    -fx-background-image: url("../bg.jpg");
+    -fx-background-size: 1170, 140;
+}
+
+.label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow( gaussian , rgba(255, 255, 255, 0.78), 0,0,0,1 );
+}
+
+#welcome-text {
+    -fx-font-size: 32px;
+    -fx-font-family: "Arial Black";
+    -fx-fill: #fbffbf;
+    -fx-effect: innershadow( three-pass-box , rgba(255, 255, 255, 0.7), 6, 0.0 , 0 , 2 );
+}
+#actiontarget {
+    -fx-fill: rgb(255, 255, 255);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow( gaussian , rgba(255, 255, 255, 0.85), 0,0,0,0 );
+}
+
+.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(255, 255, 255, 0.6), 5, 0.0 , 0 , 1 );
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
