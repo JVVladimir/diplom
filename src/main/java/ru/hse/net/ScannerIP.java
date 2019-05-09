@@ -16,11 +16,13 @@ public class ScannerIP {
     private static final int THREAD_COUNT = 150;
     private static final int NUM_ADDRESSES = 254;
 
-    public List<String> getNetworkIPs() throws IOException, InterruptedException {
+    public List<String> getNetworkIPs() {
         byte[] ip;
         try (final DatagramSocket socket = new DatagramSocket()) {
             socket.connect(InetAddress.getByName("1.1.1.1"), 7777);
             ip = socket.getLocalAddress().getAddress();
+        }catch (IOException e) {
+            throw new RuntimeException(e);
         }
         ExecutorService service = Executors.newFixedThreadPool(THREAD_COUNT);
         List<Callable<String>> todo = new ArrayList<>(NUM_ADDRESSES);
@@ -28,7 +30,12 @@ public class ScannerIP {
             ip[3] = (byte) i;
             todo.add(new Scanner(Arrays.copyOf(ip, ip.length)));
         }
-        List<Future<String>> futures = service.invokeAll(todo);
+        List<Future<String>> futures;
+        try {
+            futures = service.invokeAll(todo);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         service.shutdown();
         return futures.stream().map(e -> {
             try {

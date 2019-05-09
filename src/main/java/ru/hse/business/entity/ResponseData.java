@@ -1,9 +1,10 @@
 package ru.hse.business.entity;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class ResponseData extends Data {
+public class ResponseData extends Data implements Serializable {
 
     private final byte command;
 

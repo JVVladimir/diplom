@@ -1,9 +1,10 @@
 package ru.hse.business.entity;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class RequestData extends Data {
+public class RequestData extends Data implements Serializable {
 
     private final int resultCode;
     private final int memory;
@@ -16,6 +17,13 @@ public class RequestData extends Data {
         this.resultCode = resultCode;
         this.memory = memory;
         this.weight = weight;
+    }
+
+    public RequestData(int resultCode) {
+        super(null, (short) 0);
+        this.resultCode = resultCode;
+        this.memory = 0;
+        this.weight = null;
     }
 
     public short[] getWeight() {
