@@ -46,8 +46,6 @@ void setup() {
   random2->setBounds(-L, L);
   tpm1 = new TreeParityMachine(n, k, random2);
   trainer = new TPMTrainer();
-  //Serial.println();
-  //flushDelay();
 }
 
 void loop() {
@@ -100,15 +98,9 @@ void loop() {
         out2 = tpm1->getOutput(input);
         docAnswer["out"] = out2;
         docAnswer["memory"] = freeMemory();
-        /*key = tpm1->getSecretKey();
-        data2 = docAnswer.createNestedArray("weight");
-        for (int i = 0; i < n * k; i++) {
-          data2.add(key[i]);
-        }*/
         serializeJson(docAnswer, Serial);
         flushDelay();
         delete []input;
-        //delete []key;
         break;
       case SYNC_DONE:
         docAnswer["resultCode"] = 100;

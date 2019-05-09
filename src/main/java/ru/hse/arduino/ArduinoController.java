@@ -19,7 +19,6 @@ public class ArduinoController implements Controller {
     private SynchronizationManager handler;
     private SerialPort serialPort;
 
-    private RequestData requestData;
     private Gson gson;
 
     public ArduinoController(SynchronizationManager manager, String comPortName, int baundRate) {
@@ -65,14 +64,8 @@ public class ArduinoController implements Controller {
     private RequestData newEntity;
     private static final int DELAY = 30;
 
-    private boolean flag = false;
-
     @Override
     public void serialEvent(SerialPortEvent event) {
-        if (!flag) {
-            flag = true;
-            return;
-        }
         if (event.getEventValue() > 0) {
             String newData;
             try {
@@ -101,8 +94,6 @@ public class ArduinoController implements Controller {
             if (newEntity != null) {
                 sleep();
                 handler.handleRequest(newEntity);
-                requestData = newEntity;
-                newEntity = null;
             } else handler.handleResponse(new ResponseData(handler.getCurCommand()));
         }
     }

@@ -9,6 +9,9 @@ import ru.hse.business.entity.ResponseData;
 import ru.hse.learning_algorithm.TPMTrainer;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
+
 public class SynchronizationManager implements Handler {
 
     private static final Logger log = LoggerFactory.getLogger(SynchronizationManager.class);
@@ -17,7 +20,7 @@ public class SynchronizationManager implements Handler {
     private TPMTrainer trainer;
     private Controller controller;
 
-    private boolean isSync;
+    private volatile boolean isSync;
     private int epochs;
     private int maxEpochs = 150;
     private short[] input;
@@ -33,15 +36,17 @@ public class SynchronizationManager implements Handler {
     private static final byte SYNC_DONE = 4;
 
     private short out2;
+    private short[] key;
     private short countSync;
     private static final short FLAG_SYNC_LIMIT = 40;
+    private long timeStart;
 
     // TODO: сделать автоопределение подключённых портов (Надо будет на GUI вызвать функцию определения всех портов и из списка их выбирать)
     public SynchronizationManager(TreeParityMachine tpm) {
         this.tpm = tpm;
         this.inputs = tpm.getTPMParams()[0];
         this.trainer = new TPMTrainer();
-        this.controller = new ArduinoController(this, "/dev/ttyACM0", 115200);
+        this.controller = new ArduinoController(this, ArduinoController.getConnectedComPorts()[0], 115200);
     }
 
     @Override
@@ -68,7 +73,6 @@ public class SynchronizationManager implements Handler {
                 out = requestData.getOut();
                 countSync = out == tpm.getOutput(input) ? ++countSync : 0;
                 if (countSync == FLAG_SYNC_LIMIT || epochs == maxEpochs) {
-                    epochs = 0;
                     countSync = 0;
                     handleResponse(new ResponseData(SYNC_DONE));
                     curCommand = SYNC_DONE;
@@ -82,20 +86,26 @@ public class SynchronizationManager implements Handler {
             case SYNC_DONE:
                 if (!validateRequestData(requestData)) break;
                 curCommand = NOP;
-                log.info("Arduino weight: {}", requestData.getWeight());
+                key = requestData.getWeight();
+                log.info("Epochs trained: {}", epochs);
+                log.info("Time wasted: {}ms", System.currentTimeMillis() - timeStart);
+                log.info("Arduino weight: {}", key);
                 log.info("Computer weight: {}", tpm.getSecretKey());
+                epochs = 0;
                 isSync = true;
                 break;
         }
     }
 
     private boolean validateRequestData(RequestData requestData) {
-        log.info("Data received: {}", requestData);
+        log.info("Current command: {},  data received: {}", curCommand, requestData);
         if (!requestData.isOk()) {
             log.error("Bad response from Controller no Ok code");
             resendCommand();
             return false;
         }
+        if(curCommand == INIT_W || curCommand == SYNC_DONE)
+            return true;
         if (!requestData.vecHasLen(inputs)) {
             log.error("Bad response from Controller no len");
             resendCommand();
@@ -118,14 +128,23 @@ public class SynchronizationManager implements Handler {
     }
 
     public void generateKey() {
+        timeStart = System.currentTimeMillis();
         handleResponse(new ResponseData(INIT_W));
     }
 
-    public boolean isSync() {
+    public short[] getKey() {
+        return key;
+    }
+
+    public synchronized boolean isSync() {
         return isSync;
     }
 
     public byte getCurCommand() {
         return curCommand;
+    }
+
+    public void destroy() {
+        controller.closePort();
     }
 }
