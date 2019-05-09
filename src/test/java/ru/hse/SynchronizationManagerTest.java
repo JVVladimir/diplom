@@ -9,6 +9,8 @@ public class SynchronizationManagerTest {
 
     private TreeParityMachine tpm1;
     private SynchronizationManager manager;
+    private static double time;
+    private static double curTime;
 
 
     @BeforeEach
@@ -19,8 +21,9 @@ public class SynchronizationManagerTest {
     }
 
     @Test
-    @RepeatedTest(200)
+    @RepeatedTest(199)
     void testSynchronizationManager() {
+        curTime = System.currentTimeMillis();
         manager.generateKey();
         while (!manager.isSync()) {
             try {
@@ -29,11 +32,18 @@ public class SynchronizationManagerTest {
                 e.printStackTrace();
             }
         }
+        curTime = System.currentTimeMillis() - curTime;
+        time += curTime;
         Assertions.assertArrayEquals(tpm1.getSecretKey(), manager.getKey(), "Ключи не равны!");
     }
 
     @AfterEach
     public void destroy() {
         manager.destroy();
+    }
+
+    @AfterAll
+    public static void printResult() {
+        System.out.println("Average time: " + time / 200);
     }
 }
