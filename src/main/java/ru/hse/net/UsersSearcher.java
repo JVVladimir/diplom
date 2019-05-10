@@ -3,33 +3,47 @@ package ru.hse.net;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+// TODO: сделать интерфейс только для onReceiveMessage, (sol_I_d)
 public class UsersSearcher implements ConnectionListener {
 
-    private static final byte SAME_PROGRAM = 120;
-    private static final byte SAME_PROGRAM_SUBMIT = 121;
+    private static final int SAME_PROGRAM = 1000;
+    private static final int SAME_PROGRAM_SUBMIT = 1001;
 
     private ScannerIP scannerIP;
     private int port;
+    private volatile Map<String, String> map;
+    private ConcurrentLinkedQueue<Connection> listConnections;
 
     public UsersSearcher(int port) {
         this.port = port;
         this.scannerIP = new ScannerIP();
+        this.map = new HashMap<>();
+        this.listConnections = new ConcurrentLinkedQueue<>();
     }
 
     public Map<String, String> search() {
-        Map<String, String> map = new HashMap<>();
         List<String> ips = scannerIP.getNetworkIPs();
         for (String ip : ips) {
-            Connection connection = new Connection(this, ip, port);
-            connection.sendMessage(new Message(SAME_PROGRAM));
+            try {
+                Connection connection = new Connection(this, ip, port);
+                listConnections.add(connection);
+                connection.sendMessage(new Message(SAME_PROGRAM));
+            } catch (RuntimeException ex) {
+            }
         }
+        while(listConnections.size() != 0)
+            Thread.yield();
         return map;
     }
 
     @Override
     public void onReceivedMessage(Connection connection, Object requestData) {
-
+        if (requestData instanceof Message && ((Message) requestData).getCommand() == SAME_PROGRAM_SUBMIT) {
+            map.put(connection.getRemoteIP(), ((Message) requestData).getName());
+            listConnections.remove(connection);
+        }
     }
 
     @Override

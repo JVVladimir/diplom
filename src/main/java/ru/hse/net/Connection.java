@@ -1,16 +1,12 @@
 package ru.hse.net;
 
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.hse.business.entity.RequestData;
-import ru.hse.business.entity.ResponseData;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
+// TODO: возможно для большей безопасно стоит использовать SslSocket
 public class Connection {
 
     private static final Logger log = LoggerFactory.getLogger(Connection.class);
@@ -20,8 +16,11 @@ public class Connection {
     private Socket socket;
     private ObjectInputStream reader;
     private ObjectOutputStream writer;
+    private String remoteIP;
+    private OutputStream out;
 
     public Connection(ConnectionListener listener, String ip, int port) {
+        this.remoteIP = ip;
         try {
             this.socket = new Socket(ip, port);
         } catch (IOException e) {
@@ -38,7 +37,8 @@ public class Connection {
     private void init(ConnectionListener listener, Socket socket) {
         this.listener = listener;
         try {
-            writer = new ObjectOutputStream(socket.getOutputStream());
+            out = socket.getOutputStream();
+            writer = new ObjectOutputStream(new BufferedOutputStream(out));
             listen();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -49,14 +49,26 @@ public class Connection {
         thread = new Thread(() -> {
             try {
                 listener.onConnectionReady(this);
+                reader = new ObjectInputStream(socket.getInputStream());
                 while (!Thread.interrupted()) {
-                    reader = new ObjectInputStream(socket.getInputStream());
-                    listener.onReceivedMessage(this, reader.readObject());
+                    Object ob = reader.readObject();
+                    if (ob instanceof Message) {
+                        Message message = (Message) ob;
+                        int command = message.getCommand();
+                        if (command == -10 || command == -5) {
+                            close();
+                            listener.onConnectionClose(this);
+                        } else {
+                            listener.onReceivedMessage(this, ob);
+                        }
+                    }
+                    else {
+                        listener.onReceivedMessage(this, ob);
+                    }
                 }
             } catch (IOException | ClassNotFoundException e) {
+                close();
                 throw new RuntimeException(e);
-            } finally {
-                listener.onConnectionClose(this);
             }
         });
         thread.start();
@@ -72,9 +84,19 @@ public class Connection {
         }
     }
 
+    public String getRemoteIP() {
+        return remoteIP;
+    }
+
     public void close() {
         thread.interrupt();
-        listener.onConnectionClose(this);
+        try {
+            writer.close();
+            reader.close();
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

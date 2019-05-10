@@ -6,19 +6,19 @@ import java.util.Objects;
 
 public class ResponseData extends Data implements Serializable {
 
-    private final byte command;
+    private final int command;
 
-    public ResponseData(byte command, short[] vector, short out) {
+    public ResponseData(int command, short[] vector, short out) {
         super(vector, out);
         this.command = command;
     }
 
-    public ResponseData(byte command) {
+    public ResponseData(int command) {
         super(null, (short) 0);
         this.command = command;
     }
 
-    public byte getCommand() {
+    public int getCommand() {
         return command;
     }
 
