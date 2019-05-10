@@ -49,14 +49,26 @@ public class Connection {
         thread = new Thread(() -> {
             try {
                 listener.onConnectionReady(this);
+                reader = new ObjectInputStream(socket.getInputStream());
                 while (!Thread.interrupted()) {
-                    reader = new ObjectInputStream(socket.getInputStream());
-                    listener.onReceivedMessage(this, reader.readObject());
+                    Object ob = reader.readObject();
+                    if(ob instanceof Message ){
+                        Message message = (Message) ob;
+                        int command = message.getCommand();
+                        if (command == -5) {
+                            sendMessage(new Message(-10));
+                            close();
+                        } else if (command == 1000) {
+                            sendMessage(new Message(1001, System.getProperty("user.name"), null));
+                            sendMessage(new Message(-10));
+                            close();
+                        }
+                    }else {
+                        listener.onReceivedMessage(this, ob);
+                    }
                 }
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
-            } finally {
-                listener.onConnectionClose(this);
             }
         });
         thread.start();
@@ -74,6 +86,11 @@ public class Connection {
 
     public void close() {
         thread.interrupt();
+        try {
+            writer.close();
+            reader.close();
+            socket.close();
+        }catch (IOException ex) {}
         listener.onConnectionClose(this);
     }
 

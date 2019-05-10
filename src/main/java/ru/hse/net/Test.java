@@ -6,16 +6,19 @@ public class Test implements ConnectionListener {
         new Test();
     }
 
-// 192.168.1.64
     Test() {
-        System.out.println("Hello");
-        Connection connection = new Connection(this, "192.168.1.64",15600);
-        connection.sendMessage("Vova krasava!");
+        Server server = new Server(this, 15600);
     }
 
     @Override
     public void onReceivedMessage(Connection connection, Object requestData) {
-        System.out.println(requestData);
+        if (requestData instanceof Message) {
+            Message message = (Message) requestData;
+            System.out.println(requestData);
+            if (message.getCommand() == 120) {
+                connection.sendMessage(new Message(121, System.getProperty("user.name"), null));
+            }
+        }
     }
 
     @Override
