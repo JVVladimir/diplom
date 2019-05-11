@@ -24,6 +24,12 @@ public class Server {
                 serverSocket = new ServerSocket(port);
                 Socket socket = serverSocket.accept();
                 connection = new Connection(connectionListener, socket);
+                while (true) {
+                    if (connection.isClosed()) {
+                        socket = serverSocket.accept();
+                        connection = new Connection(connectionListener, socket);
+                    } else Thread.yield();
+                }
             } catch (IOException e) {
                 log.error("Ошибка создания нового соединения!");
                 throw new RuntimeException(e);

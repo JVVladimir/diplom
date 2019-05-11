@@ -22,6 +22,7 @@ public class UsersSearcher implements ConnectionListener {
         this.listConnections = new ConcurrentLinkedQueue<>();
     }
 
+    // TODO: метод очень медленный (7 сек), нужно ускорить
     public Map<String, String> search() {
         List<String> ips = scannerIP.getNetworkIPs();
         for (String ip : ips) {
