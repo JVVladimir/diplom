@@ -20,31 +20,23 @@ public class LeadSynchronizationManager extends SynchronizationManager {
 
     @Override
     public void handleRequest(RequestData requestData) {
+        if (!validateRequestData(requestData)) {
+            resendCurrentCommand();
+            return;
+        }
         switch (curCommand) {
             case INIT_W_LEAD:
-                if (!validateRequestData(requestData)) {
-                    resendCurrentCommand();
-                    break;
-                }
                 this.requestData = requestData;
                 taskDone = true;
                 epochs = 0;
                 isSync = false;
                 break;
             case INIT_X:
-                if (!validateRequestData(requestData)) {
-                    resendCurrentCommand();
-                    break;
-                }
                 this.requestData = requestData;
                 input = requestData.getInput();
                 taskDone = true;
                 break;
             case TRAIN:
-                if (!validateRequestData(requestData)) {
-                    resendCurrentCommand();
-                    break;
-                }
                 this.requestData = requestData;
                 input = requestData.getInput();
                 taskDone = true;
@@ -52,10 +44,6 @@ public class LeadSynchronizationManager extends SynchronizationManager {
                 epochs++;
                 break;
             case SYNC_DONE:
-                if (!validateRequestData(requestData)) {
-                    resendCurrentCommand();
-                    break;
-                }
                 this.requestData = requestData;
                 taskDone = true;
                 curCommand = NOP;

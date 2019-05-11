@@ -17,21 +17,17 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     @Override
     public void handleRequest(RequestData requestData) {
+        if (!validateRequestData(requestData)) {
+            resendCurrentCommand();
+            return;
+        }
         switch (curCommand) {
             case INIT_W_SLAVE:
-                if (!validateRequestData(requestData)) {
-                    resendCurrentCommand();
-                    break;
-                }
                 this.requestData = requestData;
                 taskDone = true;
                 epochs = 0;
                 break;
             case TRAIN:
-                if (!validateRequestData(requestData)) {
-                    resendCurrentCommand();
-                    break;
-                }
                 this.requestData = requestData;
                 taskDone = true;
                 log.info("Current train epoch: {}", epochs);
@@ -39,10 +35,6 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
                 epochs++;
                 break;
             case SYNC_DONE:
-                if (!validateRequestData(requestData)) {
-                    resendCurrentCommand();
-                    break;
-                }
                 this.requestData = requestData;
                 taskDone = true;
                 curCommand = NOP;
