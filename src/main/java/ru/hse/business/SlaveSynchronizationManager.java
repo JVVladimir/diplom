@@ -21,21 +21,19 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
             resendCurrentCommand();
             return;
         }
+        this.requestData = requestData;
         switch (curCommand) {
             case INIT_W_SLAVE:
-                this.requestData = requestData;
                 taskDone = true;
                 epochs = 0;
                 break;
             case TRAIN:
-                this.requestData = requestData;
                 taskDone = true;
                 log.info("Current train epoch: {}", epochs);
                 log.info("Current out: {}", requestData.getOut());
                 epochs++;
                 break;
             case SYNC_DONE:
-                this.requestData = requestData;
                 taskDone = true;
                 curCommand = NOP;
                 log.info("Epochs trained: {}", epochs);

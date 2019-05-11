@@ -24,27 +24,24 @@ public class LeadSynchronizationManager extends SynchronizationManager {
             resendCurrentCommand();
             return;
         }
+        this.requestData = requestData;
         switch (curCommand) {
             case INIT_W_LEAD:
-                this.requestData = requestData;
                 taskDone = true;
                 epochs = 0;
                 isSync = false;
                 break;
             case INIT_X:
-                this.requestData = requestData;
                 input = requestData.getInput();
                 taskDone = true;
                 break;
             case TRAIN:
-                this.requestData = requestData;
                 input = requestData.getInput();
                 taskDone = true;
                 log.info("Current train epoch: {}", epochs);
                 epochs++;
                 break;
             case SYNC_DONE:
-                this.requestData = requestData;
                 taskDone = true;
                 curCommand = NOP;
                 log.info("Epochs trained: {}", epochs);
