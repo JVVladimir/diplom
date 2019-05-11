@@ -18,6 +18,9 @@ public abstract class SynchronizationManager implements Handler {
     protected int inputs;
     protected short out;
 
+    protected short out2;
+    protected short[] input;
+
     protected int curCommand;
 
     protected static final int NOP = 0;
@@ -42,7 +45,7 @@ public abstract class SynchronizationManager implements Handler {
 
     public abstract RequestData initInput();
 
-    public abstract RequestData train(RequestData requestData);
+    public abstract RequestData train();
 
     public abstract RequestData syncDone();
 
@@ -90,5 +93,17 @@ public abstract class SynchronizationManager implements Handler {
 
     public int getMaxEpochs() {
         return maxEpochs;
+    }
+
+    public void setOut(short out2) {
+        this.out2 = out2;
+    }
+
+    public void setInput(short[] input) {
+        this.input = input;
+    }
+
+    public short getOut2() {
+        return out2;
     }
 }

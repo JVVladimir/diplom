@@ -7,18 +7,32 @@ public class Message implements Serializable {
 
     private final int command;
     private final String name;
-    private final byte[] data;
+    private final byte[] message;
+    private final short[] vector;
+    private final short out;
 
-    public Message(int command, String name, byte[] data) {
+    public Message(int command, String name, byte[] message) {
         this.command = command;
         this.name = name;
-        this.data = data;
+        this.message = message;
+        this.vector = null;
+        this.out = -1;
+    }
+
+    public Message(int command, short[] vector, short out) {
+        this.command = command;
+        this.vector = vector;
+        this.out = out;
+        this.name = null;
+        this.message = null;
     }
 
     public Message(int command) {
         this.command = command;
         this.name = null;
-        this.data = null;
+        this.message = null;
+        this.vector = null;
+        this.out = -1;
     }
 
     public int getCommand() {
@@ -29,8 +43,16 @@ public class Message implements Serializable {
         return name;
     }
 
-    public byte[] getData() {
-        return data;
+    public byte[] getMessage() {
+        return message;
+    }
+
+    public short[] getVector() {
+        return vector;
+    }
+
+    public short getOut() {
+        return out;
     }
 
     @Override
@@ -38,12 +60,12 @@ public class Message implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Message message = (Message) o;
-        return Arrays.equals(data, message.data);
+        return Arrays.equals(this.message, message.message);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(data);
+        return Arrays.hashCode(message);
     }
 
     @Override
@@ -51,7 +73,7 @@ public class Message implements Serializable {
         return "Message{" +
                 "command=" + command +
                 ", name='" + name + '\'' +
-                ", data=" + Arrays.toString(data) +
+                ", message=" + Arrays.toString(message) +
                 '}';
     }
 }

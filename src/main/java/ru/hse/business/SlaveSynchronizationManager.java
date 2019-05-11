@@ -74,12 +74,11 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     // requestData - вынуть из неё out
     @Override
-    public RequestData train(RequestData requestData) {
-        this.requestData = requestData;
+    public RequestData train() {
         handleResponse(new ResponseData(TRAIN, requestData.getInput(), requestData.getOut()));
         waitTask();
-        log.info("Out got: {}", this.requestData.getOut());
-        return this.requestData;
+        log.info("Out got: {}", requestData.getOut());
+        return requestData;
     }
 
     // requestData - вынуть из неё ключ

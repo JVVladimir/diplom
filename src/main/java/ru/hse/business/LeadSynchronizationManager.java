@@ -11,9 +11,6 @@ public class LeadSynchronizationManager extends SynchronizationManager {
 
     private static final int INIT_W_LEAD = 1;
 
-    private short[] input;
-    private short out2;
-
     public LeadSynchronizationManager(int tpmInputs) {
         super(tpmInputs, INIT_W_LEAD);
     }
@@ -85,15 +82,13 @@ public class LeadSynchronizationManager extends SynchronizationManager {
         return requestData;
     }
 
-    // TODO: сделать разные режимы работы для Ардуино (см. ардуино код)
     // requestData - вынуть из неё out
     @Override
-    public RequestData train(RequestData requestData) {
-        out2 = requestData.getOut();
+    public RequestData train() {
         handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
-        log.info("Input got: {}, out got: {}", this.requestData.getInput(), this.requestData.getOut());
-        return this.requestData;
+        log.info("Input got: {}, out got: {}", requestData.getInput(), requestData.getOut());
+        return requestData;
     }
 
     // requestData - вынуть из неё ключ
@@ -104,5 +99,4 @@ public class LeadSynchronizationManager extends SynchronizationManager {
         log.info("Key got: {}", requestData.getWeight());
         return requestData;
     }
-
 }

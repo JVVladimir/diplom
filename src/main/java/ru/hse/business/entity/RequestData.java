@@ -43,7 +43,7 @@ public class RequestData extends Data implements Serializable {
     }
 
     public boolean vecHasLen(int len) {
-        return vector.length == len;
+        return input.length == len;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class RequestData extends Data implements Serializable {
                 "resultCode=" + resultCode +
                 ", memory=" + memory +
                 ", weight=" + Arrays.toString(weight) +
-                ", vector=" + Arrays.toString(vector) +
+                ", input=" + Arrays.toString(input) +
                 ", out=" + out +
                 '}';
     }

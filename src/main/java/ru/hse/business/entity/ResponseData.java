@@ -39,7 +39,7 @@ public class ResponseData extends Data implements Serializable {
     public String toString() {
         return "ResponseData{" +
                 "command=" + command +
-                ", vector=" + Arrays.toString(vector) +
+                ", input=" + Arrays.toString(input) +
                 ", out=" + out +
                 '}';
     }
