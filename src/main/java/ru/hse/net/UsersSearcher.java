@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-// TODO: сделать интерфейс только для onReceiveMessage, (sol_I_d)
 public class UsersSearcher implements ConnectionListener {
 
     private static final int SAME_PROGRAM = 1000;
@@ -44,20 +43,5 @@ public class UsersSearcher implements ConnectionListener {
             map.put(connection.getRemoteIP(), ((Message) requestData).getName());
             listConnections.remove(connection);
         }
-    }
-
-    @Override
-    public void onConnectionReady(Connection connection) {
-
-    }
-
-    @Override
-    public void onConnectionClose(Connection connection) {
-
-    }
-
-    @Override
-    public void onConnectionException(Connection connection, Throwable ex) {
-
     }
 }

@@ -4,10 +4,10 @@ public interface ConnectionListener {
 
     void onReceivedMessage(Connection connection, Object requestData);
 
-    void onConnectionReady(Connection connection);
+    default void onConnectionReady(Connection connection) {}
 
-    void onConnectionClose(Connection connection);
+    default void onConnectionClose(Connection connection) {}
 
-    void onConnectionException(Connection connection, Throwable ex);
+    default void onConnectionException(Connection connection, Throwable ex) {}
 
 }
