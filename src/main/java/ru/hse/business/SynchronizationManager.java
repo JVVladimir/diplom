@@ -49,21 +49,6 @@ public abstract class SynchronizationManager implements Handler {
 
     public abstract RequestData syncDone();
 
-    protected boolean validateRequestData(RequestData requestData) {
-        log.info("Current command: {},  data received: {}", curCommand, requestData);
-        if (!requestData.isOk()) {
-            log.error("Bad response from Controller no Ok code");
-            return false;
-        }
-        if (curCommand == INIT_W || curCommand == SYNC_DONE)
-            return true;
-        if (!requestData.vecHasLen(inputs)) {
-            log.error("Bad response from Controller no len");
-            return false;
-        }
-        return true;
-    }
-
     // TODO: подумать не переделать ли под поток, возвращающий результат задачи
     protected void waitTask() {
         while (!taskDone)

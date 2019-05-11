@@ -65,13 +65,13 @@ public class NetManagerSlave implements ConnectionListener {
                     connection.sendMessage(new Message(INIT_W));
                     break;
                 case INIT_X:
-                    synchronizationManager.setInput(message.getVector());
+                    synchronizationManager.setInput(message.getInput());
                     synchronizationManager.setOut(message.getOut());
                     res = synchronizationManager.train();
                     connection.sendMessage(new Message(INIT_X, null, res.getOut()));
                     break;
                 case TRAIN:
-                    synchronizationManager.setInput(message.getVector());
+                    synchronizationManager.setInput(message.getInput());
                     synchronizationManager.setOut(message.getOut());
                     res = synchronizationManager.train();
                     connection.sendMessage(new Message(INIT_X, null, res.getOut()));
