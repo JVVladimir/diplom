@@ -9,7 +9,7 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     private static final Logger log = LoggerFactory.getLogger(SlaveSynchronizationManager.class);
 
-    private static final int INIT_W_SLAVE = -1;
+    private static final int INIT_W_SLAVE = 10;
 
     public SlaveSynchronizationManager(int tpmInputs) {
         super(tpmInputs, INIT_W_SLAVE);
