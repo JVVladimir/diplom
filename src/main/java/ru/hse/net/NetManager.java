@@ -54,6 +54,7 @@ public class NetManager implements ConnectionListener {
             Message message = (Message) data;
             switch (message.getCommand()) {
                 case CONNECT:
+                    isReady = false;
                     responseReceived = true;
                     break;
                 case INIT_W:
@@ -76,7 +77,6 @@ public class NetManager implements ConnectionListener {
         }
     }
 
-    // TODO: networkCodes remove ????
     public void runApp() {
         Scanner scanner = new Scanner(System.in);
         String message;
@@ -84,7 +84,12 @@ public class NetManager implements ConnectionListener {
         while ((message = scanner.nextLine()) != null) {
             switch (message) {
                 case "connect":
-                    Map.Entry<String, String> entry = new UsersSearcher(PORT).search().entrySet().iterator().next();
+                    Map<String , String> map = new UsersSearcher(PORT).search();
+                    if(map.size() == 0) {
+                        log.info("Не найдено ни одного соединения!");
+                        return;
+                    }
+                    Map.Entry<String, String> entry = map.entrySet().iterator().next();
                     log.info("Found user: {}", entry);
                     // String name = entry.getValue();
                     String ip = entry.getKey();
@@ -114,6 +119,7 @@ public class NetManager implements ConnectionListener {
                     while (epochs < EPOCHS_MAX || limit < SYNC_LIMIT) {
                         data = synchronizationManager.train();
                         log.info("Новый вход и выход получены (train): {}", data);
+                        //TODO: simplify
                         if (data.getOut() == synchronizationManager.getOut2())
                             limit++;
                         else

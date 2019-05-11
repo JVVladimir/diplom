@@ -8,20 +8,20 @@ public class Message implements Serializable {
     private final int command;
     private final String name;
     private final byte[] message;
-    private final short[] vector;
+    private final short[] input;
     private final short out;
 
     public Message(int command, String name, byte[] message) {
         this.command = command;
         this.name = name;
         this.message = message;
-        this.vector = null;
+        this.input = null;
         this.out = -1;
     }
 
-    public Message(int command, short[] vector, short out) {
+    public Message(int command, short[] input, short out) {
         this.command = command;
-        this.vector = vector;
+        this.input = input;
         this.out = out;
         this.name = null;
         this.message = null;
@@ -31,7 +31,7 @@ public class Message implements Serializable {
         this.command = command;
         this.name = null;
         this.message = null;
-        this.vector = null;
+        this.input = null;
         this.out = -1;
     }
 
@@ -47,8 +47,8 @@ public class Message implements Serializable {
         return message;
     }
 
-    public short[] getVector() {
-        return vector;
+    public short[] getInput() {
+        return input;
     }
 
     public short getOut() {
