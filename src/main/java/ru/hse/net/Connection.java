@@ -58,11 +58,13 @@ public class Connection {
                         if (command == -10 || command == -5) {
                             close();
                             listener.onConnectionClose(this);
+                        } else if (command == 1000) {
+                            sendMessage(new Message(1001));
+                            close();
                         } else {
                             listener.onReceivedMessage(this, ob);
                         }
-                    }
-                    else {
+                    } else {
                         listener.onReceivedMessage(this, ob);
                     }
                 }
