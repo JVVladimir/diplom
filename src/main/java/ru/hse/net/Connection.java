@@ -88,6 +88,10 @@ public class Connection {
         return remoteIP;
     }
 
+    public boolean isClosed() {
+        return socket.isClosed();
+    }
+
     public void close() {
         thread.interrupt();
         try {
