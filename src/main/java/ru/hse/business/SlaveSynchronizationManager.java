@@ -75,7 +75,7 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
     // requestData - вынуть из неё out
     @Override
     public RequestData train() {
-        handleResponse(new ResponseData(TRAIN, requestData.getInput(), requestData.getOut()));
+        handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
         log.info("Out got: {}", requestData.getOut());
         return requestData;

@@ -11,6 +11,7 @@ public class Message implements Serializable {
     private final short[] vector;
     private final short out;
 
+    // TODO: подумать как тут лучше сделать конструкторы без этого говна внутри них
     public Message(int command, String name, byte[] message) {
         this.command = command;
         this.name = name;
