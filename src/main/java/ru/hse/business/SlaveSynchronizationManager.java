@@ -43,6 +43,15 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
         }
     }
 
+    private boolean validateRequestData(RequestData requestData) {
+        log.info("Current command: {},  data received: {}", curCommand, requestData);
+        if (!requestData.isOk()) {
+            log.error("Bad response from Controller no Ok code");
+            return false;
+        }
+        return true;
+    }
+
     private void resendCurrentCommand() {
         if (curCommand == TRAIN)
             handleResponse(new ResponseData(curCommand, requestData.getInput(), requestData.getOut()));
@@ -75,7 +84,7 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
     // requestData - вынуть из неё out
     @Override
     public RequestData train() {
-        handleResponse(new ResponseData(TRAIN, requestData.getInput(), requestData.getOut()));
+        handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
         log.info("Out got: {}", requestData.getOut());
         return requestData;

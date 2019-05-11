@@ -49,6 +49,21 @@ public class LeadSynchronizationManager extends SynchronizationManager {
         }
     }
 
+    private boolean validateRequestData(RequestData requestData) {
+        log.info("Current command: {},  data received: {}", curCommand, requestData);
+        if (!requestData.isOk()) {
+            log.error("Bad response from Controller no Ok code");
+            return false;
+        }
+        if (curCommand == INIT_W || curCommand == SYNC_DONE)
+            return true;
+        if (!requestData.vecHasLen(inputs)) {
+            log.error("Bad response from Controller no len");
+            return false;
+        }
+        return true;
+    }
+
     protected void resendCurrentCommand() {
         if (curCommand == TRAIN)
             handleResponse(new ResponseData(curCommand, input, out2));
