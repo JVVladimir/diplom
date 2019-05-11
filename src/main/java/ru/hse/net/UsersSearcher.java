@@ -1,11 +1,16 @@
 package ru.hse.net;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class UsersSearcher implements ConnectionListener {
+
+    private static final Logger log = LoggerFactory.getLogger(UsersSearcher.class);
 
     private static final int SAME_PROGRAM = 1000;
     private static final int SAME_PROGRAM_SUBMIT = 1001;
@@ -44,5 +49,11 @@ public class UsersSearcher implements ConnectionListener {
             map.put(connection.getRemoteIP(), ((Message) requestData).getName());
             listConnections.remove(connection);
         }
+    }
+
+    @Override
+    public void onConnectionException(Connection connection, Throwable ex) {
+        listConnections.remove(connection);
+        log.info("IP address disabled: {}",connection.getRemoteIP());
     }
 }
