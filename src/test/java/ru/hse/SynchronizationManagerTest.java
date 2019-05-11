@@ -12,8 +12,7 @@ public class SynchronizationManagerTest {
     private static double time;
     private static double curTime;
 
-
-    @BeforeEach
+    /*@BeforeEach
     public void init() throws InterruptedException {
         tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         manager = new SynchronizationManager(tpm1);
@@ -45,5 +44,5 @@ public class SynchronizationManagerTest {
     @AfterAll
     public static void printResult() {
         System.out.println("Average time: " + time / 200);
-    }
+    }*/
 }
