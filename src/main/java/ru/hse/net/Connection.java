@@ -59,7 +59,7 @@ public class Connection {
                             close();
                             listener.onConnectionClose(this);
                         } else if (command == 1000) {
-                            sendMessage(new Message(1001));
+                            sendMessage(new Message(1001, System.getProperty("user.name"), null));
                             close();
                         } else {
                             listener.onReceivedMessage(this, ob);
@@ -69,8 +69,9 @@ public class Connection {
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
+                listener.onConnectionException(this, e);
                 close();
-                throw new RuntimeException(e);
+                // throw new RuntimeException(e);
             }
         });
         thread.start();
