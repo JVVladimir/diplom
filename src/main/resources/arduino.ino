@@ -19,11 +19,11 @@
 
 #define t 5
 
-#define INIT_W 1
+#define INIT_W_LEAD 1
+#define INIT_W_SLAVE 10
 #define INIT_X 2
 #define TRAIN 3
 #define SYNC_DONE 4
-
 
 Random *random2;
 TreeParityMachine *tpm1;
@@ -37,6 +37,7 @@ short out2;
 
 short* key;
 short len;
+bool isSlave = false;
 
 void flushDelay();
 
@@ -46,8 +47,6 @@ void setup() {
   random2->setBounds(-L, L);
   tpm1 = new TreeParityMachine(n, k, random2);
   trainer = new TPMTrainer();
-  //Serial.println();
-  //flushDelay();
 }
 
 void loop() {
@@ -64,7 +63,15 @@ void loop() {
     }
     command = docT["command"];
     switch (command) {
-      case INIT_W:
+      case INIT_W_LEAD:
+        isSlave = false;
+        tpm1->regenerate(random2);
+        docAnswer["resultCode"] = 100;
+        serializeJson(docAnswer, Serial);
+        flushDelay();
+        break;
+      case INIT_W_SLAVE:
+        isSlave = true;
         tpm1->regenerate(random2);
         docAnswer["resultCode"] = 100;
         serializeJson(docAnswer, Serial);
@@ -73,7 +80,7 @@ void loop() {
       case INIT_X:
         input = random2->getIntsCastedToDouble(n);
         docAnswer["resultCode"] = 100;
-        data = docAnswer.createNestedArray("vector");
+        data = docAnswer.createNestedArray("input");
         for (int i = 0; i < n; i++) {
           data.add(input[i]);
         }
@@ -86,29 +93,28 @@ void loop() {
       case TRAIN:
         input = new short[n];
         for (int i = 0; i < n; i++) {
-          input[i] = docT["vector"][i];
+          input[i] = docT["input"][i];
         }
         out = docT["out"];
         trainer->synchronize(tpm1, input, out);
-        delete []input;
-        input = random2->getIntsCastedToDouble(n);
         docAnswer["resultCode"] = 100;
-        data = docAnswer.createNestedArray("vector");
-        for (int i = 0; i < n; i++) {
-          data.add(input[i]);
+        if (isSlave) {
+          out2 = tpm1->getOutput(input);
         }
-        out2 = tpm1->getOutput(input);
+        else {
+          delete []input;
+          input = random2->getIntsCastedToDouble(n);
+          data = docAnswer.createNestedArray("input");
+          for (int i = 0; i < n; i++) {
+            data.add(input[i]);
+          }
+          out2 = tpm1->getOutput(input);
+        }
         docAnswer["out"] = out2;
         docAnswer["memory"] = freeMemory();
-        /*key = tpm1->getSecretKey();
-        data2 = docAnswer.createNestedArray("weight");
-        for (int i = 0; i < n * k; i++) {
-          data2.add(key[i]);
-        }*/
         serializeJson(docAnswer, Serial);
         flushDelay();
         delete []input;
-        //delete []key;
         break;
       case SYNC_DONE:
         docAnswer["resultCode"] = 100;

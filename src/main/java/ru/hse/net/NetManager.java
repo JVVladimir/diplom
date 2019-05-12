@@ -22,7 +22,6 @@ public class NetManager implements ConnectionListener {
     private static final int TRAIN = 203;
     private static final int SYNC_DONE = 204;
     private static final int SEND = 205;
-    private static final int RECEIVE = 206;
     private boolean isReady = false;
     private byte[] key;
 
@@ -40,11 +39,6 @@ public class NetManager implements ConnectionListener {
 
     public NetManager() {
         server = new Server(this, PORT);
-    }
-
-    @Override
-    public void onConnectionReady(Connection connection) {
-
     }
 
     @Override
@@ -126,11 +120,7 @@ public class NetManager implements ConnectionListener {
                         epochs++;
                         log.info("Новый вход и выход получены (train) абонент 1: {}", data);
                         log.info("Выход абонента 1 и 2: {}, {}", data.getOut(), synchronizationManager.getOut2());
-                        //TODO: simplify
-                        if (data.getOut() == synchronizationManager.getOut2())
-                            limit++;
-                        else
-                            limit = 0;
+                        limit = data.getOut() == synchronizationManager.getOut2() ? ++limit : 0;
                         if(epochs == EPOCHS_MAX || limit == SYNC_LIMIT)
                             break;
                         connection.sendMessage(new Message(TRAIN, data.getInput(), data.getOut()));
