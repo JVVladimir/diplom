@@ -1,7 +1,6 @@
 package ru.hse.tree_parity_machine.neuron;
 
 import ru.hse.learning_algorithm.LearningParadigm;
-import ru.hse.tree_parity_machine.NeuralNetException;
 
 import java.util.Arrays;
 

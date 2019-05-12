@@ -23,11 +23,11 @@ public class HiddenLayer extends NetLayer {
     }
 
     public short[] getOutput(short[] input) {
-        if (input.length != inputs)
+        if (input.length != inputs * outputs)
             throw new NeuralNetException("Входной вектор не соответствует кол-ву весовых коэффициентов");
         short[] res = new short[outputs];
         for (int i = 0; i < outputs; i++)
-            res[i] = neurons[i].getOutput(input);
+            res[i] = neurons[i].getOutput(Arrays.copyOfRange(input, inputs * i, inputs * (i + 1)));
         this.res = res;
         return res;
     }
