@@ -15,7 +15,6 @@ public abstract class SynchronizationManager implements Handler {
     protected volatile boolean isSync;
     protected int epochs;
     protected int maxEpochs = 150;
-    protected int inputs;
     protected short out;
 
     protected short out2;
@@ -35,9 +34,8 @@ public abstract class SynchronizationManager implements Handler {
     protected RequestData requestData;
 
     // TODO: сделать автоопределение подключённых портов (Надо будет на GUI вызвать функцию определения всех портов и из списка их выбирать)
-    protected SynchronizationManager(int tpmInputs, int mode) {
+    protected SynchronizationManager(int mode) {
         INIT_W = mode;
-        this.inputs = tpmInputs;
         this.controller = new ArduinoController(this, ArduinoController.getConnectedComPorts()[0], 115200);
     }
 
@@ -48,6 +46,15 @@ public abstract class SynchronizationManager implements Handler {
     public abstract RequestData train();
 
     public abstract RequestData syncDone();
+
+    protected boolean validateRequestData(RequestData requestData) {
+        log.info("Current command: {},  data received: {}", curCommand, requestData);
+        if (!requestData.isOk()) {
+            log.error("Bad response from Controller no Ok code");
+            return false;
+        }
+        return true;
+    }
 
     // TODO: подумать не переделать ли под поток, возвращающий результат задачи
     protected void waitTask() {

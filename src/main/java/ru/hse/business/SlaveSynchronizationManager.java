@@ -11,8 +11,8 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     private static final int INIT_W_SLAVE = 10;
 
-    public SlaveSynchronizationManager(int tpmInputs) {
-        super(tpmInputs, INIT_W_SLAVE);
+    public SlaveSynchronizationManager() {
+        super(INIT_W_SLAVE);
     }
 
     @Override
@@ -41,15 +41,6 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
                 epochs = 0;
                 break;
         }
-    }
-
-    private boolean validateRequestData(RequestData requestData) {
-        log.info("Current command: {},  data received: {}", curCommand, requestData);
-        if (!requestData.isOk()) {
-            log.error("Bad response from Controller no Ok code");
-            return false;
-        }
-        return true;
     }
 
     private void resendCurrentCommand() {

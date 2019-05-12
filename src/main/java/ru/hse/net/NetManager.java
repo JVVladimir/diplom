@@ -15,7 +15,6 @@ public class NetManager implements ConnectionListener {
 
     private static final Logger log = LoggerFactory.getLogger(NetManager.class);
 
-
     private static final int CONNECT = 200;
     private static final int INIT_W = 201;
     private static final int INIT_X = 202;
@@ -100,7 +99,7 @@ public class NetManager implements ConnectionListener {
                         log.info("Не удалось подключиться к абоненту!");
                         return;
                     }
-                    synchronizationManager = new LeadSynchronizationManager(8);
+                    synchronizationManager = new LeadSynchronizationManager();
                     break;
                 case "weights":
                     synchronizationManager.initWeights();

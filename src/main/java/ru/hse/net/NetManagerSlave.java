@@ -21,13 +21,8 @@ public class NetManagerSlave implements ConnectionListener {
     private static final int TRAIN = 203;
     private static final int SYNC_DONE = 204;
     private static final int SEND = 205;
-    private static final int RECEIVE = 206;
     private boolean isReady = false;
     private byte[] key;
-
-    private int epochs, limit;
-    private static final int SYNC_LIMIT = 40;
-    private static final int EPOCHS_MAX = 150;
 
     private final static int PORT = 15600;
 
@@ -56,7 +51,7 @@ public class NetManagerSlave implements ConnectionListener {
                 case CONNECT:
                     isReady = false;
                     connection.sendMessage(new Message(CONNECT));
-                    synchronizationManager = new SlaveSynchronizationManager(8);
+                    synchronizationManager = new SlaveSynchronizationManager();
                     break;
                 case INIT_W:
                     synchronizationManager.initWeights();
