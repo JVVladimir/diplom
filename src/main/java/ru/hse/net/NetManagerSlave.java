@@ -2,14 +2,12 @@ package ru.hse.net;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.hse.business.LeadSynchronizationManager;
 import ru.hse.business.SlaveSynchronizationManager;
 import ru.hse.business.SynchronizationManager;
 import ru.hse.business.entity.RequestData;
 import ru.hse.utils.Encrypter;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.Scanner;
 
 public class NetManagerSlave implements ConnectionListener {
@@ -66,15 +64,17 @@ public class NetManagerSlave implements ConnectionListener {
                     break;
                 case INIT_X:
                     synchronizationManager.setInput(message.getInput());
-                    synchronizationManager.setOut(message.getOut());
+                    synchronizationManager.setOut2(message.getOut());
+                    log.info("Вход и выход от абонента 1 {}", message);
                     res = synchronizationManager.train();
                     connection.sendMessage(new Message(INIT_X, null, res.getOut()));
                     break;
                 case TRAIN:
                     synchronizationManager.setInput(message.getInput());
-                    synchronizationManager.setOut(message.getOut());
+                    synchronizationManager.setOut2(message.getOut());
+                    log.info("Вход и выход от абонента 1 {}", message);
                     res = synchronizationManager.train();
-                    connection.sendMessage(new Message(INIT_X, null, res.getOut()));
+                    connection.sendMessage(new Message(TRAIN, null, res.getOut()));
                     break;
                 case SYNC_DONE:
                     res = synchronizationManager.syncDone();

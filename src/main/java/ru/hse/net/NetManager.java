@@ -63,11 +63,16 @@ public class NetManager implements ConnectionListener {
                     responseReceived = true;
                     break;
                 case INIT_X:
-                    synchronizationManager.setOut(message.getOut());
+                    synchronizationManager.setOut2(message.getOut());
+                    log.info("Выход с абонента 2: {}", message.getOut());
                     responseReceived = true;
                     break;
                 case TRAIN:
-                    synchronizationManager.setOut(message.getOut());
+                    synchronizationManager.setOut2(message.getOut());
+                    log.info("Выход с абонента 2: {}", message.getOut());
+                    responseReceived = true;
+                    break;
+                case SYNC_DONE:
                     responseReceived = true;
                     break;
                 case SEND:
@@ -111,14 +116,15 @@ public class NetManager implements ConnectionListener {
                     break;
                 case "input":
                     data = synchronizationManager.initInput();
-                    log.info("Новый вход и выход получены (input): {}", data);
+                    log.info("Новый вход и выход получены (input) абонент 1: {}", data);
                     connection.sendMessage(new Message(INIT_X, data.getInput(), data.getOut()));
                     waitResponse();
                     break;
                 case "train":
                     while (epochs < EPOCHS_MAX || limit < SYNC_LIMIT) {
                         data = synchronizationManager.train();
-                        log.info("Новый вход и выход получены (train): {}", data);
+                        epochs++;
+                        log.info("Новый вход и выход получены (train) абонент 1: {}", data);
                         //TODO: simplify
                         if (data.getOut() == synchronizationManager.getOut2())
                             limit++;

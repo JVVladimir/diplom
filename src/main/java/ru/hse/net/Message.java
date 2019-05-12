@@ -17,7 +17,7 @@ public class Message implements Serializable {
         this.name = name;
         this.message = message;
         this.input = null;
-        this.out = -1;
+        this.out = 0;
     }
 
     public Message(int command, short[] input, short out) {
@@ -75,6 +75,8 @@ public class Message implements Serializable {
                 "command=" + command +
                 ", name='" + name + '\'' +
                 ", message=" + Arrays.toString(message) +
+                ", input=" + Arrays.toString(input) +
+                ", out=" + out +
                 '}';
     }
 }

@@ -93,7 +93,7 @@ public class LeadSynchronizationManager extends SynchronizationManager {
     public RequestData initInput() {
         handleResponse(new ResponseData(INIT_X));
         waitTask();
-        log.info("Input generated: {}, out: {}", requestData.getInput(), requestData.getOut());
+        log.info("Input generated: {}, out: {} абонент 1", requestData.getInput(), requestData.getOut());
         return requestData;
     }
 
@@ -102,7 +102,7 @@ public class LeadSynchronizationManager extends SynchronizationManager {
     public RequestData train() {
         handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
-        log.info("Input got: {}, out got: {}", requestData.getInput(), requestData.getOut());
+        log.info("Input got: {}, out got: {} абонент 1", requestData.getInput(), requestData.getOut());
         return requestData;
     }
 

@@ -86,7 +86,7 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
     public RequestData train() {
         handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
-        log.info("Out got: {}", requestData.getOut());
+        log.info("Выход получен out: {} абонент 2", requestData.getOut());
         return requestData;
     }
 

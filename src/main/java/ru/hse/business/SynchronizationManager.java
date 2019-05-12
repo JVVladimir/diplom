@@ -80,7 +80,7 @@ public abstract class SynchronizationManager implements Handler {
         return maxEpochs;
     }
 
-    public void setOut(short out2) {
+    public void setOut2(short out2) {
         this.out2 = out2;
     }
 
