@@ -20,7 +20,7 @@
 #define t 5
 
 #define INIT_W_LEAD 1
-#define INIT_W_SLAVE -1
+#define INIT_W_SLAVE 10
 #define INIT_X 2
 #define TRAIN 3
 #define SYNC_DONE 4
@@ -80,7 +80,7 @@ void loop() {
       case INIT_X:
         input = random2->getIntsCastedToDouble(n);
         docAnswer["resultCode"] = 100;
-        data = docAnswer.createNestedArray("vector");
+        data = docAnswer.createNestedArray("input");
         for (int i = 0; i < n; i++) {
           data.add(input[i]);
         }
@@ -93,18 +93,18 @@ void loop() {
       case TRAIN:
         input = new short[n];
         for (int i = 0; i < n; i++) {
-          input[i] = docT["vector"][i];
+          input[i] = docT["input"][i];
         }
         out = docT["out"];
         trainer->synchronize(tpm1, input, out);
+        docAnswer["resultCode"] = 100;
         if (isSlave) {
           out2 = tpm1->getOutput(input);
         }
         else {
           delete []input;
           input = random2->getIntsCastedToDouble(n);
-          docAnswer["resultCode"] = 100;
-          data = docAnswer.createNestedArray("vector");
+          data = docAnswer.createNestedArray("input");
           for (int i = 0; i < n; i++) {
             data.add(input[i]);
           }
@@ -135,4 +135,3 @@ void flushDelay() {
   Serial.flush();
   delay(t);
 }
-
