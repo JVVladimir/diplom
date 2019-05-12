@@ -121,15 +121,18 @@ public class NetManager implements ConnectionListener {
                     waitResponse();
                     break;
                 case "train":
-                    while (epochs < EPOCHS_MAX || limit < SYNC_LIMIT) {
+                    while (true) {
                         data = synchronizationManager.train();
                         epochs++;
                         log.info("Новый вход и выход получены (train) абонент 1: {}", data);
+                        log.info("Выход абонента 1 и 2: {}, {}", data.getOut(), synchronizationManager.getOut2());
                         //TODO: simplify
                         if (data.getOut() == synchronizationManager.getOut2())
                             limit++;
                         else
                             limit = 0;
+                        if(epochs == EPOCHS_MAX || limit == SYNC_LIMIT)
+                            break;
                         connection.sendMessage(new Message(TRAIN, data.getInput(), data.getOut()));
                         waitResponse();
                         log.info("Текущая эпоха: {}", epochs);

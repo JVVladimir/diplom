@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class ScannerIP {
 
-    private static final int TIMEOUT = 3000;
+    private static final int TIMEOUT = 1500;
     private static final int THREAD_COUNT = 150;
     private static final int NUM_ADDRESSES = 254;
 

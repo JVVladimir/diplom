@@ -5,30 +5,37 @@ import org.junit.jupiter.api.Test;
 import ru.hse.utils.Encrypter;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class EncrypterTest {
 
 
     @Test
-    void testShifrShortString() throws UnsupportedEncodingException {
+    void testShifrShortString() {
         String message = "Vova - good!";
-        short[] key = new short[]{1, -2, 2, 0, 1, -2, -2, -2,1,2,-2,1,1,2,2,0,0,1,0,-2,0,1,-2};
+        short[] key = new short[]{1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2,
+                -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2,
+                -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1,
+                -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2,
+                1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1, 1, 2, -2, -1, 1, -2, -2, 1};
         byte[] keyBytes = Encrypter.toBytes(key);
+        System.out.println(Arrays.toString(keyBytes));
         byte[] encryptmessage = Encrypter.encrypt(message.getBytes(),keyBytes);
         byte[] decryptmessage = Encrypter.decrypt(encryptmessage,keyBytes);
 
         System.out.println("Исходное сообщение в байтах: " +Arrays.toString(message.getBytes()));
-        System.out.println("Исходное сообщение: " + new String(message.getBytes(), "utf-8"));
+        System.out.println("Исходное сообщение: " + new String(message.getBytes(), StandardCharsets.UTF_8));
         System.out.println("Зашифрованное сообщение в байтах: " + Arrays.toString(encryptmessage));
-        System.out.println("Зашифрованное сообщение: " + new String(encryptmessage, "utf-8"));
+        System.out.println("Зашифрованное сообщение: " + new String(encryptmessage, StandardCharsets.UTF_8));
         System.out.println("Расшифровнаное сообщение в байтах: " + Arrays.toString(decryptmessage));
-        System.out.println("Расшифровнаное сообщение: " + new String (decryptmessage, "utf-8"));
+        System.out.println("Расшифровнаное сообщение: " + new String (decryptmessage, StandardCharsets.UTF_8));
 
-        Assertions.assertEquals(message, new String(decryptmessage, "utf-8"));
+        Assertions.assertEquals(message, new String(decryptmessage, StandardCharsets.UTF_8));
     }
 
     @Test
