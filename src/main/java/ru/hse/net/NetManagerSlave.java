@@ -80,6 +80,7 @@ public class NetManagerSlave implements ConnectionListener {
                     res = synchronizationManager.syncDone();
                     connection.sendMessage(new Message(SYNC_DONE));
                     key = Encrypter.toBytes(res.getWeight());
+                    log.info("Generated key: {}", key);
                     isReady = true;
                     break;
                 case SEND:
