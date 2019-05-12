@@ -19,7 +19,7 @@ public class TPMTrainer {
         ArrayList<Short> outputTPM1 = new ArrayList<>();
         ArrayList<Short> outputTPM2 = new ArrayList<>();
         int[] params = tpm1.getTPMParams();
-        short[] input = Random.getInts(params[0], -1, 1);
+        short[] input = Random.getInts(params[0] * params[1], -1, 1);
         while (k < epochs) {
             short out1 = tpm1.getOutput(input);
             short out2 = tpm2.getOutput(input);
@@ -34,7 +34,7 @@ public class TPMTrainer {
                 tpm1.train(input, out2);
                 tpm2.train(input, out1);
             }
-            input = Random.getInts(params[0], -1, 1);
+            input = Random.getInts(params[0] * params[1], -1, 1);
             k++;
         }
         if (k > epochs)

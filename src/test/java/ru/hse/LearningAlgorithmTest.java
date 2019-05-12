@@ -9,6 +9,7 @@ import ru.hse.tree_parity_machine.NeuralNetException;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LearningAlgorithmTest {
 
@@ -24,7 +25,7 @@ public class LearningAlgorithmTest {
     static int numRandomWalkFails;
 
     static int epochs = 1500;
-    int L = 8, n = 16, k = 16;
+    int L = 2, n = 8, k = 16;
 
 
     @AfterAll
@@ -33,7 +34,7 @@ public class LearningAlgorithmTest {
     }
 
     @Test
-    @RepeatedTest(1000)
+    @RepeatedTest(1)
     public void testHebbian() throws NeuralNetException {
         try {
             TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.HEBBIAN);
@@ -41,6 +42,7 @@ public class LearningAlgorithmTest {
             TPMTrainer trainer = new TPMTrainer();
             trainer.setEpochs(epochs);
             ArrayList[] list = trainer.synchronize(tpm1, tpm2);
+            System.out.println("\n\n");
             numHebbian += (Integer) list[2].get(0);
             num1++;
         } catch (Exception ex) {
@@ -49,7 +51,7 @@ public class LearningAlgorithmTest {
     }
 
     @Test
-    @RepeatedTest(1000)
+    @RepeatedTest(1)
     public void testAntiHebbian() throws NeuralNetException {
         try {
             TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.ANTI_HEBBIAN);
@@ -65,7 +67,7 @@ public class LearningAlgorithmTest {
     }
 
     @Test
-    @RepeatedTest(1000)
+    @RepeatedTest(1)
     public void testRandomWalk() throws NeuralNetException {
         try {
             TreeParityMachine tpm1 = new TreeParityMachine(n, k, -L, L, LearningParadigm.RANDOM_WALK);

@@ -6,6 +6,8 @@ import ru.hse.tree_parity_machine.layer.HiddenLayer;
 import ru.hse.tree_parity_machine.layer.OutputLayer;
 import ru.hse.tree_parity_machine.neuron.Neuron;
 
+import java.util.Arrays;
+
 public class TreeParityMachine implements Training {
 
     private int n;
@@ -35,7 +37,7 @@ public class TreeParityMachine implements Training {
         short[] hiddenOutput = hiddenLayer.getOutput(input);
         Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
         for (int i = 0; i < hiddenOutput.length; i++)
-            hiddenNeurons[i].changeWeights(input, output);
+            hiddenNeurons[i].changeWeights(Arrays.copyOfRange(input, n * i, n * (i + 1)), output);
     }
 
     public short[] getSecretKey() {
