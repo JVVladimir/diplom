@@ -45,7 +45,7 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     private void resendCurrentCommand() {
         if (curCommand == TRAIN)
-            handleResponse(new ResponseData(curCommand, requestData.getInput(), requestData.getOut()));
+            handleResponse(new ResponseData(curCommand, requestData.getIn(), requestData.getOut()));
         else
             handleResponse(new ResponseData(curCommand));
     }

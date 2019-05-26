@@ -7,6 +7,8 @@ import ru.hse.learning_algorithm.TPMTrainer;
 import ru.hse.tree_parity_machine.TreeParityMachine;
 import ru.hse.utils.Random;
 
+import java.util.Arrays;
+
 public class TestTPM {
 
     // key = 256 bit   8*16 = 128 + *2 т.к. берём два бита с каждого числа
@@ -18,16 +20,25 @@ public class TestTPM {
         int epochs = 150, i = 0;
         TreeParityMachine t1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         TreeParityMachine t2 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
+        int[] p = t1.getTPMParams();
         TPMTrainer trainer = new TPMTrainer();
+        short[] input = Random.getInts(p[0]*p[1], -1, 1);
         while (i < epochs) {
             i++;
-            short[] input = Random.getInts(8, -2, 2);
             short out2 = t2.getOutput(input);
-            short out1 = trainer.synchronize(t1, input, out2);
+            short out1 = t1.getOutput(input);
+            trainer.synchronize(t1, input, out2);
+
+            //out1 = t1.getOutput(input);
+
             trainer.synchronize(t2, input, out1);
+
+            input = Random.getInts(p[0]*p[1], -1, 1);
         }
+        System.out.println(Arrays.toString(t1.getSecretKey()));
+        System.out.println(Arrays.toString(t2.getSecretKey()));
         Assertions.assertArrayEquals(t1.getSecretKey(), t2.getSecretKey(), "ДМЧ не синхронизировались!");
-        System.out.println(weightToKey(t1.getSecretKey(), (short) 32, 8, (short) 2));
+        //System.out.println(weightToKey(t1.getSecretKey(), (short) 32, 8, (short) 2));
     }
 
     char[] weightToKey(short[] key, short lenKey, int typeLen, short l) {

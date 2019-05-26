@@ -42,11 +42,10 @@ public class TPMTrainer {
         return new ArrayList[]{outputTPM1, outputTPM2, result};
     }
 
-    public short synchronize(TreeParityMachine tpm1, short[] input, short out2) {
+    public void synchronize(TreeParityMachine tpm1, short[] input, short out2) {
         short out1 = tpm1.getOutput(input);
         if (out1 == out2)
             tpm1.train(input, out2);
-        return tpm1.getOutput(input);
     }
 
     public int getEpochs() {

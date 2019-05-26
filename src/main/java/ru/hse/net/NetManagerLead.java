@@ -11,9 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Scanner;
 
-public class NetManager implements ConnectionListener {
+public class NetManagerLead implements ConnectionListener {
 
-    private static final Logger log = LoggerFactory.getLogger(NetManager.class);
+    private static final Logger log = LoggerFactory.getLogger(NetManagerLead.class);
 
     private static final int CONNECT = 200;
     private static final int INIT_W = 201;
@@ -36,7 +36,7 @@ public class NetManager implements ConnectionListener {
     private Connection connection;
     private SynchronizationManager synchronizationManager;
 
-    public NetManager() {
+    public NetManagerLead() {
         server = new Server(this, PORT);
     }
 
@@ -81,7 +81,7 @@ public class NetManager implements ConnectionListener {
         RequestData data;
         while ((message = scanner.nextLine()) != null) {
             switch (message) {
-                case "connect":
+                case "c":
                     Map<String , String> map = new UsersSearcher(PORT).search();
                     if(map.size() == 0) {
                         log.info("Не найдено ни одного соединения!");
@@ -101,19 +101,20 @@ public class NetManager implements ConnectionListener {
                     }
                     synchronizationManager = new LeadSynchronizationManager();
                     break;
-                case "weights":
+                case "w":
                     synchronizationManager.initWeights();
                     log.info("Веса сгенерированы!");
                     connection.sendMessage(new Message(INIT_W));
                     waitResponse();
                     break;
-                case "input":
+                case "i":
                     data = synchronizationManager.initInput();
                     log.info("Новый вход и выход получены (input) абонент 1: {}", data);
-                    connection.sendMessage(new Message(INIT_X, data.getInput(), data.getOut()));
+                    connection.sendMessage(new Message(INIT_X, data.getIn(), data.getOut()));
                     waitResponse();
+                    // System.exit(0);
                     break;
-                case "train":
+                case "t":
                     while (true) {
                         data = synchronizationManager.train();
                         epochs++;
@@ -122,7 +123,7 @@ public class NetManager implements ConnectionListener {
                         limit = data.getOut() == synchronizationManager.getOut2() ? ++limit : 0;
                         if(epochs == EPOCHS_MAX || limit == SYNC_LIMIT)
                             break;
-                        connection.sendMessage(new Message(TRAIN, data.getInput(), data.getOut()));
+                        connection.sendMessage(new Message(TRAIN, data.getIn(), data.getOut()));
                         waitResponse();
                         log.info("Текущая эпоха: {}", epochs);
                     }
@@ -150,6 +151,6 @@ public class NetManager implements ConnectionListener {
     }
 
     public static void main(String[] args) {
-        new NetManager().runApp();
+        new NetManagerLead().runApp();
     }
 }

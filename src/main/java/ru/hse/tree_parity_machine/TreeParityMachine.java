@@ -34,9 +34,8 @@ public class TreeParityMachine implements Training {
 
     @Override
     public void train(short[] input, short output) {
-        short[] hiddenOutput = hiddenLayer.getOutput(input);
         Neuron[] hiddenNeurons = hiddenLayer.getNeurons();
-        for (int i = 0; i < hiddenOutput.length; i++)
+        for (int i = 0; i < k; i++)
             hiddenNeurons[i].changeWeights(Arrays.copyOfRange(input, n * i, n * (i + 1)), output);
     }
 
@@ -45,8 +44,7 @@ public class TreeParityMachine implements Training {
         Neuron[] neurons = hiddenLayer.getNeurons();
         for (int i = 0; i < k; i++) {
             short[] mas = neurons[i].getWeights();
-            for (int j = 0; j < n; j++)
-                key[i * n + j] = mas[j];
+            if (n >= 0) System.arraycopy(mas, 0, key, i * n, n);
         }
         return key;
     }
@@ -60,8 +58,7 @@ public class TreeParityMachine implements Training {
     }
 
     public int[] getTPMParams() {
-        int[] params = {n, k};
-        return params;
+        return new int[]{n, k};
     }
 
     @Override

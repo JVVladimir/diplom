@@ -8,8 +8,8 @@ public class ResponseData extends Data implements Serializable {
 
     private final int command;
 
-    public ResponseData(int command, short[] vector, short out) {
-        super(vector, out);
+    public ResponseData(int command, short[] in, short out) {
+        super(in, out);
         this.command = command;
     }
 
@@ -39,7 +39,7 @@ public class ResponseData extends Data implements Serializable {
     public String toString() {
         return "ResponseData{" +
                 "command=" + command +
-                ", input=" + Arrays.toString(input) +
+                ", in=" + Arrays.toString(in) +
                 ", out=" + out +
                 '}';
     }

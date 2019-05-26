@@ -4,16 +4,16 @@ import java.io.Serializable;
 
 public abstract class Data implements Serializable {
 
-    final short[] input;
+    final short[] in;
     final short out;
 
-    public Data(short[] input, short out) {
-        this.input = input;
+    public Data(short[] in, short out) {
+        this.in = in;
         this.out = out;
     }
 
-    public short[] getInput() {
-        return input;
+    public short[] getIn() {
+        return in;
     }
 
     public short getOut() {
