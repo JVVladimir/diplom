@@ -2,6 +2,12 @@ package ru.hse;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.hse.arduino.ArduinoController;
+import ru.hse.arduino.Controller;
+import ru.hse.business.SlaveSynchronizationManager;
+import ru.hse.business.SynchronizationManager;
+import ru.hse.business.entity.RequestData;
+import ru.hse.business.entity.ResponseData;
 import ru.hse.learning_algorithm.LearningParadigm;
 import ru.hse.learning_algorithm.TPMTrainer;
 import ru.hse.tree_parity_machine.TreeParityMachine;
@@ -14,6 +20,7 @@ public class TestTPM {
     // key = 256 bit   8*16 = 128 + *2 т.к. берём два бита с каждого числа
     // byte arduino 0 - 255 - чистые 8 бит
     //
+
 
     @Test
     void testTpm() {
@@ -40,6 +47,35 @@ public class TestTPM {
         Assertions.assertArrayEquals(t1.getSecretKey(), t2.getSecretKey(), "ДМЧ не синхронизировались!");
         //System.out.println(weightToKey(t1.getSecretKey(), (short) 32, 8, (short) 2));
     }
+
+
+    @Test
+    void testArduinoTpm() {
+        TreeParityMachine tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
+        int[] p = tpm1.getTPMParams();
+
+        SynchronizationManager manager = new SlaveSynchronizationManager();
+
+        int i = 0;
+        manager.initWeights();
+
+
+        short[] input = Random.getInts(p[0]*p[1], -1, 1);
+        manager.setOut2(tpm1.getOutput(input));
+        while (i < 150) {
+            i++;
+            RequestData requestData = manager.train();
+            manager.setInput(requestData.getIn());
+            input = Random.getInts(p[0]*p[1], -1, 1);
+            manager.setOut2(tpm1.getOutput(input));
+        }
+        manager.syncDone();
+        System.out.println("1: " + Arrays.toString(tpm1.getSecretKey()));
+        System.out.println(Arrays.toString(manager.getKey()));
+
+
+    }
+
 
     char[] weightToKey(short[] key, short lenKey, int typeLen, short l) {
         int c = 0;

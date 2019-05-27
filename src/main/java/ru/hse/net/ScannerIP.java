@@ -19,8 +19,9 @@ public class ScannerIP {
     public List<String> getNetworkIPs() {
         byte[] ip;
         try (final DatagramSocket socket = new DatagramSocket()) {
-            socket.connect(InetAddress.getByName("1.1.1.1"), 7777);
+            socket.connect(InetAddress.getByName("7.7.7.7"), 7788);
             ip = socket.getLocalAddress().getAddress();
+            ip = InetAddress.getLocalHost().getAddress();
         }catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -64,5 +65,9 @@ public class ScannerIP {
             }
             return null;
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new ScannerIP().getNetworkIPs());
     }
 }

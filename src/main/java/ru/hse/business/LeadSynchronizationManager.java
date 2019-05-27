@@ -35,14 +35,11 @@ public class LeadSynchronizationManager extends SynchronizationManager {
             case TRAIN:
                 input = requestData.getIn();
                 taskDone = true;
-                log.info("Current train epoch: {}", epochs);
                 epochs++;
                 break;
             case SYNC_DONE:
                 taskDone = true;
                 curCommand = NOP;
-                log.info("Epochs trained: {}", epochs);
-                log.info("Arduino weight: {}", requestData.getWeight());
                 epochs = 0;
                 isSync = true;
                 break;
@@ -60,7 +57,6 @@ public class LeadSynchronizationManager extends SynchronizationManager {
     public void handleResponse(ResponseData responseData) {
         controller.sendMessage(responseData);
         curCommand = responseData.getCommand();
-        log.info("Command was sent: {}, responseData: {}", curCommand, responseData);
     }
 
     // TODO: в будущем добавить функцию, которая будет задавать параметры ДМЧ в Ардуино
@@ -78,7 +74,7 @@ public class LeadSynchronizationManager extends SynchronizationManager {
     public RequestData initInput() {
         handleResponse(new ResponseData(INIT_X));
         waitTask();
-        log.info("Input generated: {}, out: {} абонент 1", requestData.getIn(), requestData.getOut());
+        log.info("Input generated: {}, out: {}", requestData.getIn(), requestData.getOut());
         return requestData;
     }
 
@@ -87,7 +83,7 @@ public class LeadSynchronizationManager extends SynchronizationManager {
     public RequestData train() {
         handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
-        log.info("Input got: {}, out got: {} абонент 1", requestData.getIn(), requestData.getOut());
+     //   log.info("Input: {}, out: {}", requestData.getIn(), requestData.getOut());
         return requestData;
     }
 

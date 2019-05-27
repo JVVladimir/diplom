@@ -48,7 +48,6 @@ public abstract class SynchronizationManager implements Handler {
     public abstract RequestData syncDone();
 
     protected boolean validateRequestData(RequestData requestData) {
-        log.info("Current command: {},  data received: {}", curCommand, requestData);
         if (!requestData.isOk()) {
             log.error("Bad response from Controller no Ok code");
             return false;
@@ -97,5 +96,13 @@ public abstract class SynchronizationManager implements Handler {
 
     public short getOut2() {
         return out2;
+    }
+
+    public void setOut(short out) {
+        this.out = out;
+    }
+
+    public short getOut() {
+        return out;
     }
 }

@@ -42,7 +42,6 @@ public class NetManagerLead implements ConnectionListener {
 
     @Override
     public void onReceivedMessage(Connection connection, Object data) {
-        log.info("Message received: {}", data);
         if (data instanceof Message) {
             Message message = (Message) data;
             switch (message.getCommand()) {
@@ -57,12 +56,10 @@ public class NetManagerLead implements ConnectionListener {
                     break;
                 case INIT_X:
                     synchronizationManager.setOut2(message.getOut());
-                    log.info("Выход с абонента 2: {}", message.getOut());
                     responseReceived = true;
                     break;
                 case TRAIN:
                     synchronizationManager.setOut2(message.getOut());
-                    log.info("Выход с абонента 2: {}", message.getOut());
                     responseReceived = true;
                     break;
                 case SYNC_DONE:
@@ -89,7 +86,6 @@ public class NetManagerLead implements ConnectionListener {
                     }
                     Map.Entry<String, String> entry = map.entrySet().iterator().next();
                     log.info("Found user: {}", entry);
-                    // String name = entry.getValue();
                     String ip = entry.getKey();
                     try {
                         connection = new Connection(this, ip, PORT);
@@ -103,34 +99,28 @@ public class NetManagerLead implements ConnectionListener {
                     break;
                 case "w":
                     synchronizationManager.initWeights();
-                    log.info("Веса сгенерированы!");
                     connection.sendMessage(new Message(INIT_W));
                     waitResponse();
                     break;
                 case "i":
                     data = synchronizationManager.initInput();
-                    log.info("Новый вход и выход получены (input) абонент 1: {}", data);
                     connection.sendMessage(new Message(INIT_X, data.getIn(), data.getOut()));
                     waitResponse();
-                    // System.exit(0);
                     break;
                 case "t":
                     while (true) {
                         data = synchronizationManager.train();
                         epochs++;
-                        log.info("Новый вход и выход получены (train) абонент 1: {}", data);
-                        log.info("Выход абонента 1 и 2: {}, {}", data.getOut(), synchronizationManager.getOut2());
                         limit = data.getOut() == synchronizationManager.getOut2() ? ++limit : 0;
                         if(epochs == EPOCHS_MAX || limit == SYNC_LIMIT)
                             break;
                         connection.sendMessage(new Message(TRAIN, data.getIn(), data.getOut()));
                         waitResponse();
-                        log.info("Текущая эпоха: {}", epochs);
                     }
+                    log.info("epochs: {}", epochs);
                     connection.sendMessage(new Message(SYNC_DONE));
                     waitResponse();
                     key = Encrypter.toBytes(synchronizationManager.syncDone().getWeight());
-                    log.info("Сгенерированный ключ: {}", key);
                     isReady = true;
                     break;
                 default:
