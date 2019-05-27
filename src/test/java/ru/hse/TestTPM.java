@@ -22,13 +22,16 @@ public class TestTPM {
         TreeParityMachine t2 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         int[] p = t1.getTPMParams();
         TPMTrainer trainer = new TPMTrainer();
+        System.out.println(p[0] + "   " + p[1]);
         short[] input = Random.getInts(p[0]*p[1], -1, 1);
         while (i < epochs) {
             i++;
             short out2 = t2.getOutput(input);
             short out1 = t1.getOutput(input);
             trainer.synchronize(t1, input, out2);
-
+            System.out.print(out1 + " : ");
+            System.out.println(out2);
+            //short out1 = t1.getOutput(input);
             //out1 = t1.getOutput(input);
 
             trainer.synchronize(t2, input, out1);

@@ -30,7 +30,7 @@ public abstract class SynchronizationManager implements Handler {
 
     protected short[] key;
 
-    protected volatile boolean taskDone;
+    protected boolean taskDone;
     protected RequestData requestData;
 
     // TODO: сделать автоопределение подключённых портов (Надо будет на GUI вызвать функцию определения всех портов и из списка их выбирать)
@@ -48,7 +48,7 @@ public abstract class SynchronizationManager implements Handler {
     public abstract RequestData syncDone();
 
     protected boolean validateRequestData(RequestData requestData) {
-        log.info("Current command: {},  data received: {}", curCommand, requestData);
+        //log.info("Current command: {},  data received: {}", curCommand, requestData);
         if (!requestData.isOk()) {
             log.error("Bad response from Controller no Ok code");
             return false;
@@ -57,9 +57,14 @@ public abstract class SynchronizationManager implements Handler {
     }
 
     // TODO: подумать не переделать ли под поток, возвращающий результат задачи
-    protected void waitTask() {
-        while (!taskDone)
-            Thread.yield();
+    protected synchronized void waitTask() {
+        while (!taskDone) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         taskDone = false;
     }
 

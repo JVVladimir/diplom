@@ -29,18 +29,27 @@ public class UsersSearcher implements ConnectionListener {
 
     public Map<String, String> search() {
         List<String> ips = scannerIP.getNetworkIPs();
+        ips.remove("192.168.1.65");
         log.info("Available ips: {}", ips);
         for (String ip : ips) {
             try {
                 Connection connection = new Connection(this, ip, port);
                 listConnections.add(connection);
                 connection.sendMessage(new Message(SAME_PROGRAM));
-            } catch (RuntimeException ex) {
+            } catch (RuntimeException ignored) {
             }
         }
-        while(listConnections.size() != 0)
-            Thread.yield();
+        waitConnections();
         return map;
+    }
+
+    private synchronized void waitConnections() {
+        try {
+            while(listConnections.size() != 0)
+                wait();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -49,11 +58,18 @@ public class UsersSearcher implements ConnectionListener {
             map.put(connection.getRemoteIP(), ((Message) requestData).getName());
             listConnections.remove(connection);
         }
+        checkWakeUp();
     }
 
     @Override
     public void onConnectionException(Connection connection, Throwable ex) {
         listConnections.remove(connection);
-        log.info("IP address disabled: {}",connection.getRemoteIP());
+        log.info("IP address disabled: {}", connection.getRemoteIP());
+        checkWakeUp();
+    }
+
+    private synchronized void checkWakeUp() {
+        if(listConnections.size() == 0)
+            notifyAll();
     }
 }

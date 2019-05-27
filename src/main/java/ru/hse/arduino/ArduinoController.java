@@ -73,13 +73,13 @@ public class ArduinoController implements Controller {
             } catch (SerialPortException e) {
                 throw new ControllerException("Ошибка в чтении данных!");
             }
-            log.info("Received requestData of size: {}, requestData: {}", newData.length(), newData);
+            //log.info("Received requestData of size: {}, requestData: {}", newData.length(), newData);
             try {
                 count++;
                 str.append(newData);
                 try {
                     newEntity = gson.fromJson(str.toString(), RequestData.class);
-                    log.info("RequestData recieved: {}", newEntity);
+              //      log.info("RequestData recieved: {}", newEntity);
                     str = new StringBuilder();
                     count = 0;
                 } catch (JsonSyntaxException ignored) {
@@ -114,7 +114,7 @@ public class ArduinoController implements Controller {
         } catch (SerialPortException e) {
             throw new ControllerException("Ошибка при отправке данных!");
         }
-        log.info("Сообщение отправлено: {}!", message);
+     //   log.info("Сообщение отправлено: {}!", message);
     }
 
     @Override

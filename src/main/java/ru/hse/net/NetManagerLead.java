@@ -112,7 +112,6 @@ public class NetManagerLead implements ConnectionListener {
                     log.info("Новый вход и выход получены (input) абонент 1: {}", data);
                     connection.sendMessage(new Message(INIT_X, data.getIn(), data.getOut()));
                     waitResponse();
-                    // System.exit(0);
                     break;
                 case "t":
                     while (true) {

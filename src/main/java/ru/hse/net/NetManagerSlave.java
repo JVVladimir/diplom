@@ -43,7 +43,6 @@ public class NetManagerSlave implements ConnectionListener {
 
     @Override
     public void onReceivedMessage(Connection connection, Object data) {
-        log.info("Message received: {}", data);
         if (data instanceof Message) {
             Message message = (Message) data;
             RequestData res;
@@ -60,15 +59,20 @@ public class NetManagerSlave implements ConnectionListener {
                 case INIT_X:
                     synchronizationManager.setInput(message.getInput());
                     synchronizationManager.setOut2(message.getOut());
-                    log.info("Вход и выход от абонента 1 {}", message);
+                    log.info("out1: {}", message.getOut());
                     res = synchronizationManager.train();
+                    log.info("out2: {}", res.getOut());
+                    log.info("******************************");
                     connection.sendMessage(new Message(INIT_X, null, res.getOut()));
                     break;
                 case TRAIN:
                     synchronizationManager.setInput(message.getInput());
                     synchronizationManager.setOut2(message.getOut());
-                    log.info("Вход и выход от абонента 1 {}", message);
+
+                    //log.info("out1: {}", message.getOut());
                     res = synchronizationManager.train();
+                    //log.info("out2: {}", res.getOut());
+                    //log.info("******************************");
                     connection.sendMessage(new Message(TRAIN, null, res.getOut()));
                     break;
                 case SYNC_DONE:

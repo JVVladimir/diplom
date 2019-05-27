@@ -22,25 +22,24 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
             return;
         }
         this.requestData = requestData;
+        wakeUp();
         switch (curCommand) {
             case INIT_W_SLAVE:
-                taskDone = true;
                 epochs = 0;
                 break;
             case TRAIN:
-                taskDone = true;
-                log.info("Current train epoch: {}", epochs);
-                log.info("Current out: {}", requestData.getOut());
                 epochs++;
                 break;
             case SYNC_DONE:
-                taskDone = true;
                 curCommand = NOP;
-                log.info("Epochs trained: {}", epochs);
-                log.info("Arduino weight: {}", requestData.getWeight());
                 epochs = 0;
                 break;
         }
+    }
+
+    private synchronized void wakeUp() {
+        taskDone = true;
+        notifyAll();
     }
 
     private void resendCurrentCommand() {
@@ -54,7 +53,7 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
     public void handleResponse(ResponseData responseData) {
         controller.sendMessage(responseData);
         curCommand = responseData.getCommand();
-        log.info("Command was sent: {}, responseData: {}", curCommand, responseData);
+      //  log.info("Command was sent: {}, responseData: {}", curCommand, responseData);
     }
 
     // TODO: в будущем добавить функцию, которая будет задавать параметры ДМЧ в Ардуино
@@ -63,7 +62,6 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
     public RequestData initWeights() {
         handleResponse(new ResponseData(INIT_W_SLAVE));
         waitTask();
-        log.info("Weights generated");
         return requestData;
     }
 
@@ -77,7 +75,6 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
     public RequestData train() {
         handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
-        log.info("Выход получен out: {} абонент 2", requestData.getOut());
         return requestData;
     }
 
