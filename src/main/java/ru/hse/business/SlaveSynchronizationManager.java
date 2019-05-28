@@ -22,19 +22,17 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
             return;
         }
         this.requestData = requestData;
+        taskDone = true;
         switch (curCommand) {
             case INIT_W_SLAVE:
-                taskDone = true;
                 epochs = 0;
                 break;
             case TRAIN:
-                taskDone = true;
                 log.info("Current train epoch: {}", epochs);
                 log.info("Current out: {}", requestData.getOut());
                 epochs++;
                 break;
             case SYNC_DONE:
-                taskDone = true;
                 curCommand = NOP;
                 log.info("Epochs trained: {}", epochs);
                 log.info("Arduino weight: {}", requestData.getWeight());
@@ -45,7 +43,7 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     private void resendCurrentCommand() {
         if (curCommand == TRAIN)
-            handleResponse(new ResponseData(curCommand, requestData.getIn(), requestData.getOut()));
+            handleResponse(new ResponseData(curCommand, requestData.getInput(), requestData.getOut()));
         else
             handleResponse(new ResponseData(curCommand));
     }
@@ -74,8 +72,8 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     // requestData - вынуть из неё out
     @Override
-    public RequestData train() {
-        handleResponse(new ResponseData(TRAIN, input, out2));
+    public RequestData train(RequestData data) {
+        handleResponse(new ResponseData(TRAIN, data.getInput(), data.getOut()));
         waitTask();
         log.info("Выход получен out: {} абонент 2", requestData.getOut());
         return requestData;

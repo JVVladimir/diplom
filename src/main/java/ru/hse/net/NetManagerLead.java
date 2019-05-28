@@ -104,17 +104,17 @@ public class NetManagerLead implements ConnectionListener {
                     break;
                 case "i":
                     data = synchronizationManager.initInput();
-                    connection.sendMessage(new Message(INIT_X, data.getIn(), data.getOut()));
+                    connection.sendMessage(new Message(INIT_X, data.getInput(), data.getOut()));
                     waitResponse();
                     break;
                 case "t":
                     while (true) {
-                        data = synchronizationManager.train();
+                        data = synchronizationManager.train(null);
                         epochs++;
                         limit = data.getOut() == synchronizationManager.getOut2() ? ++limit : 0;
                         if(epochs == EPOCHS_MAX || limit == SYNC_LIMIT)
                             break;
-                        connection.sendMessage(new Message(TRAIN, data.getIn(), data.getOut()));
+                        connection.sendMessage(new Message(TRAIN, data.getInput(), data.getOut()));
                         waitResponse();
                     }
                     log.info("epochs: {}", epochs);

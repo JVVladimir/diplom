@@ -58,17 +58,13 @@ public class NetManagerSlave implements ConnectionListener {
                     connection.sendMessage(new Message(INIT_W));
                     break;
                 case INIT_X:
-                    synchronizationManager.setInput(message.getInput());
-                    synchronizationManager.setOut2(message.getOut());
                     log.info("Вход и выход от абонента 1 {}", message);
-                    res = synchronizationManager.train();
+                    res = synchronizationManager.train(new RequestData(message.getInput(), message.getOut(), 0, 0, null));
                     connection.sendMessage(new Message(INIT_X, null, res.getOut()));
                     break;
                 case TRAIN:
-                    synchronizationManager.setInput(message.getInput());
-                    synchronizationManager.setOut2(message.getOut());
                     log.info("Вход и выход от абонента 1 {}", message);
-                    res = synchronizationManager.train();
+                    res = synchronizationManager.train(new RequestData(message.getInput(), message.getOut(), 0, 0, null));
                     connection.sendMessage(new Message(TRAIN, null, res.getOut()));
                     break;
                 case SYNC_DONE:

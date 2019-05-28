@@ -29,11 +29,11 @@ public class LeadSynchronizationManager extends SynchronizationManager {
                 isSync = false;
                 break;
             case INIT_X:
-                input = requestData.getIn();
+                input = requestData.getInput();
                 taskDone = true;
                 break;
             case TRAIN:
-                input = requestData.getIn();
+                input = requestData.getInput();
                 taskDone = true;
                 epochs++;
                 break;
@@ -74,16 +74,16 @@ public class LeadSynchronizationManager extends SynchronizationManager {
     public RequestData initInput() {
         handleResponse(new ResponseData(INIT_X));
         waitTask();
-        log.info("Input generated: {}, out: {}", requestData.getIn(), requestData.getOut());
+        log.info("Input generated: {}, out: {}", requestData.getInput(), requestData.getOut());
         return requestData;
     }
 
     // requestData - вынуть из неё out
     @Override
-    public RequestData train() {
+    public RequestData train(RequestData data) {
         handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
-     //   log.info("Input: {}, out: {}", requestData.getIn(), requestData.getOut());
+     //   log.info("Input: {}, out: {}", requestData.getInput(), requestData.getOut());
         return requestData;
     }
 

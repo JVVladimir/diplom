@@ -12,7 +12,7 @@ public abstract class Data implements Serializable {
         this.out = out;
     }
 
-    public short[] getIn() {
+    public short[] getInput() {
         return in;
     }
 

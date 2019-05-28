@@ -36,14 +36,14 @@ public abstract class SynchronizationManager implements Handler {
     // TODO: сделать автоопределение подключённых портов (Надо будет на GUI вызвать функцию определения всех портов и из списка их выбирать)
     protected SynchronizationManager(int mode) {
         INIT_W = mode;
-        this.controller = new ArduinoController(this, ArduinoController.getConnectedComPorts()[0], 115200);
+        this.controller = new ArduinoController(this, ArduinoController.getConnectedComPorts()[1], 115200);
     }
 
     public abstract RequestData initWeights();
 
     public abstract RequestData initInput();
 
-    public abstract RequestData train();
+    public abstract RequestData train(RequestData data);
 
     public abstract RequestData syncDone();
 
