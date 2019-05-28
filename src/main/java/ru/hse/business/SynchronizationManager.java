@@ -94,6 +94,10 @@ public abstract class SynchronizationManager implements Handler {
         this.input = input;
     }
 
+    public short[] getInput() {
+        return input;
+    }
+
     public short getOut2() {
         return out2;
     }

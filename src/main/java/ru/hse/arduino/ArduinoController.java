@@ -78,7 +78,7 @@ public class ArduinoController implements Controller {
                 str.append(newData);
                 try {
                     newEntity = gson.fromJson(str.toString(), RequestData.class);
-                    //log.info("RequestData recieved: {}", newEntity);
+                    log.info("RequestData recieved: {}", newEntity);
                     str = new StringBuilder();
                     count = 0;
                 } catch (JsonSyntaxException ignored) {
