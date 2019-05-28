@@ -94,6 +94,7 @@ public class NetManagerLead implements ConnectionListener {
             return;
         }
 
+        clientGUI.setMapClient(map);
         new Thread(clientGUI::startApp).start();
 
         while (clientGUI.getComPort().equals("")) { Thread.yield();}

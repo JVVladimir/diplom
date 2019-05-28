@@ -104,7 +104,7 @@ public class StartWindowController {
                     //
                     chatController = new ChatController();
                     chatController.openChatWindow(COM_PORT);
-                    //chatController.setClientList(list);
+                    chatController.setClientList(list);
 
                 } catch (IOException e) { }
             }

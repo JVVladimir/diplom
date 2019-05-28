@@ -36,10 +36,10 @@ public class ChatController {
     public AnchorPane rootPane;
     public AnchorPane backgroundPane;
     public AnchorPane loadPane;
-    //public JFXDrawer listUsers;
-    // public AnchorPane usersPane;
-    //public ScrollPane usersScroll;
-    //public VBox usersBox;
+    public JFXDrawer listUsers;
+     public AnchorPane usersPane;
+    public ScrollPane usersScroll;
+    public VBox usersBox;
     public AnchorPane chatPane;
     public TextArea msgText;
     public ScrollPane scrollMsg;
@@ -51,12 +51,13 @@ public class ChatController {
     private final int WINDOW_WIDTH = 610;
     private final int WINDOW_HEIGHT = 575;
 
-    //ObservableList<Client> clients;
+    ObservableList<Client> clients;
 
     private String USERNAME = "user";
 
     private Client actualPerson;
     private List<HBox> actualHistory = new ArrayList<>();
+
 
 
     public void openChatWindow(String username) throws IOException {
@@ -68,7 +69,6 @@ public class ChatController {
         VBox vbox = new VBox(5);
         vbox.setPadding(new Insets(10));
         vbox.setAlignment(Pos.CENTER);
-        /*clients = FXCollections.observableArrayList();
 
         ListView<Client> lvClients = new ListView<>();
         lvClients.setCellFactory(listView -> new ListCell<Client>() {
@@ -88,7 +88,7 @@ public class ChatController {
                 }
             }
         });
-        lvClients.setItems(clients);*/
+        lvClients.setItems(clients);
 
         stage.setScene(scene);
         stage.setTitle("SecretChat" + ": " + USERNAME);
@@ -96,10 +96,11 @@ public class ChatController {
         stage.show();
     }
 
+    /*
     //todo: если клиент лист поменялся -  испопльзуем метод getUser, чтоб получить текущий список пользователей и только потом удаляем оттуда пользователей которые вышли и добавляем новых пользователей, которые вошли
     //todo: затем используем этот метод - обязательно!!!
     public void updateListOnlineUsers(List<Client> clientList)  {
-        /*this.actualPerson = null;
+        this.actualPerson = null;
         this.actualHistory = new ArrayList<>();
         this.clientList = clientList;
         Platform.runLater(() -> usersBox.getChildren().clear());
@@ -134,8 +135,8 @@ public class ChatController {
             container.getChildren().add(userDetailContainer);
 
             Platform.runLater(() -> usersBox.getChildren().add(container));
-        }*/
-    }
+        }
+    }*/
 
 
     private void updateChat(String username,String message) {
@@ -202,11 +203,11 @@ public class ChatController {
         updateChat(this.actualPerson.getName(), msg);
     }
 
-  //  public List<Client> getClientList(){ return new ArrayList<>(clients); }
+   public List<Client> getClientList(){ return new ArrayList<>(clients); }
 
-  /*  public void setClientList(List<Client> clientList) {
+    public void setClientList(List<Client> clientList) {
         this.clients = FXCollections.observableArrayList();
         this.clients.addAll(clientList);
-    }*/
+    }
 
 }
