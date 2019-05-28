@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import ru.hse.GUI.ClientGUI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +27,10 @@ public class StartWindowController {
     private String COM_PORT = "";
     private ChatController chatController;
 
-    public StartWindowController(List<String> listCOMPorts) {
+    private ClientGUI clientGUI;
+
+    public StartWindowController(List<String> listCOMPorts, ClientGUI clientGUI) {
+        this.clientGUI = clientGUI;
         openStartWindow(getComPorts(listCOMPorts));
     }
 
@@ -90,8 +94,9 @@ public class StartWindowController {
             if (table.getSelectionModel().getSelectedItem() != null) {
                 textError.setText("");
                 COM_PORT = table.getSelectionModel().getSelectedItem();
+                this.clientGUI.setComPort(COM_PORT);
                 stage.close();
-                // todo: COM_PORT преобразовать в имя пользователя
+
                 try {
                     //todo: запрос на получения списка онлайн пользователей
                     List<Client> list = new ArrayList<>();
@@ -100,6 +105,7 @@ public class StartWindowController {
                     chatController = new ChatController();
                     chatController.openChatWindow(COM_PORT);
                     //chatController.setClientList(list);
+
                 } catch (IOException e) { }
             }
             else {
@@ -111,9 +117,6 @@ public class StartWindowController {
         stage.show();
     }
 
-    public String getCOM_PORT(){ return COM_PORT; }
-
-    public ChatController getChatController() { return chatController; }
 
     private ObservableList<String> getComPorts(List<String> list){
         ObservableList<String> observableList = FXCollections.observableArrayList();

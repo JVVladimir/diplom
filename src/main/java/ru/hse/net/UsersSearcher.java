@@ -51,6 +51,7 @@ public class UsersSearcher implements ConnectionListener {
         }
     }
 
+
     @Override
     public void onConnectionException(Connection connection, Throwable ex) {
         listConnections.remove(connection);

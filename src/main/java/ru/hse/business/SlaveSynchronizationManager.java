@@ -11,8 +11,8 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
 
     private static final int INIT_W_SLAVE = 10;
 
-    public SlaveSynchronizationManager() {
-        super(INIT_W_SLAVE);
+    public SlaveSynchronizationManager(String COMPort) {
+        super(INIT_W_SLAVE, COMPort);
     }
 
     @Override
@@ -58,7 +58,6 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
     }
 
     // TODO: в будущем добавить функцию, которая будет задавать параметры ДМЧ в Ардуино
-    // requestData - проверка, что не null
     @Override
     public RequestData initWeights() {
         handleResponse(new ResponseData(INIT_W_SLAVE));
@@ -72,7 +71,6 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
         throw new RuntimeException("Not supported operation!");
     }
 
-    // requestData - вынуть из неё out
     @Override
     public RequestData train() {
         handleResponse(new ResponseData(TRAIN, input, out2));
@@ -81,7 +79,6 @@ public class SlaveSynchronizationManager extends SynchronizationManager implemen
         return requestData;
     }
 
-    // requestData - вынуть из неё ключ
     @Override
     public RequestData syncDone() {
         handleResponse(new ResponseData(SYNC_DONE));

@@ -1,30 +1,32 @@
 package ru.hse.GUI;
 
-
 import javafx.application.Application;
 import javafx.stage.Stage;
-import ru.hse.GUI.controller.ChatController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.hse.GUI.controller.StartWindowController;
+import ru.hse.arduino.ArduinoController;
+import java.util.Arrays;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ClientGUI extends Application {
 
+    private static final Logger log = LoggerFactory.getLogger(ClientGUI.class);
 
-    public static void main(String[] args) throws IOException {
-        launch(args);
-    }
+    private String comPort = "";
+
+    public void startApp() { launch(null); }
+
+    public void setComPort(String comPort) { this.comPort = comPort; }
+
+    public String getComPort() { return this.comPort; }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        List<String> listCOMPorts = new ArrayList<>();
-        listCOMPorts.add("COM11111");
-        listCOMPorts.add("COM121111");
-        listCOMPorts.add("COM1333331111");
-        listCOMPorts.add("COM6654111144351");
-        StartWindowController startWindowController = new StartWindowController(listCOMPorts);
+    public void start(Stage primaryStage) {
+        String[] comPorts = ArduinoController.getConnectedComPorts();
+        if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
+        else new StartWindowController(Arrays.asList(comPorts), this);
     }
+
 }

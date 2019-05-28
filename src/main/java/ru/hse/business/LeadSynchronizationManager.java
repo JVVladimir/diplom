@@ -11,8 +11,8 @@ public class LeadSynchronizationManager extends SynchronizationManager {
 
     private static final int INIT_W_LEAD = 1;
 
-    public LeadSynchronizationManager() {
-        super(INIT_W_LEAD);
+    public LeadSynchronizationManager(String COMPort) {
+        super(INIT_W_LEAD, COMPort);
     }
 
     @Override
@@ -60,7 +60,6 @@ public class LeadSynchronizationManager extends SynchronizationManager {
     }
 
     // TODO: в будущем добавить функцию, которая будет задавать параметры ДМЧ в Ардуино
-    // requestData - проверка, что не null
     @Override
     public RequestData initWeights() {
         handleResponse(new ResponseData(INIT_W_LEAD));
@@ -69,7 +68,6 @@ public class LeadSynchronizationManager extends SynchronizationManager {
         return requestData;
     }
 
-    // requestData - вынуть вход и выход
     @Override
     public RequestData initInput() {
         handleResponse(new ResponseData(INIT_X));
@@ -78,16 +76,13 @@ public class LeadSynchronizationManager extends SynchronizationManager {
         return requestData;
     }
 
-    // requestData - вынуть из неё out
     @Override
     public RequestData train() {
         handleResponse(new ResponseData(TRAIN, input, out2));
         waitTask();
-     //   log.info("Input: {}, out: {}", requestData.getIn(), requestData.getOut());
         return requestData;
     }
 
-    // requestData - вынуть из неё ключ
     @Override
     public RequestData syncDone() {
         handleResponse(new ResponseData(SYNC_DONE));
