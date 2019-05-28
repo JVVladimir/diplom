@@ -25,10 +25,15 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import ru.hse.GUI.ClientGUILead;
+import ru.hse.net.Message;
+import ru.hse.net.NetManagerLead;
+import ru.hse.utils.Encrypter;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChatController {
@@ -51,36 +56,33 @@ public class ChatController {
     private final int WINDOW_WIDTH = 610;
     private final int WINDOW_HEIGHT = 575;
 
-    ObservableList<Client> clients;
+    public static ObservableList<Client> clients;
 
     private String USERNAME = "user";
 
     private Client actualPerson;
     private List<HBox> actualHistory = new ArrayList<>();
+    private static ClientGUILead clientGUILead;
 
     @FXML
     void initialize() {
-        System.out.println("2");
-        updateListOnlineUsers(this.clients);
+        updateListOnlineUsers(clients);
+        if (clients.size()>1) clientGUILead.generateKey();
     }
 
     public ChatController() {}
 
-    public ChatController(List<Client> clients)  {
-        System.out.println("1");
-        this.clients = FXCollections.observableArrayList();
-        this.clients.addAll(clients);
+    public ChatController(List<Client> cl)  {
+        clients = FXCollections.observableArrayList();
+        clients.addAll(cl);
     }
 
-    public void openChatWindow(String comport) throws IOException {
-        System.out.println("3");
+    public void openChatWindow(String comport, ClientGUILead clientGUI) throws IOException {
+        clientGUILead = clientGUI;
         USERNAME = System.getProperty("user.name");
         stage = new Stage();
-
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("chat.fxml"));
-
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
         stage.setScene(scene);
         stage.setTitle("SecretChat" + ": " + USERNAME);
         stage.getIcons().add(new Image("icon.jpeg"));
@@ -134,7 +136,7 @@ public class ChatController {
         this.actualHistory = new ArrayList<>();
         Platform.runLater(() -> usersBox.getChildren().clear());
         for(Client client : cl) {
-            if (client.getName().equals(USERNAME)) continue;
+            if (client.getName().equals(System.getProperty("user.name"))) continue;
             if (this.actualPerson == null) this.actualPerson = client;
             HBox container = new HBox();
             container.setAlignment(Pos.CENTER_LEFT);
@@ -175,11 +177,15 @@ public class ChatController {
     @FXML
     private void sendAction(ActionEvent event) {
         if(msgText.getText().trim().equals(""))return;
-        updateChat(USERNAME, msgText.getText());
-        //todo ради теста
-        if (actualPerson != null) acceptMessage(msgText.getText());
-        msgText.setText("");
+        if (clientGUILead.isReady) {
+            clientGUILead.netManagerLead.connection.sendMessage(
+                    new Message(NetManagerLead.SEND, System.getProperty("user.name"),
+                            Encrypter.encrypt(msgText.getText().getBytes(), clientGUILead.netManagerLead.key)));
+            updateChat(USERNAME, msgText.getText());
+            msgText.setText("");
+        }
     }
+
 
     public void acceptMessage(String msg) {
         if(msg.equals(""))return;

@@ -2,43 +2,38 @@ package ru.hse.net;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.hse.GUI.ClientGUI;
-import ru.hse.arduino.ArduinoController;
-import ru.hse.business.LeadSynchronizationManager;
 import ru.hse.business.SynchronizationManager;
-import ru.hse.business.entity.RequestData;
 import ru.hse.utils.Encrypter;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Scanner;
 
 public class NetManagerLead implements ConnectionListener {
 
     private static final Logger log = LoggerFactory.getLogger(NetManagerLead.class);
 
-    private static final int CONNECT = 200;
-    private static final int INIT_W = 201;
-    private static final int INIT_X = 202;
-    private static final int TRAIN = 203;
-    private static final int SYNC_DONE = 204;
-    private static final int SEND = 205;
-    private boolean isReady = false;
-    private byte[] key;
+    public static final int CONNECT = 200;
+    public static final int INIT_W = 201;
+    public static final int INIT_X = 202;
+    public static final int TRAIN = 203;
+    public static final int SYNC_DONE = 204;
+    public static final int SEND = 205;
+    public boolean isReady = false;
+    public byte[] key;
 
-    private int epochs, limit;
-    private static final int SYNC_LIMIT = 40;
-    private static final int EPOCHS_MAX = 150;
+    public int epochs, limit;
+    public static final int SYNC_LIMIT = 40;
+    public static final int EPOCHS_MAX = 150;
 
     private final static int PORT = 15600;
 
     private volatile boolean responseReceived;
 
     private Server server;
-    private Connection connection;
-    private SynchronizationManager synchronizationManager;
-    private  ClientGUI clientGUI;
+    public Connection connection;
+    public SynchronizationManager synchronizationManager;
+    public byte[] mes;
+    public boolean newMessage = false;
 
     public NetManagerLead() {
         server = new Server(this, PORT);
@@ -70,7 +65,9 @@ public class NetManagerLead implements ConnectionListener {
                     responseReceived = true;
                     break;
                 case SEND:
-                    System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
+                    newMessage = true;
+                    mes = message.getMessage();
+                    //System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
                     break;
             }
         }
@@ -94,48 +91,6 @@ public class NetManagerLead implements ConnectionListener {
             return null;
         }
         return map;
-
-        /*
-        Scanner scanner = new Scanner(System.in);
-        String message;
-        RequestData data;
-        while ((message = scanner.nextLine()) != null) {
-            switch (message) {
-                case "c":
-                case "w":
-                    synchronizationManager.initWeights();
-                    connection.sendMessage(new Message(INIT_W));
-                    waitResponse();
-                    break;
-                case "i":
-                    data = synchronizationManager.initInput();
-                    connection.sendMessage(new Message(INIT_X, data.getIn(), data.getOut()));
-                    waitResponse();
-                    break;
-                case "t":
-                    while (true) {
-                        data = synchronizationManager.train();
-                        epochs++;
-                        limit = data.getOut() == synchronizationManager.getOut2() ? ++limit : 0;
-                        if(epochs == EPOCHS_MAX || limit == SYNC_LIMIT)
-                            break;
-                        connection.sendMessage(new Message(TRAIN, data.getIn(), data.getOut()));
-                        waitResponse();
-                    }
-                    log.info("epochs: {}", epochs);
-                    connection.sendMessage(new Message(SYNC_DONE));
-                    waitResponse();
-                    key = Encrypter.toBytes(synchronizationManager.syncDone().getWeight());
-                    isReady = true;
-                    break;
-                default:
-                    if (isReady)
-                        connection.sendMessage(new Message(SEND, System.getProperty("user.name"), Encrypter.encrypt(message.getBytes(), key)));
-                    else
-                        log.info("Абоненты еще не синхронизировались!");
-                    break;
-            }
-        }*/
     }
 
     public void setSynchronizationManager(SynchronizationManager synchronizationManager) {
@@ -143,7 +98,7 @@ public class NetManagerLead implements ConnectionListener {
     }
 
     // TODO: подумать не переделать ли под поток, возвращающий результат задачи и таймер (вдруг задача не выполнится никогда)
-    private void waitResponse() {
+    public void waitResponse() {
         while (!responseReceived)
             Thread.yield();
         responseReceived = false;

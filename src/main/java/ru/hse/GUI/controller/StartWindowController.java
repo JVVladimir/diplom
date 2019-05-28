@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import ru.hse.GUI.ClientGUI;
+import ru.hse.GUI.ClientGUILead;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,10 +28,10 @@ public class StartWindowController {
     private String COM_PORT = "";
     private ChatController chatController;
 
-    private ClientGUI clientGUI;
+    private ClientGUILead clientGUILead;
 
-    public StartWindowController(List<String> listCOMPorts, ClientGUI clientGUI) {
-        this.clientGUI = clientGUI;
+    public StartWindowController(List<String> listCOMPorts, ClientGUILead clientGUILead) {
+        this.clientGUILead = clientGUILead;
         openStartWindow(getComPorts(listCOMPorts));
     }
 
@@ -95,19 +95,19 @@ public class StartWindowController {
             if (table.getSelectionModel().getSelectedItem() != null) {
                 textError.setText("");
                 COM_PORT = table.getSelectionModel().getSelectedItem();
-                this.clientGUI.setComPort(COM_PORT);
+                this.clientGUILead.setComPort(COM_PORT);
                 stage.close();
 
 
                     List<Client> listClients = new ArrayList<>();
-                    Map<String, String> map = this.clientGUI.getMap();
+                    Map<String, String> map = this.clientGUILead.getMap();
                     for (String key: map.keySet()){
                         listClients.add(new Client(map.get(key), new ArrayList<>()));
                     }
 
                     chatController = new ChatController(listClients);
                 try {
-                    chatController.openChatWindow(COM_PORT);
+                    chatController.openChatWindow(COM_PORT, this.clientGUILead);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
