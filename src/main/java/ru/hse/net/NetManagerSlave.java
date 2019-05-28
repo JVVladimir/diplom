@@ -8,6 +8,7 @@ import ru.hse.business.entity.RequestData;
 import ru.hse.utils.Encrypter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Scanner;
 
 public class NetManagerSlave implements ConnectionListener {
@@ -15,22 +16,24 @@ public class NetManagerSlave implements ConnectionListener {
     private static final Logger log = LoggerFactory.getLogger(NetManagerSlave.class);
 
 
-    private static final int CONNECT = 200;
-    private static final int INIT_W = 201;
-    private static final int INIT_X = 202;
-    private static final int TRAIN = 203;
-    private static final int SYNC_DONE = 204;
-    private static final int SEND = 205;
-    private boolean isReady = false;
-    private byte[] key;
+    public static final int CONNECT = 200;
+    public static final int INIT_W = 201;
+    public static final int INIT_X = 202;
+    public static final int TRAIN = 203;
+    public static final int SYNC_DONE = 204;
+    public static final int SEND = 205;
+    public boolean isReady = false;
+    private boolean isConnect = false;
+    private String userName = "";
+    public byte[] key;
 
     private final static int PORT = 15600;
 
     private volatile boolean responseReceived;
 
     private Server server;
-    private Connection connection;
-    private SynchronizationManager synchronizationManager;
+    public Connection connection;
+    public SynchronizationManager synchronizationManager;
 
     public NetManagerSlave() {
         server = new Server(this, PORT);
@@ -50,6 +53,8 @@ public class NetManagerSlave implements ConnectionListener {
             switch (message.getCommand()) {
                 case CONNECT:
                     isReady = false;
+                    isConnect = true;
+                    userName = message.getName();
                     connection.sendMessage(new Message(CONNECT));
                     synchronizationManager = new SlaveSynchronizationManager(null);
                     break;
@@ -85,16 +90,15 @@ public class NetManagerSlave implements ConnectionListener {
         }
     }
 
-    public void runApp() {
-        Scanner scanner = new Scanner(System.in);
-        String message;
-        while ((message = scanner.nextLine()) != null) {
-            if (isReady)
-                connection.sendMessage(new Message(SEND, System.getProperty("user.name"), Encrypter.encrypt(message.getBytes(), key)));
-            else
-                log.info("Абоненты еще не синхронизировались!");
-            break;
+    public String runApp() {
+        while(!isConnect) {
+            Thread.yield();
         }
+        return userName;
+    }
+
+    public void setSynchronizationManager(SynchronizationManager synchronizationManager) {
+        this.synchronizationManager = synchronizationManager;
     }
 
     // TODO: подумать не переделать ли под поток, возвращающий результат задачи и таймер (вдруг задача не выполнится никогда)
@@ -104,7 +108,4 @@ public class NetManagerSlave implements ConnectionListener {
         responseReceived = false;
     }
 
-    public static void main(String[] args) {
-        new NetManagerSlave().runApp();
-    }
 }

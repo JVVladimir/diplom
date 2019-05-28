@@ -2,6 +2,7 @@ package ru.hse.net;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.hse.GUI.ClientGUILead;
 import ru.hse.business.SynchronizationManager;
 import ru.hse.utils.Encrypter;
 
@@ -32,12 +33,8 @@ public class NetManagerLead implements ConnectionListener {
     private Server server;
     public Connection connection;
     public SynchronizationManager synchronizationManager;
-    public byte[] mes;
-    public boolean newMessage = false;
 
-    public NetManagerLead() {
-        server = new Server(this, PORT);
-    }
+    public NetManagerLead() { server = new Server(this, PORT); }
 
     @Override
     public void onReceivedMessage(Connection connection, Object data) {
@@ -65,9 +62,7 @@ public class NetManagerLead implements ConnectionListener {
                     responseReceived = true;
                     break;
                 case SEND:
-                    newMessage = true;
-                    mes = message.getMessage();
-                    //System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
+                    System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
                     break;
             }
         }

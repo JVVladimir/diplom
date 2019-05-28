@@ -104,7 +104,6 @@ public class StartWindowController {
                     for (String key: map.keySet()){
                         listClients.add(new Client(map.get(key), new ArrayList<>()));
                     }
-
                     chatController = new ChatController(listClients);
                 try {
                     chatController.openChatWindow(COM_PORT, this.clientGUILead);
@@ -121,8 +120,6 @@ public class StartWindowController {
         anchorPane.getChildren().addAll(titleWindow, textError, table, btnNext);
         stage.show();
     }
-
-
 
 
     private ObservableList<String> getComPorts(List<String> list){

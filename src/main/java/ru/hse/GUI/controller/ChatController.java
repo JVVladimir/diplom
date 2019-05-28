@@ -67,7 +67,7 @@ public class ChatController {
     @FXML
     void initialize() {
         updateListOnlineUsers(clients);
-        if (clients.size()>1) clientGUILead.generateKey();
+        //if (clients.size()>1) clientGUILead.generateKey();
     }
 
     public ChatController() {}
