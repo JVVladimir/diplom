@@ -69,7 +69,7 @@ public class ChatController {
     @FXML
     void initialize() {
         updateListOnlineUsers(clients);
-        if (clientGUILead!=null) clientGUILead.generateKey();
+        //if (clientGUILead!=null) clientGUILead.generateKey();
     }
 
     public ChatController() {}
@@ -79,10 +79,10 @@ public class ChatController {
         clients.addAll(cl);
     }
 
-    public void openChatWindow(String comport, ClientGUILead clientGUI) { clientGUILead = clientGUI; }
+    public void openChatWindow(ClientGUILead clientGUI) throws IOException { clientGUILead = clientGUI; createStage();}
 
 
-    public void openChatWindow(String comport, ClientGUISlave clientGUI)  { clientGUISlave = clientGUI; }
+    public void openChatWindow(ClientGUISlave clientGUI) throws IOException { clientGUISlave = clientGUI; createStage(); }
 
 
     public void createStage() throws IOException {
@@ -183,13 +183,23 @@ public class ChatController {
     @FXML
     private void sendAction(ActionEvent event) {
         if(msgText.getText().trim().equals(""))return;
-        if (clientGUILead.isReady) {
+        /*if (clientGUILead.isReady) {
             clientGUILead.netManagerLead.connection.sendMessage(
                     new Message(NetManagerLead.SEND, System.getProperty("user.name"),
-                            Encrypter.encrypt(msgText.getText().getBytes(), clientGUILead.netManagerLead.key)));
+                            Encrypter.encrypt(msgText.getText().getBytes(), clientGUILead.netManagerLead.key)));*/
+
+            if (clientGUILead!=null) {
+                clientGUILead.netManagerLead.connection.sendMessage(
+                        new Message(NetManagerLead.SEND, System.getProperty("user.name"), msgText.getText().getBytes())
+                );
+            }
+            else if (clientGUISlave!=null) {
+                clientGUISlave.netManagerSlave.connection.sendMessage(
+                        new Message(NetManagerLead.SEND, System.getProperty("user.name"), msgText.getText().getBytes())
+                );
+            }
             updateChat(USERNAME, msgText.getText());
             msgText.setText("");
-        }
     }
 
 

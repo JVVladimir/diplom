@@ -24,7 +24,7 @@ public class ClientGUILead extends Application {
     private static final Map<String, String> mapClient = netManagerLead.runApp();
 
     private String comPort = "";
-    private Map<String, String> map;
+
     public static boolean isReady =false;
 
     public ClientGUILead() {}

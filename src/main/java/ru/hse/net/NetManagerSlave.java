@@ -84,7 +84,8 @@ public class NetManagerSlave implements ConnectionListener {
                     isReady = true;
                     break;
                 case SEND:
-                    System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
+                    System.out.println(new String(message.getMessage(), StandardCharsets.UTF_8));
+                   // System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
                     break;
             }
         }

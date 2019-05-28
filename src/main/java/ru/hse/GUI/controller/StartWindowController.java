@@ -103,24 +103,25 @@ public class StartWindowController {
             if (table.getSelectionModel().getSelectedItem() != null) {
                 textError.setText("");
                 COM_PORT = table.getSelectionModel().getSelectedItem();
-                this.clientGUILead.setComPort(COM_PORT);
                 stage.close();
 
                     if (clientGUILead!=null) {
+                        this.clientGUILead.setComPort(COM_PORT);
                         List<Client> listClients = new ArrayList<>();
                         Map<String, String> map = this.clientGUILead.getMap();
                         for (String key : map.keySet()) {
                             listClients.add(new Client(map.get(key), new ArrayList<>()));
                         }
                         chatController = new ChatController(listClients);
-                        chatController.openChatWindow(COM_PORT, this.clientGUILead);
+                        chatController.openChatWindow(this.clientGUILead);
                     }
                     else {
+                        this.clientGUISlave.setComPort(COM_PORT);
                         List<Client> listClients = new ArrayList<>();
                         String user = this.clientGUISlave.username;
                         listClients.add(new Client(user, new ArrayList<>()));
                         chatController = new ChatController(listClients);
-                        chatController.openChatWindow(COM_PORT, this.clientGUISlave);
+                        chatController.openChatWindow(this.clientGUISlave);
 
                     }
             }
