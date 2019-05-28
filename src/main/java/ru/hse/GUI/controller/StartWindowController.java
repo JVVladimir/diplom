@@ -14,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ru.hse.GUI.ClientGUILead;
+import ru.hse.GUI.ClientGUISlave;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,11 +30,18 @@ public class StartWindowController {
     private ChatController chatController;
 
     private ClientGUILead clientGUILead;
+    private ClientGUISlave clientGUISlave;
 
     public StartWindowController(List<String> listCOMPorts, ClientGUILead clientGUILead) {
         this.clientGUILead = clientGUILead;
         openStartWindow(getComPorts(listCOMPorts));
     }
+
+    public StartWindowController(List<String> listCOMPorts, ClientGUISlave clientGUISlave) {
+        this.clientGUISlave = clientGUISlave;
+        openStartWindow(getComPorts(listCOMPorts));
+    }
+
 
     private void openStartWindow(ObservableList<String> listCOMPorts){
         Stage stage = new Stage();
@@ -98,19 +106,23 @@ public class StartWindowController {
                 this.clientGUILead.setComPort(COM_PORT);
                 stage.close();
 
-
-                    List<Client> listClients = new ArrayList<>();
-                    Map<String, String> map = this.clientGUILead.getMap();
-                    for (String key: map.keySet()){
-                        listClients.add(new Client(map.get(key), new ArrayList<>()));
+                    if (clientGUILead!=null) {
+                        List<Client> listClients = new ArrayList<>();
+                        Map<String, String> map = this.clientGUILead.getMap();
+                        for (String key : map.keySet()) {
+                            listClients.add(new Client(map.get(key), new ArrayList<>()));
+                        }
+                        chatController = new ChatController(listClients);
+                        chatController.openChatWindow(COM_PORT, this.clientGUILead);
                     }
-                    chatController = new ChatController(listClients);
-                try {
-                    chatController.openChatWindow(COM_PORT, this.clientGUILead);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    else {
+                        List<Client> listClients = new ArrayList<>();
+                        String user = this.clientGUISlave.username;
+                        listClients.add(new Client(user, new ArrayList<>()));
+                        chatController = new ChatController(listClients);
+                        chatController.openChatWindow(COM_PORT, this.clientGUISlave);
 
+                    }
             }
             else {
                 textError.setText("COM port is not selected!");

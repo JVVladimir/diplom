@@ -26,6 +26,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import ru.hse.GUI.ClientGUILead;
+import ru.hse.GUI.ClientGUISlave;
 import ru.hse.net.Message;
 import ru.hse.net.NetManagerLead;
 import ru.hse.utils.Encrypter;
@@ -63,11 +64,12 @@ public class ChatController {
     private Client actualPerson;
     private List<HBox> actualHistory = new ArrayList<>();
     private static ClientGUILead clientGUILead;
+    private static ClientGUISlave clientGUISlave;
 
     @FXML
     void initialize() {
         updateListOnlineUsers(clients);
-        //if (clients.size()>1) clientGUILead.generateKey();
+        if (clientGUILead!=null) clientGUILead.generateKey();
     }
 
     public ChatController() {}
@@ -77,8 +79,13 @@ public class ChatController {
         clients.addAll(cl);
     }
 
-    public void openChatWindow(String comport, ClientGUILead clientGUI) throws IOException {
-        clientGUILead = clientGUI;
+    public void openChatWindow(String comport, ClientGUILead clientGUI) { clientGUILead = clientGUI; }
+
+
+    public void openChatWindow(String comport, ClientGUISlave clientGUI)  { clientGUISlave = clientGUI; }
+
+
+    public void createStage() throws IOException {
         USERNAME = System.getProperty("user.name");
         stage = new Stage();
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("chat.fxml"));
@@ -88,7 +95,6 @@ public class ChatController {
         stage.getIcons().add(new Image("icon.jpeg"));
         stage.show();
     }
-
 
     private void updateChat(String username,String message) {
         Text text=new Text(message);

@@ -40,7 +40,7 @@ public class ClientGUISlave extends Application {
     public void start(Stage primaryStage) {
         String[] comPorts = ArduinoController.getConnectedComPorts();
         if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
-       // else new StartWindowController(Arrays.asList(comPorts), this);
+        else new StartWindowController(Arrays.asList(comPorts), this);
     }
 
 
