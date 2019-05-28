@@ -55,7 +55,7 @@ public class TestTPM {
         TreeParityMachine tpm1 = new TreeParityMachine(8, 16, -2, 2, LearningParadigm.HEBBIAN);
         int[] p = tpm1.getTPMParams();
         TPMTrainer trainer = new TPMTrainer();
-
+//
         SynchronizationManager manager = new SlaveSynchronizationManager();
 
         int i = 0;
