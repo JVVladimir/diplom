@@ -38,6 +38,7 @@ public class NetManagerLead implements ConnectionListener {
     private Server server;
     private Connection connection;
     private SynchronizationManager synchronizationManager;
+    private  ClientGUI clientGUI;
 
     public NetManagerLead() {
         server = new Server(this, PORT);
@@ -75,12 +76,11 @@ public class NetManagerLead implements ConnectionListener {
         }
     }
 
-    public void runApp() {
-        ClientGUI clientGUI = new ClientGUI();
+    public Map <String, String> runApp() {
         Map<String , String> map = new UsersSearcher(PORT).search();
         if(map.size() == 0) {
             log.info("Не найдено ни одного соединения!");
-            return;
+            return null;
         }
         Map.Entry<String, String> entry = map.entrySet().iterator().next();
         log.info("Found user: {}", entry);
@@ -91,15 +91,9 @@ public class NetManagerLead implements ConnectionListener {
             waitResponse();
         } catch (RuntimeException ex) {
             log.info("Не удалось подключиться к абоненту!");
-            return;
+            return null;
         }
-
-        clientGUI.setMapClient(map);
-        new Thread(clientGUI::startApp).start();
-
-        while (clientGUI.getComPort().equals("")) { Thread.yield();}
-
-        synchronizationManager = new LeadSynchronizationManager(clientGUI.getComPort());
+        return map;
 
         /*
         Scanner scanner = new Scanner(System.in);
@@ -144,6 +138,10 @@ public class NetManagerLead implements ConnectionListener {
         }*/
     }
 
+    public void setSynchronizationManager(SynchronizationManager synchronizationManager) {
+        this.synchronizationManager = synchronizationManager;
+    }
+
     // TODO: подумать не переделать ли под поток, возвращающий результат задачи и таймер (вдруг задача не выполнится никогда)
     private void waitResponse() {
         while (!responseReceived)
@@ -151,7 +149,4 @@ public class NetManagerLead implements ConnectionListener {
         responseReceived = false;
     }
 
-    public static void main(String[] args) {
-        new NetManagerLead().runApp();
-    }
 }

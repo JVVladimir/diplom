@@ -58,85 +58,34 @@ public class ChatController {
     private Client actualPerson;
     private List<HBox> actualHistory = new ArrayList<>();
 
+    @FXML
+    void initialize() {
+        System.out.println("2");
+        updateListOnlineUsers(this.clients);
+    }
 
+    public ChatController() {}
 
-    public void openChatWindow(String username) throws IOException {
-        USERNAME = username;
+    public ChatController(List<Client> clients)  {
+        System.out.println("1");
+        this.clients = FXCollections.observableArrayList();
+        this.clients.addAll(clients);
+    }
+
+    public void openChatWindow(String comport) throws IOException {
+        System.out.println("3");
+        USERNAME = System.getProperty("user.name");
         stage = new Stage();
+
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("chat.fxml"));
+
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        VBox vbox = new VBox(5);
-        vbox.setPadding(new Insets(10));
-        vbox.setAlignment(Pos.CENTER);
-
-        ListView<Client> lvClients = new ListView<>();
-        lvClients.setCellFactory(listView -> new ListCell<Client>() {
-            @Override
-            protected void updateItem(Client client, boolean empty) {
-                super.updateItem(client, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    HBox hBox = new HBox(5);
-                    hBox.setAlignment(Pos.CENTER);
-                    hBox.getChildren().addAll(
-                            new Circle(),
-                            new Label(client.getName())
-                    );
-                    setGraphic(hBox);
-                }
-            }
-        });
-        lvClients.setItems(clients);
 
         stage.setScene(scene);
         stage.setTitle("SecretChat" + ": " + USERNAME);
         stage.getIcons().add(new Image("icon.jpeg"));
         stage.show();
     }
-
-    /*
-    //todo: если клиент лист поменялся -  испопльзуем метод getUser, чтоб получить текущий список пользователей и только потом удаляем оттуда пользователей которые вышли и добавляем новых пользователей, которые вошли
-    //todo: затем используем этот метод - обязательно!!!
-    public void updateListOnlineUsers(List<Client> clientList)  {
-        this.actualPerson = null;
-        this.actualHistory = new ArrayList<>();
-        this.clientList = clientList;
-        Platform.runLater(() -> usersBox.getChildren().clear());
-        for(Client client : clientList) {
-            if (client.getName().equals(USERNAME)) continue;
-            if (this.actualPerson == null) this.actualPerson = client;
-            HBox container = new HBox();
-            container.setAlignment(Pos.CENTER_LEFT);
-            container.setSpacing(10);
-            container.setPrefWidth(usersBox.getPrefWidth());
-            container.setPadding(new Insets(3));
-            container.getStyleClass().add("online-user-container");
-            Circle img = new Circle(30, 30, 15);
-            container.getChildren().add(img);
-
-            VBox userDetailContainer = new VBox();
-            userDetailContainer.setPrefWidth(usersBox.getPrefWidth() / 1.7);
-
-            Button btnUsername = new Button(client.getName());
-            btnUsername.getStyleClass().add("online-label");
-            btnUsername.setOnAction((ActionEvent actionEvent)->{
-                this.actualPerson.setHistory(actualHistory);
-                actualHistory = client.getHistory();
-                actualPerson = client;
-                chatBox.getChildren().clear();
-                for (HBox hb: actualHistory) {
-                    chatBox.getChildren().add(hb);
-                }
-            });
-            userDetailContainer.getChildren().add(btnUsername);
-
-            container.getChildren().add(userDetailContainer);
-
-            Platform.runLater(() -> usersBox.getChildren().add(container));
-        }
-    }*/
 
 
     private void updateChat(String username,String message) {
@@ -179,6 +128,40 @@ public class ChatController {
         Platform.runLater(() -> chatBox.getChildren().addAll(hbox));
     }
 
+
+    public void updateListOnlineUsers(List<Client> cl)  {
+        this.actualPerson = null;
+        this.actualHistory = new ArrayList<>();
+        Platform.runLater(() -> usersBox.getChildren().clear());
+        for(Client client : cl) {
+            if (client.getName().equals(USERNAME)) continue;
+            if (this.actualPerson == null) this.actualPerson = client;
+            HBox container = new HBox();
+            container.setAlignment(Pos.CENTER_LEFT);
+            container.setSpacing(10);
+            container.setPrefWidth(usersBox.getPrefWidth());
+            container.setPadding(new Insets(3));
+            container.getStyleClass().add("online-user-container");
+            Circle img = new Circle(30, 30, 15);
+            container.getChildren().add(img);
+            VBox userDetailContainer = new VBox();
+            userDetailContainer.setPrefWidth(usersBox.getPrefWidth() / 1.7);
+            Button btnUsername = new Button(client.getName());
+            btnUsername.getStyleClass().add("online-label");
+            btnUsername.setOnAction((ActionEvent actionEvent)->{
+                this.actualPerson.setHistory(actualHistory);
+                actualHistory = client.getHistory();
+                actualPerson = client;
+                chatBox.getChildren().clear();
+                for (HBox hb: actualHistory) {
+                    chatBox.getChildren().add(hb);
+                }
+            });
+            userDetailContainer.getChildren().add(btnUsername);
+            container.getChildren().add(userDetailContainer);
+            Platform.runLater(() -> usersBox.getChildren().add(container));
+        }
+    }
     @FXML
     private void fileAction(ActionEvent actionEvent) {
         final FileChooser fileChooser = new FileChooser();
@@ -201,13 +184,6 @@ public class ChatController {
     public void acceptMessage(String msg) {
         if(msg.equals(""))return;
         updateChat(this.actualPerson.getName(), msg);
-    }
-
-   public List<Client> getClientList(){ return new ArrayList<>(clients); }
-
-    public void setClientList(List<Client> clientList) {
-        this.clients = FXCollections.observableArrayList();
-        this.clients.addAll(clientList);
     }
 
 }

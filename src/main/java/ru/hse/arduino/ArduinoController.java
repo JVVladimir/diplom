@@ -25,6 +25,7 @@ public class ArduinoController implements Controller {
         this.handler = manager;
         this.gson = new Gson();
         this.serialPort = new SerialPort(comPortName);
+
         log.info("Создан SerialPort с именем {}!", serialPort);
         openPort();
         try {

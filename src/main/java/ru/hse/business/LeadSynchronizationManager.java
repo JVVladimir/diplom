@@ -11,6 +11,7 @@ public class LeadSynchronizationManager extends SynchronizationManager {
 
     private static final int INIT_W_LEAD = 1;
 
+
     public LeadSynchronizationManager(String COMPort) {
         super(INIT_W_LEAD, COMPort);
     }

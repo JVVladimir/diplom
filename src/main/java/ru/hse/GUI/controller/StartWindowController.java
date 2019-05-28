@@ -18,6 +18,7 @@ import ru.hse.GUI.ClientGUI;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class StartWindowController {
 
@@ -97,16 +98,20 @@ public class StartWindowController {
                 this.clientGUI.setComPort(COM_PORT);
                 stage.close();
 
-                try {
-                    //todo: запрос на получения списка онлайн пользователей
-                    List<Client> list = new ArrayList<>();
-                    list.add(new Client("user1", new ArrayList<>()));
-                    //
-                    chatController = new ChatController();
-                    chatController.openChatWindow(COM_PORT);
-                    chatController.setClientList(list);
 
-                } catch (IOException e) { }
+                    List<Client> listClients = new ArrayList<>();
+                    Map<String, String> map = this.clientGUI.getMap();
+                    for (String key: map.keySet()){
+                        listClients.add(new Client(map.get(key), new ArrayList<>()));
+                    }
+
+                    chatController = new ChatController(listClients);
+                try {
+                    chatController.openChatWindow(COM_PORT);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
             else {
                 textError.setText("COM port is not selected!");
@@ -116,6 +121,8 @@ public class StartWindowController {
         anchorPane.getChildren().addAll(titleWindow, textError, table, btnNext);
         stage.show();
     }
+
+
 
 
     private ObservableList<String> getComPorts(List<String> list){
