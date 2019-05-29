@@ -1,9 +1,7 @@
 package ru.hse.GUI;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hse.GUI.controller.StartWindowController;
@@ -25,7 +23,10 @@ public class ClientGUILead extends Application {
     public static final NetManagerLead netManagerLead = new NetManagerLead();
     private static final Map<String, String> mapClient = netManagerLead.runApp();
 
+
     private String comPort = "";
+    public volatile boolean isMessage = false;
+    public volatile String mess;
 
     public static boolean isReady =false;
 
@@ -84,21 +85,17 @@ public class ClientGUILead extends Application {
         String[] comPorts = ArduinoController.getConnectedComPorts();
         if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
         else new StartWindowController(Arrays.asList(comPorts), this);
-        //primaryStage.
-        //primaryStage.setOnCloseRequest(event -> System.exit(0));
-        // Prevent Closing of the Main Window when it is disabled
-       /* primaryStage.addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, event -> {
-            if(root.isDisable())
-            {
-                event.consume();
+        new Thread(() -> {
+            while (true) {
+                while (!netManagerLead.isSend) {
+                    Thread.yield();
+                }
+                mess = netManagerLead.mess;
+                log.info("{}", mess);
+                isMessage = true;
+                netManagerLead.isSend = false;
             }
-        });*/
-        // Use own Exit handling (double check for isDisable ...)
-        primaryStage.setOnCloseRequest(event -> {
-            System.exit(0);
-           // requestExit();
-            event.consume();
-        });
+        }).start();
     }
 
 

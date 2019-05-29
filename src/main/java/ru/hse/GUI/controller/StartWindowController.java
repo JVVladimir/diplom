@@ -27,7 +27,7 @@ public class StartWindowController {
     private final int WINDOW_HEIGHT = 575;
 
     private String COM_PORT = "";
-    private ChatController chatController;
+    public ChatController chatController;
 
     private ClientGUILead clientGUILead;
     private ClientGUISlave clientGUISlave;

@@ -34,15 +34,15 @@ public class NetManagerSlave implements ConnectionListener {
     private Server server;
     public Connection connection;
     public SynchronizationManager synchronizationManager;
+    public volatile boolean isSend;
+    public String mess;
 
     public NetManagerSlave() {
         server = new Server(this, PORT);
     }
 
     @Override
-    public void onConnectionReady(Connection connection) {
-
-    }
+    public void onConnectionReady(Connection connection) { }
 
     @Override
     public void onReceivedMessage(Connection connection, Object data) {
@@ -84,7 +84,8 @@ public class NetManagerSlave implements ConnectionListener {
                     isReady = true;
                     break;
                 case SEND:
-                    System.out.println(new String(message.getMessage(), StandardCharsets.UTF_8));
+                    isSend = true;
+                    mess = new String(message.getMessage(), StandardCharsets.UTF_8);
                    // System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
                     break;
             }
