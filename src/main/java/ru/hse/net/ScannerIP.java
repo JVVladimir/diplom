@@ -21,15 +21,17 @@ public class ScannerIP {
         try (final DatagramSocket socket = new DatagramSocket()) {
             socket.connect(InetAddress.getByName("7.7.7.7"), 7788);
             ip = socket.getLocalAddress().getAddress();
-            ip = InetAddress.getLocalHost().getAddress();
-        }catch (IOException e) {
+            // ip = InetAddress.getLocalHost().getAddress();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        byte exclude = ip[3];
         ExecutorService service = Executors.newFixedThreadPool(THREAD_COUNT);
         List<Callable<String>> todo = new ArrayList<>(NUM_ADDRESSES);
         for (int i = 2; i <= NUM_ADDRESSES; i++) {
             ip[3] = (byte) i;
-            todo.add(new Scanner(Arrays.copyOf(ip, ip.length)));
+            if (ip[3] != exclude)
+                todo.add(new Scanner(Arrays.copyOf(ip, ip.length)));
         }
         List<Future<String>> futures;
         try {

@@ -6,15 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hse.GUI.controller.StartWindowController;
 import ru.hse.arduino.ArduinoController;
-import ru.hse.business.LeadSynchronizationManager;
-import ru.hse.business.entity.RequestData;
-import ru.hse.net.Message;
-import ru.hse.net.NetManagerLead;
+import ru.hse.business.SlaveSynchronizationManager;
 import ru.hse.net.NetManagerSlave;
-import ru.hse.utils.Encrypter;
 
 import java.util.Arrays;
-import java.util.Map;
 
 public class ClientGUISlave extends Application {
 
@@ -26,21 +21,25 @@ public class ClientGUISlave extends Application {
 
     private String comPort = "";
 
-    public ClientGUISlave() {}
+    public ClientGUISlave() {
+    }
 
 
-    public void startApp() { launch(null); }
+    public void startApp() {
+        launch(null);
+    }
 
     public void setComPort(String comPort) {
         this.comPort = comPort;
-        netManagerSlave.setSynchronizationManager(new LeadSynchronizationManager(this.comPort));
+        netManagerSlave.setSynchronizationManager(new SlaveSynchronizationManager(this.comPort));
     }
 
     @Override
     public void start(Stage primaryStage) {
         String[] comPorts = ArduinoController.getConnectedComPorts();
-        if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
-        else new StartWindowController(Arrays.asList(comPorts), this);
+        if (comPorts.length == 0) {
+            log.info("Нет ни одного подключенного устройства Arduino!");
+        } else new StartWindowController(Arrays.asList(comPorts), this);
     }
 
 
