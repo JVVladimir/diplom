@@ -74,6 +74,7 @@ public class Connection {
                 // throw new RuntimeException(e);
             }
         });
+        thread.setDaemon(true);
         thread.start();
     }
 

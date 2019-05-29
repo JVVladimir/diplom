@@ -19,7 +19,7 @@ public class Server {
 
     public Server(ConnectionListener manager, int port) {
         this.connectionListener = manager;
-        new Thread(() -> {
+        Thread t = new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
                 Socket socket = serverSocket.accept();
@@ -34,7 +34,9 @@ public class Server {
                 log.error("Ошибка создания нового соединения!");
                 throw new RuntimeException(e);
             }
-        }).start();
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     public void destroy() {

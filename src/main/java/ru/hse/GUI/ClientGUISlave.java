@@ -1,7 +1,10 @@
 package ru.hse.GUI;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.hse.GUI.controller.StartWindowController;
@@ -36,6 +39,11 @@ public class ClientGUISlave extends Application {
         String[] comPorts = ArduinoController.getConnectedComPorts();
         if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
         else new StartWindowController(Arrays.asList(comPorts), this);
+        System.out.println("hello");
+        primaryStage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
     }
 
 

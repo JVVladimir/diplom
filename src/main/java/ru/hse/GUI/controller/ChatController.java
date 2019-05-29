@@ -17,6 +17,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -211,4 +213,24 @@ public class ChatController {
         updateChat(this.actualPerson.getName(), msg);
     }
 
+    public void onEnterPressed(KeyEvent ke) {
+        if(ke.getCode() == KeyCode.ENTER) {
+            if(msgText.getText().trim().equals(""))return;
+            /**/
+
+            if (clientGUILead!=null) {
+                clientGUILead.netManagerLead.connection.sendMessage(
+                        new Message(NetManagerLead.SEND, USERNAME, msgText.getText().getBytes())
+                );
+            }
+            else if (clientGUISlave!=null) {
+                clientGUISlave.netManagerSlave.connection.sendMessage(
+                        new Message(NetManagerSlave.SEND, USERNAME, msgText.getText().getBytes())
+                );
+            }
+            updateChat(USERNAME, msgText.getText());
+            msgText.setText("");
+        }
+        System.out.println("Key Pressed: " + ke.getCode());
+    }
 }
