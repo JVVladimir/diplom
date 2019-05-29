@@ -20,8 +20,8 @@ public class ScannerIP {
         byte[] ip;
         try (final DatagramSocket socket = new DatagramSocket()) {
             socket.connect(InetAddress.getByName("7.7.7.7"), 7788);
-            ip = socket.getLocalAddress().getAddress();
-            // ip = InetAddress.getLocalHost().getAddress();
+            //ip = socket.getLocalAddress().getAddress();
+            ip = InetAddress.getLocalHost().getAddress();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
