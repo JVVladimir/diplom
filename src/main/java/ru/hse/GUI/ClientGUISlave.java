@@ -27,6 +27,9 @@ public class ClientGUISlave extends Application {
 
     private String comPort = "";
 
+    public volatile boolean isMessage = false;
+    public volatile String mess;
+
     public ClientGUISlave() {}
 
 
@@ -42,6 +45,17 @@ public class ClientGUISlave extends Application {
         String[] comPorts = ArduinoController.getConnectedComPorts();
         if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
         else new StartWindowController(Arrays.asList(comPorts), this);
+        new Thread(() -> {
+            while (true) {
+                while (!netManagerSlave.isSend) {
+                    Thread.yield();
+                }
+                mess = netManagerSlave.mess;
+                log.info("{}", mess);
+                isMessage = true;
+                netManagerSlave.isSend = false;
+            }
+        }).start();
     }
 
 

@@ -23,7 +23,10 @@ public class ClientGUILead extends Application {
     public static final NetManagerLead netManagerLead = new NetManagerLead();
     private static final Map<String, String> mapClient = netManagerLead.runApp();
 
+
     private String comPort = "";
+    public volatile boolean isMessage = false;
+    public volatile String mess;
 
     public static boolean isReady =false;
 
@@ -82,6 +85,17 @@ public class ClientGUILead extends Application {
         String[] comPorts = ArduinoController.getConnectedComPorts();
         if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
         else new StartWindowController(Arrays.asList(comPorts), this);
+        new Thread(() -> {
+            while (true) {
+                while (!netManagerLead.isSend) {
+                    Thread.yield();
+                }
+                mess = netManagerLead.mess;
+                log.info("{}", mess);
+                isMessage = true;
+                netManagerLead.isSend = false;
+            }
+        }).start();
     }
 
 

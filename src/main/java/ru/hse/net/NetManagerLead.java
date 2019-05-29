@@ -33,6 +33,8 @@ public class NetManagerLead implements ConnectionListener {
     private Server server;
     public Connection connection;
     public SynchronizationManager synchronizationManager;
+    public volatile boolean isSend;
+    public String mess;
 
     public NetManagerLead() { server = new Server(this, PORT); }
 
@@ -62,7 +64,9 @@ public class NetManagerLead implements ConnectionListener {
                     responseReceived = true;
                     break;
                 case SEND:
-                    System.out.println(new String(message.getMessage(), StandardCharsets.UTF_8));
+                    mess = new String(message.getMessage(), StandardCharsets.UTF_8);
+                    log.info(mess);
+                    isSend = true;
                     //System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
                     break;
             }

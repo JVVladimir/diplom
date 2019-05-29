@@ -61,7 +61,7 @@ public class ChatController {
 
     private String USERNAME = "user";
 
-    private Client actualPerson;
+    private static Client actualPerson;
     private List<HBox> actualHistory = new ArrayList<>();
     private static ClientGUILead clientGUILead;
     private static ClientGUISlave clientGUISlave;
@@ -69,10 +69,12 @@ public class ChatController {
     @FXML
     void initialize() {
         updateListOnlineUsers(clients);
+        acceptMessage();
         //if (clientGUILead!=null) clientGUILead.generateKey();
     }
 
-    public ChatController() {}
+    public ChatController() {
+    }
 
     public ChatController(List<Client> cl)  {
         clients = FXCollections.observableArrayList();
@@ -177,7 +179,6 @@ public class ChatController {
         if (file != null) {
             System.out.println(file.getAbsolutePath());
         }
-
     }
 
     @FXML
@@ -203,9 +204,40 @@ public class ChatController {
     }
 
 
-    public void acceptMessage(String msg) {
-        if(msg.equals(""))return;
-        updateChat(this.actualPerson.getName(), msg);
+    public void acceptMessage() {
+        Thread thread = new Thread(() -> {
+            Runnable runnable = () -> {
+                if (clientGUILead != null) {
+                    if (clientGUILead.isMessage) {
+                        String msg = clientGUILead.mess;
+                        if (msg.equals("") || msg.length() == 0) ;
+                        else {
+                            updateChat(actualPerson.getName(), msg);
+                        }
+                        clientGUILead.isMessage = false;
+                    }
+                } else if (clientGUISlave != null) {
+                    if (clientGUISlave.isMessage) {
+                        String msg = clientGUISlave.mess;
+                        if (msg.equals("") || msg.length() == 0) ;
+                        else {
+                            updateChat(actualPerson.getName(), msg);
+                        }
+                        clientGUISlave.isMessage = false;
+                    }
+                }
+            };
+            while(true) {
+                try {
+                    Thread.currentThread().sleep(250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(runnable);
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
 }
