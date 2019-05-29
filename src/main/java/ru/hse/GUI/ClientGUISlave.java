@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import ru.hse.GUI.controller.StartWindowController;
 import ru.hse.arduino.ArduinoController;
 import ru.hse.business.LeadSynchronizationManager;
+import ru.hse.business.SlaveSynchronizationManager;
 import ru.hse.business.entity.RequestData;
 import ru.hse.net.Message;
 import ru.hse.net.NetManagerLead;
@@ -33,7 +34,7 @@ public class ClientGUISlave extends Application {
 
     public void setComPort(String comPort) {
         this.comPort = comPort;
-        netManagerSlave.setSynchronizationManager(new LeadSynchronizationManager(this.comPort));
+        netManagerSlave.setSynchronizationManager(new SlaveSynchronizationManager(this.comPort));
     }
 
     @Override

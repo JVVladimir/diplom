@@ -113,7 +113,11 @@ public class StartWindowController {
                             listClients.add(new Client(map.get(key), new ArrayList<>()));
                         }
                         chatController = new ChatController(listClients);
-                        chatController.openChatWindow(this.clientGUILead);
+                        try {
+                            chatController.openChatWindow(this.clientGUILead);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     else {
                         this.clientGUISlave.setComPort(COM_PORT);
@@ -121,7 +125,11 @@ public class StartWindowController {
                         String user = this.clientGUISlave.username;
                         listClients.add(new Client(user, new ArrayList<>()));
                         chatController = new ChatController(listClients);
-                        chatController.openChatWindow(this.clientGUISlave);
+                        try {
+                            chatController.openChatWindow(this.clientGUISlave);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
                     }
             }
