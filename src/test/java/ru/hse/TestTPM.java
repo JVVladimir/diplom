@@ -22,7 +22,7 @@ public class TestTPM {
     // byte arduino 0 - 255 - чистые 8 бит
     //
 
-
+/*
     @Test
     void testTpm() {
         int epochs = 150, i = 0;
@@ -129,5 +129,5 @@ public class TestTPM {
             k = 0;
         }
         return mas;
-    }
+    }*/
 }
