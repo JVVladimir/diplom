@@ -2,6 +2,7 @@ package ru.hse.GUI.controller;
 
 import com.jfoenix.controls.JFXDrawer;
 
+import com.sun.xml.internal.bind.v2.runtime.output.SAXOutput;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +30,7 @@ import ru.hse.GUI.ClientGUILead;
 import ru.hse.GUI.ClientGUISlave;
 import ru.hse.net.Message;
 import ru.hse.net.NetManagerLead;
+import ru.hse.net.NetManagerSlave;
 import ru.hse.utils.Encrypter;
 
 import java.io.File;
@@ -68,6 +70,7 @@ public class ChatController {
 
     @FXML
     void initialize() {
+        System.out.println(clients.get(0).getName());
         updateListOnlineUsers(clients);
         //if (clientGUILead!=null) clientGUILead.generateKey();
     }
@@ -190,12 +193,12 @@ public class ChatController {
 
             if (clientGUILead!=null) {
                 clientGUILead.netManagerLead.connection.sendMessage(
-                        new Message(NetManagerLead.SEND, System.getProperty("user.name"), msgText.getText().getBytes())
+                        new Message(NetManagerLead.SEND, USERNAME, msgText.getText().getBytes())
                 );
             }
             else if (clientGUISlave!=null) {
                 clientGUISlave.netManagerSlave.connection.sendMessage(
-                        new Message(NetManagerLead.SEND, System.getProperty("user.name"), msgText.getText().getBytes())
+                        new Message(NetManagerSlave.SEND, USERNAME, msgText.getText().getBytes())
                 );
             }
             updateChat(USERNAME, msgText.getText());
