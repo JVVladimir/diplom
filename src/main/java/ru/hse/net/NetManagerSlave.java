@@ -56,6 +56,7 @@ public class NetManagerSlave implements ConnectionListener {
                     isConnect = true;
                     userName = message.getName();
                     connection.sendMessage(new Message(CONNECT));
+                    this.connection = connection;
                     break;
                 case INIT_W:
                     synchronizationManager.initWeights();
