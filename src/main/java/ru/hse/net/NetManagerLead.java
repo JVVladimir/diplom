@@ -80,7 +80,7 @@ public class NetManagerLead implements ConnectionListener {
         String ip = entry.getKey();
         try {
             connection = new Connection(this, ip, PORT);
-            connection.sendMessage(new Message(CONNECT));
+            connection.sendMessage(new Message(CONNECT, System.getProperty("user.name"), null));
             waitResponse();
         } catch (RuntimeException ex) {
             log.info("Не удалось подключиться к абоненту!");
