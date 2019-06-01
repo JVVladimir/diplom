@@ -4,6 +4,7 @@ plugins {
 
 group = "ru.hse"
 version = "1.0-SNAPSHOT"
+var platform = "linux"
 
 repositories {
     mavenCentral()
@@ -11,6 +12,14 @@ repositories {
 
 dependencies {
     var junitVersion = "5.4.0"
+
+    implementation("com.jfoenix:jfoenix:8.0.8")
+    
+    implementation ("org.openjfx:javafx-base:11:${platform}")
+    implementation ("org.openjfx:javafx-graphics:11:${platform}")
+    implementation ("org.openjfx:javafx-controls:11:${platform}")
+    implementation ("org.openjfx:javafx-fxml:11:${platform}")
+
     
     implementation ("org.scream3r:jssc:2.8.0")
 
@@ -21,5 +30,4 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    implementation("com.jfoenix:jfoenix:8.0.8")
 }

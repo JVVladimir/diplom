@@ -26,7 +26,6 @@ public class TestTPM {
     void testTpm() throws InterruptedException {
         int h = 0;
         while(h < 3) {
-            Thread.sleep(5000);
             log.info("Генерация ключа шифрования...");
             h++;
             int epochs = 70, i = 0;
@@ -36,7 +35,6 @@ public class TestTPM {
             TPMTrainer trainer = new TPMTrainer();
             short[] input = Random.getInts(p[0] * p[1], -1, 1);
             while (i < epochs) {
-                Thread.sleep(100);
                 i++;
                 short out2 = t2.getOutput(input);
                 short out1 = t1.getOutput(input);

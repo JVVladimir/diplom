@@ -2,7 +2,7 @@ package ru.hse.GUI.controller;
 
 import com.jfoenix.controls.JFXDrawer;
 
-import com.sun.xml.internal.bind.v2.runtime.output.SAXOutput;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
