@@ -35,7 +35,7 @@ public class NetManagerSlave implements ConnectionListener {
     public Connection connection;
     public SynchronizationManager synchronizationManager;
     public volatile boolean isSend;
-    public String mess;
+    public volatile String mess;
 
     public NetManagerSlave() {
         server = new Server(this, PORT);
@@ -84,8 +84,8 @@ public class NetManagerSlave implements ConnectionListener {
                     isReady = true;
                     break;
                 case SEND:
-                    isSend = true;
                     mess = new String(message.getMessage(), StandardCharsets.UTF_8);
+                    isSend = true;
                    // System.out.println(new String(Encrypter.decrypt(message.getMessage(), key), StandardCharsets.UTF_8));
                     break;
             }
