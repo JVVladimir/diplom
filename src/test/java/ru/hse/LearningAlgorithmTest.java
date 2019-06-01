@@ -1,6 +1,7 @@
 package ru.hse;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import ru.hse.learning_algorithm.LearningParadigm;
@@ -42,8 +43,12 @@ public class LearningAlgorithmTest {
             TPMTrainer trainer = new TPMTrainer();
             trainer.setEpochs(epochs);
             ArrayList[] list = trainer.synchronize(tpm1, tpm2);
+            System.out.println(Arrays.toString(tpm1.getSecretKey()));
+            System.out.println(Arrays.toString(tpm2.getSecretKey()));
+            Assertions.assertArrayEquals(tpm1.getSecretKey(), tpm2.getSecretKey());
             System.out.println("\n\n");
             numHebbian += (Integer) list[2].get(0);
+            Assertions.assertArrayEquals(tpm1.getSecretKey(), tpm2.getSecretKey());
             num1++;
         } catch (Exception ex) {
             numHebbianFails++;

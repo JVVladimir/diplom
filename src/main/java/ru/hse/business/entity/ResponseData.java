@@ -1,23 +1,24 @@
 package ru.hse.business.entity;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class ResponseData extends Data {
+public class ResponseData extends Data implements Serializable {
 
-    private final byte command;
+    private final int command;
 
-    public ResponseData(byte command, short[] vector, short out) {
-        super(vector, out);
+    public ResponseData(int command, short[] in, short out) {
+        super(in, out);
         this.command = command;
     }
 
-    public ResponseData(byte command) {
+    public ResponseData(int command) {
         super(null, (short) 0);
         this.command = command;
     }
 
-    public byte getCommand() {
+    public int getCommand() {
         return command;
     }
 
@@ -38,7 +39,7 @@ public class ResponseData extends Data {
     public String toString() {
         return "ResponseData{" +
                 "command=" + command +
-                ", vector=" + Arrays.toString(vector) +
+                ", in=" + Arrays.toString(in) +
                 ", out=" + out +
                 '}';
     }

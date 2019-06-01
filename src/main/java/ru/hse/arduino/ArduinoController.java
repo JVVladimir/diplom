@@ -25,6 +25,7 @@ public class ArduinoController implements Controller {
         this.handler = manager;
         this.gson = new Gson();
         this.serialPort = new SerialPort(comPortName);
+
         log.info("Создан SerialPort с именем {}!", serialPort);
         openPort();
         try {
@@ -58,7 +59,7 @@ public class ArduinoController implements Controller {
         }
     }
 
-    private static final int LIMIT = 12;
+    private static final int LIMIT = 100;
     private StringBuilder str = new StringBuilder();
     private double count;
     private RequestData newEntity;
@@ -73,7 +74,6 @@ public class ArduinoController implements Controller {
             } catch (SerialPortException e) {
                 throw new ControllerException("Ошибка в чтении данных!");
             }
-            log.info("Received requestData of size: {}, requestData: {}", newData.length(), newData);
             try {
                 count++;
                 str.append(newData);
@@ -114,7 +114,7 @@ public class ArduinoController implements Controller {
         } catch (SerialPortException e) {
             throw new ControllerException("Ошибка при отправке данных!");
         }
-        log.info("Сообщение отправлено: {}!", message);
+        //log.info("Сообщение отправлено: {}!", message);
     }
 
     @Override

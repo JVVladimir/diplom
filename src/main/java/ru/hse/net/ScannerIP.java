@@ -12,23 +12,33 @@ import java.util.stream.Collectors;
 
 public class ScannerIP {
 
-    private static final int TIMEOUT = 3000;
+    private static final int TIMEOUT = 1500;
     private static final int THREAD_COUNT = 150;
     private static final int NUM_ADDRESSES = 254;
 
-    public List<String> getNetworkIPs() throws IOException, InterruptedException {
+    public List<String> getNetworkIPs() {
         byte[] ip;
         try (final DatagramSocket socket = new DatagramSocket()) {
-            socket.connect(InetAddress.getByName("1.1.1.1"), 7777);
-            ip = socket.getLocalAddress().getAddress();
+            socket.connect(InetAddress.getByName("7.7.7.7"), 7788);
+            //ip = socket.getLocalAddress().getAddress();
+            ip = InetAddress.getLocalHost().getAddress();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        byte exclude = ip[3];
         ExecutorService service = Executors.newFixedThreadPool(THREAD_COUNT);
         List<Callable<String>> todo = new ArrayList<>(NUM_ADDRESSES);
         for (int i = 2; i <= NUM_ADDRESSES; i++) {
             ip[3] = (byte) i;
-            todo.add(new Scanner(Arrays.copyOf(ip, ip.length)));
+            if (ip[3] != exclude)
+                todo.add(new Scanner(Arrays.copyOf(ip, ip.length)));
         }
-        List<Future<String>> futures = service.invokeAll(todo);
+        List<Future<String>> futures;
+        try {
+            futures = service.invokeAll(todo);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         service.shutdown();
         return futures.stream().map(e -> {
             try {

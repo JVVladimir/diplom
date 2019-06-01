@@ -1,17 +1,19 @@
 package ru.hse.business.entity;
 
-public abstract class Data {
+import java.io.Serializable;
 
-    final short[] vector;
+public abstract class Data implements Serializable {
+
+    final short[] in;
     final short out;
 
-    public Data(short[] vector, short out) {
-        this.vector = vector;
+    public Data(short[] in, short out) {
+        this.in = in;
         this.out = out;
     }
 
-    public short[] getVector() {
-        return vector;
+    public short[] getIn() {
+        return in;
     }
 
     public short getOut() {

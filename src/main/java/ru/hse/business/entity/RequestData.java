@@ -1,25 +1,33 @@
 package ru.hse.business.entity;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class RequestData extends Data {
+public class RequestData extends Data implements Serializable {
 
     private final int resultCode;
-    private final int memory;
-    private final short[] weight;
+    private final int mem;
+    private final short[] w;
 
     private static final int OK_CODE = 100;
 
-    public RequestData(short[] vector, short out, int resultCode, int memory, short[] weight) {
-        super(vector, out);
+    public RequestData(short[] in, short out, int resultCode, int mem, short[] w) {
+        super(in, out);
         this.resultCode = resultCode;
-        this.memory = memory;
-        this.weight = weight;
+        this.mem = mem;
+        this.w = w;
+    }
+
+    public RequestData(int resultCode) {
+        super(null, (short) 0);
+        this.resultCode = resultCode;
+        this.mem = 0;
+        this.w = null;
     }
 
     public short[] getWeight() {
-        return weight;
+        return w;
     }
 
     public int getResultCode() {
@@ -27,7 +35,7 @@ public class RequestData extends Data {
     }
 
     public int getMemory() {
-        return memory;
+        return mem;
     }
 
     public boolean isOk() {
@@ -35,7 +43,7 @@ public class RequestData extends Data {
     }
 
     public boolean vecHasLen(int len) {
-        return vector.length == len;
+        return in.length == len;
     }
 
     @Override
@@ -44,14 +52,14 @@ public class RequestData extends Data {
         if (o == null || getClass() != o.getClass()) return false;
         RequestData that = (RequestData) o;
         return resultCode == that.resultCode &&
-                memory == that.memory &&
-                Arrays.equals(weight, that.weight);
+                mem == that.mem &&
+                Arrays.equals(w, that.w);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(resultCode, memory);
-        result = 31 * result + Arrays.hashCode(weight);
+        int result = Objects.hash(resultCode, mem);
+        result = 31 * result + Arrays.hashCode(w);
         return result;
     }
 
@@ -59,9 +67,9 @@ public class RequestData extends Data {
     public String toString() {
         return "RequestData{" +
                 "resultCode=" + resultCode +
-                ", memory=" + memory +
-                ", weight=" + Arrays.toString(weight) +
-                ", vector=" + Arrays.toString(vector) +
+                ", mem=" + mem +
+                ", w=" + Arrays.toString(w) +
+                ", in=" + Arrays.toString(in) +
                 ", out=" + out +
                 '}';
     }
