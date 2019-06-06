@@ -104,6 +104,7 @@ public class ChatController {
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
         stage.setScene(scene);
         stage.setTitle("SecretChat" + ": " + USERNAME);
+        stage.setResizable(false);
         stage.getIcons().add(new Image("icon.jpeg"));
         stage.setOnCloseRequest((event) -> System.exit(0));
         stage.show();
