@@ -74,6 +74,11 @@ public class ChatController {
     void initialize() {
         System.out.println(clients.get(0).getName());
         updateListOnlineUsers(clients);
+        msgText.setOnKeyPressed((KeyEvent keyEvent) -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                sendAction(new ActionEvent());
+            }
+        });
         acceptMessage();
         //if (clientGUILead!=null) clientGUILead.generateKey();
     }
@@ -100,6 +105,7 @@ public class ChatController {
         stage.setScene(scene);
         stage.setTitle("SecretChat" + ": " + USERNAME);
         stage.getIcons().add(new Image("icon.jpeg"));
+        stage.setOnCloseRequest((event) -> System.exit(0));
         stage.show();
     }
 

@@ -45,6 +45,8 @@ public class StartWindowController {
 
     private void openStartWindow(ObservableList<String> listCOMPorts){
         Stage stage = new Stage();
+        stage.setOnCloseRequest((event) -> System.exit(0));
+
         AnchorPane anchorPane = new AnchorPane();
         Scene scene = new Scene(anchorPane, WINDOW_WIDTH, WINDOW_HEIGHT);
 
