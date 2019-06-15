@@ -42,7 +42,7 @@ public class ClientGUISlave extends Application {
         String[] comPorts = ArduinoController.getConnectedComPorts();
         if (comPorts.length == 0) { log.info("Нет не одного подключенного устройства Arduino!");}
         else new StartWindowController(Arrays.asList(comPorts), this);
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             while (true) {
                 while (!netManagerSlave.isSend) {
                     Thread.yield();
@@ -52,7 +52,9 @@ public class ClientGUISlave extends Application {
                 isMessage = true;
                 netManagerSlave.isSend = false;
             }
-        }).start();
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
 
 
